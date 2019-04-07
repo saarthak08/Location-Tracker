@@ -1,13 +1,23 @@
 package com.sg.hackamu.login.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 @Entity(tableName = "User")
 public class User {
+    @ColumnInfo(name = "name")
     private String name;
+
+    @ColumnInfo(name = "password")
     private String password;
+
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
     private Integer id;
+
+    @ColumnInfo(name = "email")
     private String email;
 
 
