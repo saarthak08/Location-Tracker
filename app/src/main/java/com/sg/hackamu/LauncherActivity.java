@@ -34,30 +34,17 @@ public class LauncherActivity extends AppCompatActivity {
 
 
     public class LauncherActivityClickHandlers{
-        public void onButton1Clicked(View view)
-        {
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-        }
-
-        public void onButton2Clicked(View view)
+        public void onFacultyButtonClicked(View view)
         {
 
         }
 
-        public void onButton3Clicked(View view)
+
+        public void onStudentButtonClicked(View view)
         {
             startActivity(new Intent(LauncherActivity.this,LoginActivity.class));
         }
 
-        public void onButton4Clicked(View view)
-        {
-
-        }
 
     }
 }

@@ -6,7 +6,7 @@ import com.sg.hackamu.login.UsersDAO;
 
 public class checkUser extends AsyncTask<String, Void, Void> {
     private UsersDAO usersDAO;
-    private Boolean check;
+    private boolean check;
 
     public checkUser(UsersDAO usersDAO) {
         this.usersDAO = usersDAO;

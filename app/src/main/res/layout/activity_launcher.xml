@@ -17,8 +17,8 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="255dp"
-        android:layout_height="146dp"
+        android:layout_width="312dp"
+        android:layout_height="272dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         android:layout_weight="1"
@@ -33,35 +33,16 @@
         android:padding="25dp">
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/loginfaculy"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
             android:layout_weight="1"
             android:background="@drawable/circle"
             android:clickable="true"
+            android:layout_gravity="center"
             android:elevation="8dp"
-            android:onClick="@{ClickHandlers::onButton1Clicked}"
-            android:fadingEdge="horizontal|vertical"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            android:stateListAnimator="@null"
-            android:text="@string/library_login"
-            android:textStyle="bold"
-            tools:targetApi="m" />
-
-        <Button
-            android:id="@+id/button2"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginLeft="35dp"
-            android:layout_weight="1"
-            android:background="@drawable/circle"
-            android:clickable="true"
-            android:elevation="8dp"
-            android:onClick="@{ClickHandlers::onButton2Clicked}"
+            android:onClick="@{ClickHandlers::onFacultyButtonClicked}"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:stateListAnimator="@null"
@@ -78,40 +59,23 @@
         android:padding="25dp">
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/loginstudent"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_weight="1"
             android:stateListAnimator="@null"
-            android:elevation="8dp"
-            android:onClick="@{ClickHandlers::onButton3Clicked}"
+            android:onClick="@{ClickHandlers::onStudentButtonClicked}"
             android:foreground="?attr/selectableItemBackground"
             android:clickable="true"
+            android:elevation="8dp"
             android:background="@drawable/circle"
             android:text="@string/student_login"
             android:textStyle="bold"
             tools:targetApi="m"
+            android:layout_gravity="center"
             android:focusable="true" />
 
-        <Button
-            android:id="@+id/button4"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:stateListAnimator="@null"
-            android:elevation="8dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:layout_marginStart="35dp"
-            android:onClick="@{ClickHandlers::onButton4Clicked}"
-            android:layout_marginLeft="35dp"
-            android:layout_weight="1"
-            android:background="@drawable/circle"
-            android:text="@string/alumni_login"
-            android:textStyle="bold"
-            tools:targetApi="m"
-            android:focusable="true" />
     </LinearLayout>
 </android.widget.LinearLayout>
 </layout>
