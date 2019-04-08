@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">HackAMU</string>
+    <string name="library_login">LIBRARY LOGIN</string>
+    <string name="teacher_s_login">TEACHER\'S LOGIN</string>
+    <string name="student_login">STUDENT LOGIN</string>
+    <string name="alumni_login">ALUMNI LOGIN</string>
 </resources>
