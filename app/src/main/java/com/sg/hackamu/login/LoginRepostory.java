@@ -11,6 +11,7 @@ import com.sg.hackamu.login.services.UpdateUser;
 import com.sg.hackamu.login.services.checkUser;
 import com.sg.hackamu.login.services.checkUserPassword;
 import com.sg.hackamu.login.services.getAllUsers;
+import com.sg.hackamu.login.services.getLogin;
 import com.sg.hackamu.login.services.getUser;
 import com.sg.hackamu.login.services.getUserID;
 
@@ -73,5 +74,12 @@ public class LoginRepostory {
         getUserID getUserID=new getUserID(usersDAO);
         getUserID.execute(email);
         return getUserID.getId();
+    }
+
+    public User getLogin()
+    {
+        User user;
+        getLogin getLogin= new getLogin(usersDAO);
+        return user=getLogin.getLoginUser();
     }
 }

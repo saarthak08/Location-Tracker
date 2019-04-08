@@ -21,11 +21,16 @@ public class User {
     private String email;
 
 
-    public User(String name, String password, String email, Integer id) {
+    @ColumnInfo(name = "login")
+    private Boolean login;
+
+
+    public User(String name, String password, String email, Integer id,Boolean login) {
         this.name = name;
         this.password = password;
         this.id = id;
         this.email = email;
+        this.login=login;
     }
 
     @Ignore
@@ -65,4 +70,11 @@ public class User {
         this.id = id;
     }
 
+    public Boolean getLogin() {
+        return login;
+    }
+
+    public void setLogin(Boolean login) {
+        this.login = login;
+    }
 }

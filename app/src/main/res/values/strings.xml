@@ -4,4 +4,19 @@
     <string name="teacher_s_login">TEACHER\'S LOGIN</string>
     <string name="student_login">STUDENT LOGIN</string>
     <string name="alumni_login">ALUMNI LOGIN</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="activity_login">Login Activity</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="fpwd">Forgot Password?</string>
+    <string name="login">Log In</string>
+    <string name="signup">Not a member? Sign up</string>
+    <string name="name">Name</string>
+    <string name="signupp">SIGN UP</string>
 </resources>

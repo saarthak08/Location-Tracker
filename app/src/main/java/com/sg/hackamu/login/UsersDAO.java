@@ -38,4 +38,7 @@ public interface UsersDAO {
     @Query("select * from user where email=:email")
     long getID(String email);
 
+    @Query("select * from user where login=:login")
+    User getLogin(Boolean login);
+
 }

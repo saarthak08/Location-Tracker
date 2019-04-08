@@ -1,109 +1,25 @@
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-<android.widget.LinearLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <ImageView
-        android:id="@+id/imageView2"
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_marginTop="8dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        tools:ignore="contentDescription"
-        app:srcCompat="@drawable/amulogo" />
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation="horizontal"
-        android:padding="25dp">
-
-        <Button
-            android:id="@+id/button3"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:stateListAnimator="@null"
-            android:elevation="8dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:background="@drawable/circle"
-            android:layout_weight="1"
-            android:fadingEdge="horizontal|vertical"
-            android:text="@string/library_login"
-            android:textStyle="bold"
-            tools:targetApi="m"
-            android:focusable="true" />
-
-        <Button
-            android:id="@+id/button1"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:stateListAnimator="@null"
-            android:elevation="8dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginLeft="35dp"
-            android:layout_weight="1"
-            android:background="@drawable/circle"
-            android:text="@string/teacher_s_login"
-            android:textStyle="bold"
-            tools:targetApi="m"
-            android:focusable="true" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:orientation="horizontal"
-        android:padding="25dp">
-
-        <Button
-            android:id="@+id/button2"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_weight="1"
-            android:stateListAnimator="@null"
-            android:elevation="8dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:background="@drawable/circle"
-            android:text="@string/student_login"
-            android:textStyle="bold"
-            tools:targetApi="m"
-            android:focusable="true" />
-
-        <Button
-            android:id="@+id/button4"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:stateListAnimator="@null"
-            android:elevation="8dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:layout_marginStart="35dp"
-            android:layout_marginLeft="35dp"
-            android:layout_weight="1"
-            android:background="@drawable/circle"
-            android:text="@string/alumni_login"
-            android:textStyle="bold"
-            tools:targetApi="m"
-            android:focusable="true" />
-    </LinearLayout>
-</android.widget.LinearLayout>
-</layout>
-
+</androidx.drawerlayout.widget.DrawerLayout>
