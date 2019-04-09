@@ -1,11 +1,11 @@
-package com.sg.hackamu.login;
+package com.sg.hackamu.offlinelogin;
 
 import android.app.Application;
 
-import com.sg.hackamu.login.db.UserDatabase;
-import com.sg.hackamu.login.model.User;
-import com.sg.hackamu.login.services.AddUser;
-import com.sg.hackamu.login.services.DeleteUser;
+import com.sg.hackamu.offlinelogin.db.UserDatabase;
+import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.offlinelogin.services.AddUser;
+import com.sg.hackamu.offlinelogin.services.DeleteUser;
 
 import java.util.List;
 

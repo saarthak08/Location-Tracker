@@ -6,15 +6,14 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
-import com.sg.hackamu.login.DBViewModel;
-import com.sg.hackamu.login.LoginRepostory;
-import com.sg.hackamu.login.model.User;
+import com.sg.hackamu.offlinelogin.DBViewModel;
+import com.sg.hackamu.offlinelogin.model.User;
 
 
 public class LauncherActivity extends AppCompatActivity {
@@ -22,13 +21,15 @@ public class LauncherActivity extends AppCompatActivity {
     private ActivityLauncherBinding launcherBinding;
     private Button fcbutton;
     private Button stbutton;
-    public static User user;
+    FirebaseUser firebaseUser;
+    FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel= ViewModelProviders.of(LauncherActivity.this).get(DBViewModel.class);
-        user = viewModel.getLogin();
-        if (user != null) {
+        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseUser=firebaseAuth.getCurrentUser();
+        if (firebaseUser!= null) {
             Intent intent = new Intent(LauncherActivity.this, MainActivity.class);
             startActivity(intent);
             this.finish();

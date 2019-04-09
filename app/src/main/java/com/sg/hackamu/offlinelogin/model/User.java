@@ -1,4 +1,4 @@
-package com.sg.hackamu.login.model;
+package com.sg.hackamu.offlinelogin.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

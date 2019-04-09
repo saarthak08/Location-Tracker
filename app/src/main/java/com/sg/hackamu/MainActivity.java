@@ -6,12 +6,16 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.Handler;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
-import com.sg.hackamu.login.DBViewModel;
-import com.sg.hackamu.login.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.sg.hackamu.offlinelogin.DBViewModel;
+import com.sg.hackamu.offlinelogin.model.User;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -21,12 +25,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public User user=LauncherActivity.user;
     DBViewModel dbViewModel;
+    TextView emailnav;
+    TextView namenav;
+    boolean doubleBackToExitPressedOnce = false;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        user=LauncherActivity.user;
+        getSupportActionBar().setTitle("Home");
         dbViewModel= ViewModelProviders.of(MainActivity.this).get(DBViewModel.class);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +53,6 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -53,22 +61,28 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseUser=firebaseAuth.getCurrentUser();
+        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser=firebaseAuth.getCurrentUser();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        emailnav=findViewById(R.id.emailnav);
+        namenav=findViewById(R.id.namenav);
+        emailnav.setText(firebaseUser.getEmail());
+        namenav.setText(firebaseUser.getDisplayName());
+        if(namenav.getText().length()==0)
+        {
+            namenav.setText(SignUpActivity.name.getText().toString().trim());
+        }
         return true;
     }
 
@@ -93,20 +107,15 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.messages) {
+        } else if (id == R.id.requests) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.tools) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.connections) {
 
         } else if (id == R.id.signout) {
-            if(user!=null) {
-                User users = dbViewModel.getUser(user.getId());
-                users.setLogin(false);
-                dbViewModel.updateUser(users);
-            }
+            FirebaseAuth.getInstance().signOut();
             loadLauncherActivity();
         }
 
@@ -119,5 +128,28 @@ public class MainActivity extends AppCompatActivity
     {
         startActivity(new Intent(MainActivity.this,LoginActivity.class));
         MainActivity.this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit",Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce=false;
+                }
+            }, 2000);
+        }
     }
 }

@@ -1,7 +1,7 @@
-package com.sg.hackamu.login;
+package com.sg.hackamu.offlinelogin;
 
 
-import com.sg.hackamu.login.model.User;
+import com.sg.hackamu.offlinelogin.model.User;
 
 import java.util.List;
 

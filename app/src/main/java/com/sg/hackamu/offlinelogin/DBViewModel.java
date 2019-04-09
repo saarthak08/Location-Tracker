@@ -1,9 +1,8 @@
-package com.sg.hackamu.login;
+package com.sg.hackamu.offlinelogin;
 
 import android.app.Application;
-import android.content.Context;
 
-import com.sg.hackamu.login.model.User;
+import com.sg.hackamu.offlinelogin.model.User;
 
 import java.util.List;
 

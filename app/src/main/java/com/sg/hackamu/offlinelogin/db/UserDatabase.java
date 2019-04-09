@@ -1,9 +1,9 @@
-package com.sg.hackamu.login.db;
+package com.sg.hackamu.offlinelogin.db;
 
 import android.content.Context;
 
-import com.sg.hackamu.login.UsersDAO;
-import com.sg.hackamu.login.model.User;
+import com.sg.hackamu.offlinelogin.UsersDAO;
+import com.sg.hackamu.offlinelogin.model.User;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
