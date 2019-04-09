@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         dbViewModel= ViewModelProviders.of(LoginActivity.this).get(DBViewModel.class);
         loginBinding= DataBindingUtil.setContentView(LoginActivity.this,R.layout.activity_login);
         loginBinding.setClickHandlers(new LoginActivityClickHandlers());
-        getSupportActionBar().setTitle("Login");
+        getSupportActionBar().setTitle("Student Login");
         signupButton=loginBinding.signupbutton;
         loginButton=loginBinding.loginButton;
         email=loginBinding.email;
@@ -52,13 +52,13 @@ public class LoginActivity extends AppCompatActivity {
                 {
                     if(dbViewModel.checkUserPassword(user.getEmail(),user.getPassword())!=null)
                     {
-                        User user2=new User();
-                        user2.setId(dbViewModel.getID(user.getEmail()));
-                        user2=dbViewModel.getUser(user2.getId());
+                        User user2;
+                        user2=dbViewModel.getUser(dbViewModel.getID(user.getEmail()));
                         user2.setLogin(true);
-                        dbViewModel.updateUser(user2.getId());
+                        dbViewModel.updateUser(user2);
                         Intent i=new Intent(LoginActivity.this,MainActivity.class);
                         startActivity(i);
+                        LoginActivity.this.finish();
                     }
                     else
                     {
@@ -77,12 +77,18 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         public void onSignUpButtonClicked(View view){
+            startActivity(new Intent(LoginActivity.this,SignUpActivity.class));
 
         }
 
         public void onForgotPasswordClicked(View view)
         {
 
+        }
+        public void onLoginAsFacultyClicked(View view)
+        {
+            startActivity(new Intent(LoginActivity.this,LauncherActivity.class));
+            LoginActivity.this.finish();
         }
 
     }

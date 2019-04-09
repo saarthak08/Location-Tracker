@@ -1,6 +1,7 @@
 package com.sg.hackamu.login;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.sg.hackamu.login.model.User;
 
@@ -26,9 +27,9 @@ public class DBViewModel extends AndroidViewModel {
         loginRepostory.DeleteUser(user);
     }
 
-    public void updateUser(long id)
+    public void updateUser(User user)
     {
-        loginRepostory.UpdateUser(id);
+        loginRepostory.UpdateUser(user);
     }
 
     public List<User> getUsers()

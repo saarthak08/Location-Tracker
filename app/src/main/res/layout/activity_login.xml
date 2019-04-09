@@ -43,7 +43,7 @@
             android:paddingTop="@dimen/dimen_16x"
             android:paddingRight="@dimen/dimen_32x">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             android:paddingRight="@dimen/dimen_32x"
             app:passwordToggleEnabled="true">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,6 +87,27 @@
             android:stateListAnimator="@null"
             android:elevation="4dp"
             android:onClick="@{ClickHandlers::onForgotPasswordClicked}"
+            android:textColor="@color/dark_grey"
+            android:textColorHighlight="@color/dark_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            tools:targetApi="lollipop" />
+
+        <TextView
+            android:id="@+id/loginasfaculty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:paddingLeft="@dimen/dimen_32x"
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_32x"
+            android:paddingBottom="@dimen/dimen_16x"
+            android:text="@string/otherloginoptions"
+            android:stateListAnimator="@null"
+            android:elevation="4dp"
+            android:onClick="@{ClickHandlers::onLoginAsFacultyClicked}"
             android:textColor="@color/dark_grey"
             android:textColorHighlight="@color/dark_grey"
             android:textSize="14sp"

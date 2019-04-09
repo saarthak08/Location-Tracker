@@ -1,5 +1,6 @@
 package com.sg.hackamu;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -8,18 +9,24 @@ import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
+import com.sg.hackamu.login.DBViewModel;
+import com.sg.hackamu.login.model.User;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public User user=LauncherActivity.user;
+    DBViewModel dbViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +34,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        user=LauncherActivity.user;
+        dbViewModel= ViewModelProviders.of(MainActivity.this).get(DBViewModel.class);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,14 +101,23 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.signout) {
+            if(user!=null) {
+                User users = dbViewModel.getUser(user.getId());
+                users.setLogin(false);
+                dbViewModel.updateUser(users);
+            }
+            loadLauncherActivity();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void loadLauncherActivity()
+    {
+        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        MainActivity.this.finish();
     }
 }

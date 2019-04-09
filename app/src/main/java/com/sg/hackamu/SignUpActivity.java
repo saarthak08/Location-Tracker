@@ -31,6 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
         dbViewModel= ViewModelProviders.of(SignUpActivity.this).get(DBViewModel.class);
         signUpBinding=DataBindingUtil.setContentView(SignUpActivity.this,R.layout.activity_sign_up);
         signUpBinding.setClickHandlers(new SignupactivityClickHandlers());
+        getSupportActionBar().setTitle("Student Sign Up");
         signUpButton=signUpBinding.signupbuttons;
         email=signUpBinding.emails;
         name=signUpBinding.name;
@@ -53,6 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
                     user.setLogin(true);
                     dbViewModel.addUser(user);
                     startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                    SignUpActivity.this.finish();
                 }
             }
             else

@@ -6,7 +6,6 @@ import com.sg.hackamu.login.db.UserDatabase;
 import com.sg.hackamu.login.model.User;
 import com.sg.hackamu.login.services.AddUser;
 import com.sg.hackamu.login.services.DeleteUser;
-import com.sg.hackamu.login.services.UpdateUser;
 
 import java.util.List;
 
@@ -47,10 +46,9 @@ public class LoginRepostory {
         return usersDAO.checkUserEmailPassword(email,password);
     }
 
-    public void UpdateUser(long id)
+    public void UpdateUser(User user)
     {
-        User user=getUser(id);
-        new UpdateUser(usersDAO).execute(user);
+        usersDAO.updateUser(user);
     }
 
     public long getID(String email)

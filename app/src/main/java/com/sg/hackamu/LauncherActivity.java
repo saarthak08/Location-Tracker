@@ -2,6 +2,7 @@ package com.sg.hackamu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,23 +12,26 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
+import com.sg.hackamu.login.DBViewModel;
 import com.sg.hackamu.login.LoginRepostory;
 import com.sg.hackamu.login.model.User;
 
 
 public class LauncherActivity extends AppCompatActivity {
-    private LoginRepostory loginRepostory;
+    private DBViewModel viewModel;
     private ActivityLauncherBinding launcherBinding;
     private Button fcbutton;
     private Button stbutton;
+    public static User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loginRepostory = new LoginRepostory(getApplication());
-        User user = loginRepostory.getLogin();
+        viewModel= ViewModelProviders.of(LauncherActivity.this).get(DBViewModel.class);
+        user = viewModel.getLogin();
         if (user != null) {
             Intent intent = new Intent(LauncherActivity.this, MainActivity.class);
             startActivity(intent);
+            this.finish();
         } else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);
@@ -46,6 +50,7 @@ public class LauncherActivity extends AppCompatActivity {
         public void onStudentButtonClicked(View view)
         {
             startActivity(new Intent(LauncherActivity.this,LoginActivity.class));
+            LauncherActivity.this.finish();
         }
     }
 }

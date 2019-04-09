@@ -20,18 +20,17 @@
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Tools" />
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Other Options">
         <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+
             <item
                 android:id="@+id/signout"
                 android:icon="@android:drawable/btn_dialog"
                 android:title="@string/sign_out" />
+
         </menu>
     </item>
 
