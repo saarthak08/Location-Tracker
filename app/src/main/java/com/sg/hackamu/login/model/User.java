@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "User")
+@Entity(tableName = "user")
 public class User {
     @ColumnInfo(name = "name")
     private String name;
@@ -15,17 +15,16 @@ public class User {
 
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
-    private Integer id;
+    private long id;
 
     @ColumnInfo(name = "email")
     private String email;
 
 
     @ColumnInfo(name = "login")
-    private Boolean login;
+    private boolean login;
 
-
-    public User(String name, String password, String email, Integer id,Boolean login) {
+    public User(String name, String password, String email,long id,boolean login) {
         this.name = name;
         this.password = password;
         this.id = id;
@@ -62,19 +61,19 @@ public class User {
         this.password = password;
     }
 
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public Boolean getLogin() {
+    public boolean getLogin() {
         return login;
     }
 
-    public void setLogin(Boolean login) {
+    public void setLogin(boolean login) {
         this.login = login;
     }
 }

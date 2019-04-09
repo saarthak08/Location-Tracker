@@ -9,121 +9,121 @@
             type="com.sg.hackamu.LoginActivity.LoginActivityClickHandlers"/>
     </data>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:adjustViewBounds="true"
-        android:baselineAligned="true"
-        android:padding="32dp"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/amulogo"
-        tools:ignore="ContentDescription" />
-
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="49dp"
-        android:layout_height="44dp"
-        android:visibility="gone"
-        android:layout_gravity="center" />
-
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingLeft="@dimen/dimen_32x"
-        android:paddingTop="@dimen/dimen_16x"
-        android:paddingRight="@dimen/dimen_32x">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/email"
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:baselineAligned="true"
+            android:padding="32dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/amulogo"
+            tools:ignore="ContentDescription" />
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="49dp"
+            android:layout_height="44dp"
+            android:visibility="gone"
+            android:layout_gravity="center" />
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/dimen_32x"
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_32x">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingLeft="@dimen/dimen_32x"
-        android:paddingTop="@dimen/dimen_16x"
-        android:paddingRight="@dimen/dimen_32x"
-        app:passwordToggleEnabled="true">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/password"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password"
-            android:inputType="textPassword|textWebPassword"
-            android:paddingLeft="0dp"
-            android:paddingRight="0dp" />
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/dimen_32x"
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_32x"
+            app:passwordToggleEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:inputType="textPassword|textWebPassword"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:paddingLeft="@dimen/dimen_32x"
-        android:paddingTop="@dimen/dimen_16x"
-        android:paddingRight="@dimen/dimen_32x"
-        android:paddingBottom="@dimen/dimen_16x"
-        android:text="@string/fpwd"
-        android:stateListAnimator="@null"
-        android:elevation="4dp"
-        android:onClick="@{ClickHandlers::onForgotPasswordClicked}"
-        android:textColor="@color/dark_grey"
-        android:textColorHighlight="@color/dark_grey"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        tools:targetApi="lollipop" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:stateListAnimator="@null"
-        android:elevation="4dp"
-        android:layout_marginLeft="@dimen/dimen_32x"
-        android:layout_marginTop="@dimen/dimen_16x"
-        android:layout_marginRight="@dimen/dimen_32x"
-        android:text="@string/login"
-        android:clickable="true"
-        android:onClick="@{ClickHandlers::onLoginButtonClicked}"
-        android:background="@color/design_default_color_primary_dark"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:textColor="@color/white"
-        tools:targetApi="m"
-        android:focusable="true" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:paddingLeft="@dimen/dimen_32x"
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_32x"
+            android:paddingBottom="@dimen/dimen_16x"
+            android:text="@string/fpwd"
+            android:stateListAnimator="@null"
+            android:elevation="4dp"
+            android:onClick="@{ClickHandlers::onForgotPasswordClicked}"
+            android:textColor="@color/dark_grey"
+            android:textColorHighlight="@color/dark_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            tools:targetApi="lollipop" />
 
-    <Button
-        android:id="@+id/signupbutton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:stateListAnimator="@null"
-        android:elevation="4dp"
-        android:onClick="@{ClickHandlers::onSignUpButtonClicked}"
-        android:layout_marginTop="@dimen/dimen_16x"
-        android:text="@string/signup"
-        tools:targetApi="lollipop" />
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:stateListAnimator="@null"
+            android:elevation="4dp"
+            android:layout_marginLeft="@dimen/dimen_32x"
+            android:layout_marginTop="@dimen/dimen_16x"
+            android:layout_marginRight="@dimen/dimen_32x"
+            android:text="@string/login"
+            android:clickable="true"
+            android:onClick="@{ClickHandlers::onLoginButtonClicked}"
+            android:background="@color/design_default_color_primary_dark"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:textColor="@color/white"
+            tools:targetApi="m"
+            android:focusable="true" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/signupbutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:stateListAnimator="@null"
+            android:elevation="4dp"
+            android:onClick="@{ClickHandlers::onSignUpButtonClicked}"
+            android:layout_marginTop="@dimen/dimen_16x"
+            android:text="@string/signup"
+            tools:targetApi="lollipop" />
+
+    </LinearLayout>
 </layout>

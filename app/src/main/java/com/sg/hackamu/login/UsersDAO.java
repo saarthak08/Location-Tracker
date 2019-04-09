@@ -15,13 +15,13 @@ import androidx.room.Update;
 public interface UsersDAO {
 
     @Insert
-    public void addUser(User user);
+    void addUser(User user);
 
     @Update
-    public void updateUser(User user);
+    void updateUser(User user);
 
     @Delete
-    public void deleteUser(User user);
+    void deleteUser(User user);
 
     @Query("select * from user" )
     List<User> getUsers();
@@ -29,16 +29,16 @@ public interface UsersDAO {
     @Query("select * from user where id==:userID")
     User getUser(long userID);
 
-    @Query("select * from user where email=:userEmail")
-    boolean checkUser(String userEmail);
+    @Query("select * from user where email==:userEmail")
+    User checkUser(String userEmail);
 
-    @Query("select * from user where password=:userPassword AND email=:userEmail ")
-    boolean checkUserEmailPassword(String userEmail, String userPassword);
+    @Query("select * from user where email ==:userEmail AND user.password ==:userPassword ")
+    User checkUserEmailPassword(String userEmail, String userPassword);
 
-    @Query("select * from user where email=:email")
+    @Query("select id from user where email==:email")
     long getID(String email);
 
-    @Query("select * from user where login=:login")
-    User getLogin(Boolean login);
+    @Query("select * from user where login==:login")
+    User getLogin(boolean login);
 
 }

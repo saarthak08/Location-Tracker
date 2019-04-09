@@ -1,28 +1,19 @@
 package com.sg.hackamu.login;
 
 import android.app.Application;
-import android.os.AsyncTask;
 
 import com.sg.hackamu.login.db.UserDatabase;
 import com.sg.hackamu.login.model.User;
 import com.sg.hackamu.login.services.AddUser;
 import com.sg.hackamu.login.services.DeleteUser;
 import com.sg.hackamu.login.services.UpdateUser;
-import com.sg.hackamu.login.services.checkUser;
-import com.sg.hackamu.login.services.checkUserPassword;
-import com.sg.hackamu.login.services.getAllUsers;
-import com.sg.hackamu.login.services.getLogin;
-import com.sg.hackamu.login.services.getUser;
-import com.sg.hackamu.login.services.getUserID;
 
 import java.util.List;
 
 public class LoginRepostory {
     public UsersDAO usersDAO;
-    public Application application;
 
     public LoginRepostory(Application application) {
-        this.application = application;
         UserDatabase userDatabase=UserDatabase.getInstance(application);
         usersDAO=userDatabase.getUsersDAO();
     }
@@ -39,28 +30,21 @@ public class LoginRepostory {
 
     public List<User> getUsers()
     {
-        getAllUsers getAllUsers=new getAllUsers(usersDAO);
-        return getAllUsers.getUsers();
+        return usersDAO.getUsers();
     }
 
     public User getUser(long id)
     {
-        getUser getUser = new getUser(usersDAO);
-        getUser.execute(id);
-        return getUser.getUser();
+        return usersDAO.getUser(id);
     }
 
-    public boolean checkUser(String email)
+    public User checkUser(String email)
     {
-        checkUser checkUser=new checkUser(usersDAO);
-        checkUser.execute(email);
-        return checkUser.getcheckUser();
+        return usersDAO.checkUser(email);
     }
-    public boolean checkUserPassword(String email, String password)
+    public User checkUserPassword(String email, String password)
     {
-        checkUserPassword checkUserPassword=new checkUserPassword(password,usersDAO);
-        checkUserPassword.execute(email);
-        return checkUserPassword.getcheckUserPassword();
+        return usersDAO.checkUserEmailPassword(email,password);
     }
 
     public void UpdateUser(long id)
@@ -71,15 +55,12 @@ public class LoginRepostory {
 
     public long getID(String email)
     {
-        getUserID getUserID=new getUserID(usersDAO);
-        getUserID.execute(email);
-        return getUserID.getId();
+       return usersDAO.getID(email);
     }
 
     public User getLogin()
     {
-        User user;
-        getLogin getLogin= new getLogin(usersDAO);
-        return user=getLogin.getLoginUser();
+
+        return usersDAO.getLogin(true);
     }
 }
