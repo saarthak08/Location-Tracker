@@ -16,10 +16,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
 import com.sg.hackamu.offlinelogin.DBViewModel;
 import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.utils.FirebaseUtils;
 
 
 public class LauncherActivity extends AppCompatActivity {
-    private DBViewModel viewModel;
     private ActivityLauncherBinding launcherBinding;
     private Button fcbutton;
     private Button stbutton;
@@ -29,8 +29,7 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel= ViewModelProviders.of(LauncherActivity.this).get(DBViewModel.class);
-        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override

@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.sg.hackamu.databinding.ActivityLoginBinding;
 import com.sg.hackamu.offlinelogin.DBViewModel;
 import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.utils.FirebaseUtils;
 
 public class LoginActivity extends AppCompatActivity {
     private Button signupButton;
@@ -46,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding= DataBindingUtil.setContentView(LoginActivity.this,R.layout.activity_login);
         loginBinding.setClickHandlers(new LoginActivityClickHandlers());
         getSupportActionBar().setTitle("Student Login");
-        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override

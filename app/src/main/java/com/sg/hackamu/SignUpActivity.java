@@ -3,7 +3,6 @@ package com.sg.hackamu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,17 +19,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.core.Tag;
 import com.sg.hackamu.databinding.ActivitySignUpBinding;
-import com.sg.hackamu.offlinelogin.DBViewModel;
 import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.utils.FirebaseUtils;
 
 public class SignUpActivity extends AppCompatActivity {
     private Button signUpButton;
@@ -69,28 +66,13 @@ public class SignUpActivity extends AppCompatActivity {
         };
 
         getSupportActionBar().setTitle("Student Sign Up");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
         signUpButton=signUpBinding.signupbuttons;
         progressBar=signUpBinding.progressBar1;
         email=signUpBinding.emails;
         name=signUpBinding.name;
         password=signUpBinding.passwords;
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                Log.d(TAG, "onDataChange: Added information to database: \n" +
-                        dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
     }
     @Override
     protected void onStart() {

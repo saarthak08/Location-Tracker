@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.adapter.AllConnectionsAdapter;
 import com.sg.hackamu.offlinelogin.DBViewModel;
 import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.utils.FirebaseUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,7 +48,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    DBViewModel dbViewModel;
     TextView emailnav;
     TextView namenav;
     boolean doubleBackToExitPressedOnce = false;
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("All Users");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
         myRef.child("students").keepSynced(true);
         recyclerView=findViewById(R.id.recycler_view);
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity
         };
         swipeRefreshLayout=findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
-        dbViewModel= ViewModelProviders.of(MainActivity.this).get(DBViewModel.class);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,17 +109,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
-        if(firebaseUser==null)
-        {
-            loadLauncherActivity();
-        }
-        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                firebaseUser=firebaseAuth.getCurrentUser();
-            }
-        });
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -132,7 +120,7 @@ public class MainActivity extends AppCompatActivity
                         mFirebaseDatabase.goOnline();
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                },3000);
+                },4000);
 
             }
         });
@@ -161,7 +149,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(MainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(MainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -239,7 +227,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.connections) {
 
         } else if (id == R.id.signout) {
-            FirebaseAuth.getInstance().signOut();
+
+            if(authStateListener!=null)
+            {
+                firebaseAuth.removeAuthStateListener(authStateListener);
+            }
+            firebaseAuth.signOut();
             loadLauncherActivity();
         }
 
