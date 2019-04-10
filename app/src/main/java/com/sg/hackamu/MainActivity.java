@@ -169,10 +169,12 @@ public class MainActivity extends AppCompatActivity
     private void showData(DataSnapshot dataSnapshot){
             User u=new User();
             uuid= dataSnapshot.getKey();
-            u.setName((dataSnapshot.getValue(User.class).getName()));
-            u.setUuid(uuid);
-            u.setEmail(dataSnapshot.getValue(User.class).getEmail());
-            users.add(u);
+            if(!uuid.equals(firebaseUser.getUid())) {
+                u.setName((dataSnapshot.getValue(User.class).getName()));
+                u.setUuid(uuid);
+                u.setEmail(dataSnapshot.getValue(User.class).getEmail());
+                users.add(u);
+            }
         }
 
     @Override
