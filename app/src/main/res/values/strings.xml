@@ -22,6 +22,6 @@
     <string name="sign_out">Sign Out</string>
     <string name="otherloginoptions">Other Login Options</string>
     <string name="messages">Messages</string>
-    <string name="connections">Connections</string>
+    <string name="connections">My Connections</string>
     <string name="requests">Requests</string>
 </resources>

@@ -7,15 +7,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.offlinelogin.DBViewModel;
 import com.sg.hackamu.offlinelogin.model.User;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -25,8 +33,11 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,6 +47,12 @@ public class MainActivity extends AppCompatActivity
     boolean doubleBackToExitPressedOnce = false;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
+    private DatabaseReference myRef;
+    private FirebaseDatabase mFirebaseDatabase;
+    FirebaseAuth.AuthStateListener authStateListener;
+    private String TAG="MainActivity";
+    private ArrayList<User> users=new ArrayList<>();
+    String uuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +61,17 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
+        myRef.child("students").keepSynced(true);
+        authStateListener=new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser=firebaseAuth.getCurrentUser();
+                Log.d("Auth State","Auth State Changed");
+
+            }
+        };
         dbViewModel= ViewModelProviders.of(MainActivity.this).get(DBViewModel.class);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,13 +91,81 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
+        if(firebaseUser==null)
+        {
+            loadLauncherActivity();
+        }
         firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 firebaseUser=firebaseAuth.getCurrentUser();
             }
         });
+        /*myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                showData(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });*/
+
+        myRef.child("students").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                showData(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
+    private void showData(DataSnapshot dataSnapshot){
+            User u=new User();
+            uuid= dataSnapshot.getKey();
+            u.setName((dataSnapshot.getValue(User.class).getName()));
+            u.setUuid(uuid);
+            u.setEmail(dataSnapshot.getValue(User.class).getEmail());
+            users.add(u);
+        }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(authStateListener!=null)
+        {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,7 +177,9 @@ public class MainActivity extends AppCompatActivity
         namenav.setText(firebaseUser.getDisplayName());
         if(namenav.getText().length()==0)
         {
-            namenav.setText(SignUpActivity.name.getText().toString().trim());
+            if(SignUpActivity.name!=null) {
+                namenav.setText(SignUpActivity.name.getText().toString().trim());
+            }
         }
         return true;
     }
@@ -109,6 +207,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.messages) {
         } else if (id == R.id.requests) {
+            Toast.makeText(MainActivity.this,""+users.size(),Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.tools) {
 

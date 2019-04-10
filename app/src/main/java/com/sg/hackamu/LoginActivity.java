@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding loginBinding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private  FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +48,33 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Student Login");
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
+        authStateListener=new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser=firebaseAuth.getCurrentUser();
+                Log.d("Auth State","Auth State Changed");
+
+            }
+        };
         signupButton=loginBinding.signupbutton;
         progressBar=loginBinding.progressBar1;
         loginButton=loginBinding.loginButton;
         email=loginBinding.email;
         password=loginBinding.password;
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(authStateListener!=null)
+        {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
     }
     public class LoginActivityClickHandlers{
         public void onLoginButtonClicked(View view) {

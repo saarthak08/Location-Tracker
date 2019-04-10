@@ -1,5 +1,7 @@
 package com.sg.hackamu.offlinelogin.model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -24,17 +26,31 @@ public class User {
     @ColumnInfo(name = "login")
     private boolean login;
 
-    public User(String name, String password, String email,long id,boolean login) {
+    @ColumnInfo(name="uuid")
+    private String uuid;
+
+    public User(String name, String password, String email,long id,boolean login,String uuid) {
         this.name = name;
         this.password = password;
         this.id = id;
         this.email = email;
         this.login=login;
+        this.uuid=uuid;
     }
 
     @Ignore
     public User() {
 
+    }
+
+
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getEmail() {
