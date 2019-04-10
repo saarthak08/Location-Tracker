@@ -3,7 +3,6 @@ package com.sg.hackamu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +13,6 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
-import com.sg.hackamu.offlinelogin.DBViewModel;
-import com.sg.hackamu.offlinelogin.model.User;
-import com.sg.hackamu.utils.FirebaseUtils;
 
 
 public class LauncherActivity extends AppCompatActivity {

@@ -1,13 +1,15 @@
 package com.sg.hackamu.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sg.hackamu.ChatActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.AllconnectionsListItemBinding;
-import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.model.User;
 
 import java.util.ArrayList;
 
@@ -48,6 +50,12 @@ public class AllConnectionsAdapter extends RecyclerView.Adapter<AllConnectionsAd
         public AllConnectionsViewHolder(@NonNull AllconnectionsListItemBinding allconnectionsListItemBinding) {
             super(allconnectionsListItemBinding.getRoot());
             this.allconnectionsListItemBinding=allconnectionsListItemBinding;
+            allconnectionsListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, ChatActivity.class));
+                }
+            });
         }
     }
 }

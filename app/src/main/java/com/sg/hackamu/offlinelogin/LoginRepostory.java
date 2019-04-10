@@ -3,7 +3,7 @@ package com.sg.hackamu.offlinelogin;
 import android.app.Application;
 
 import com.sg.hackamu.offlinelogin.db.UserDatabase;
-import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.model.User;
 import com.sg.hackamu.offlinelogin.services.AddUser;
 import com.sg.hackamu.offlinelogin.services.DeleteUser;
 

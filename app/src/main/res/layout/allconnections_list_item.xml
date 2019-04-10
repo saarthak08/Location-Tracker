@@ -3,7 +3,7 @@
     <data>
         <variable
             name="user"
-            type="com.sg.hackamu.offlinelogin.model.User"/>
+            type="com.sg.hackamu.model.User"/>
     </data>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

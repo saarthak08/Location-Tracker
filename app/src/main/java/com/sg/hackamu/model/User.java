@@ -1,4 +1,4 @@
-package com.sg.hackamu.offlinelogin.model;
+package com.sg.hackamu.model;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 

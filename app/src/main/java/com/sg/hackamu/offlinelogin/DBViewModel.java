@@ -2,7 +2,7 @@ package com.sg.hackamu.offlinelogin;
 
 import android.app.Application;
 
-import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.model.User;
 
 import java.util.List;
 

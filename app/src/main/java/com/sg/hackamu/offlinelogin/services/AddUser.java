@@ -3,7 +3,7 @@ package com.sg.hackamu.offlinelogin.services;
 import android.os.AsyncTask;
 
 import com.sg.hackamu.offlinelogin.UsersDAO;
-import com.sg.hackamu.offlinelogin.model.User;
+import com.sg.hackamu.model.User;
 
 public class AddUser extends AsyncTask<User,Void,Void> {
     private UsersDAO usersDAO;
