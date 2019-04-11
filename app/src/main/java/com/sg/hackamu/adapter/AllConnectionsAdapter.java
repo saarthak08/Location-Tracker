@@ -47,13 +47,16 @@ public class AllConnectionsAdapter extends RecyclerView.Adapter<AllConnectionsAd
     public class AllConnectionsViewHolder extends RecyclerView.ViewHolder
     {
         private AllconnectionsListItemBinding allconnectionsListItemBinding;
-        public AllConnectionsViewHolder(@NonNull AllconnectionsListItemBinding allconnectionsListItemBinding) {
+        public AllConnectionsViewHolder(@NonNull final AllconnectionsListItemBinding allconnectionsListItemBinding) {
             super(allconnectionsListItemBinding.getRoot());
             this.allconnectionsListItemBinding=allconnectionsListItemBinding;
             allconnectionsListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    context.startActivity(new Intent(context, ChatActivity.class));
+                    int pos=getAdapterPosition();
+                    Intent i=new Intent(context, ChatActivity.class);
+                    i.putExtra("user",users.get(pos));
+                    context.startActivity(i);
                 }
             });
         }

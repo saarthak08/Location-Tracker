@@ -1,5 +1,8 @@
 package com.sg.hackamu.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import androidx.room.ColumnInfo;
@@ -8,7 +11,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "user")
-public class User {
+public class User implements Parcelable {
     @ColumnInfo(name = "name")
     private String name;
 
@@ -42,8 +45,6 @@ public class User {
     public User() {
 
     }
-
-
 
     public String getUuid() {
         return uuid;
@@ -92,4 +93,43 @@ public class User {
     public void setLogin(boolean login) {
         this.login = login;
     }
+
+    @Ignore
+    protected User(Parcel in) {
+        name = in.readString();
+        password = in.readString();
+        id = in.readLong();
+        email = in.readString();
+        login = in.readByte() != 0x00;
+        uuid = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(password);
+        dest.writeLong(id);
+        dest.writeString(email);
+        dest.writeByte((byte) (login ? 0x01 : 0x00));
+        dest.writeString(uuid);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
 }
