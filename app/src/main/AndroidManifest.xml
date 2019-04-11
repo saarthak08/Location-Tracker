@@ -33,10 +33,10 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ChatActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sg.hackamu.MainActivity" />
+                android:value="com.sg.hackamu.ChatActivity" />
         </activity>
         <activity
             android:name=".ChatActivity"

@@ -26,4 +26,6 @@
     <string name="requests">Requests</string>
     <string name="enter_message">Enter Message</string>
     <string name="title_activity_maps">Map</string>
+    <string name="location">Location</string>
+    <string name="tools">Tools</string>
 </resources>

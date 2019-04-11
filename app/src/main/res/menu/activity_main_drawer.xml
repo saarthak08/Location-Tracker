@@ -19,7 +19,7 @@
         <item
             android:id="@+id/tools"
             android:icon="@drawable/ic_nav_settings"
-            android:title="Tools" />
+            android:title="@string/tools" />
         <item
             android:id="@+id/signout"
             android:icon="@drawable/ic_logout"
