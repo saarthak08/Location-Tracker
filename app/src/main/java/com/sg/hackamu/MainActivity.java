@@ -215,6 +215,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.tools) {
 
         } else if (id == R.id.connections) {
+            startActivity(new Intent(MainActivity.this,MapsActivity.class));
 
         } else if (id == R.id.signout) {
 
