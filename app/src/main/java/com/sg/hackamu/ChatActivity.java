@@ -65,7 +65,6 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView=findViewById(R.id.recyclerViewChat);
         recyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(ChatActivity.this,DividerItemDecoration.VERTICAL));
         chatAdapter=new ChatAdapter(chatMessages,ChatActivity.this,firebaseUser);
         recyclerView.setAdapter(chatAdapter);
         reference=firebaseDatabase.getReference();
@@ -127,7 +126,6 @@ public class ChatActivity extends AppCompatActivity {
                     } catch (Exception e) {
 
                     }
-                }
                 senderchatMessage = new ChatMessage();
                 senderchatMessage.setMessageText(editText.getText().toString().trim());
                 senderchatMessage.setRecieveruuid(user.getUuid());
@@ -135,9 +133,13 @@ public class ChatActivity extends AppCompatActivity {
                 reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
                 reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
                 editText.setText("");
-
+                }
             }
         });
+        if(chatMessages.size()==0)
+        {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
     @Override
     protected void onStart() {

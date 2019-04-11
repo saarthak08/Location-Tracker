@@ -50,14 +50,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(holder instanceof MyChatAdapterViewHolder)
         {
             ((MyChatAdapterViewHolder) holder).message.setText(chatMessages.get(position).getMessageText());
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yyyy\nhh:mm a");
             String messageTime = simpleDateFormat.format(chatMessages.get(position).getMessageTime());
             ((MyChatAdapterViewHolder) holder).Time.setText(messageTime);
 
         }
         else {
             ((OtherChatAdapterViewHolder) holder).message.setText(chatMessages.get(position).getMessageText());
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yyyy\nhh:mm a");
             String messageTime = simpleDateFormat.format(chatMessages.get(position).getMessageTime());
             ((OtherChatAdapterViewHolder) holder).time.setText(messageTime);
         }

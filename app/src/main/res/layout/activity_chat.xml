@@ -10,6 +10,9 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="@dimen/dimen_4x"
+            android:layout_marginStart="@dimen/dimen_4x"
+            android:layout_marginEnd="@dimen/dimen_4x"
             android:id="@+id/recyclerViewChat"
             android:layout_width="0dp"
             android:layout_height="match_parent"
