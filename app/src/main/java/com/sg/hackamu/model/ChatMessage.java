@@ -3,23 +3,20 @@ package com.sg.hackamu.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 
 public class ChatMessage implements Parcelable {
-
     private String messageText;
     private String senderuuid;
     private String recieveruuid;
-    private String messageTime;
+    private long messageTime=new Date().getTime();
 
     public ChatMessage(String messageText, String senderuuid,String recieveruuid) {
         this.messageText = messageText;
         this.recieveruuid=recieveruuid;
         this.senderuuid=senderuuid;
-        Calendar calander = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-        messageTime = simpleDateFormat.format(calander.getTime());
+        // Initialize to current time
+        messageTime = new Date().getTime();
     }
 
     public ChatMessage(){
@@ -50,11 +47,11 @@ public class ChatMessage implements Parcelable {
         this.recieveruuid = recieveruuid;
     }
 
-    public String getMessageTime() {
+    public long getMessageTime() {
         return messageTime;
     }
 
-    public void setMessageTime(String messageTime) {
+    public void setMessageTime(long messageTime) {
         this.messageTime = messageTime;
     }
 
@@ -62,7 +59,7 @@ public class ChatMessage implements Parcelable {
         messageText = in.readString();
         senderuuid = in.readString();
         recieveruuid = in.readString();
-        messageTime = in.readString();
+        messageTime = in.readLong();
     }
 
     @Override
@@ -75,7 +72,7 @@ public class ChatMessage implements Parcelable {
         dest.writeString(messageText);
         dest.writeString(senderuuid);
         dest.writeString(recieveruuid);
-        dest.writeString(messageTime);
+        dest.writeLong(messageTime);
     }
 
     @SuppressWarnings("unused")

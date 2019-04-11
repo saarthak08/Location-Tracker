@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_height="wrap_content"
-            android:text="@{chatmessage.messageTime}"
+            android:text="@{`` +chatmessage.messageTime}"
             android:layout_alignParentRight="true" />
     </RelativeLayout>
 
