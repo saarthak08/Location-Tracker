@@ -1,11 +1,11 @@
 package com.sg.hackamu;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.os.Handler;
 import android.util.Log;
@@ -21,10 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.adapter.AllConnectionsAdapter;
 import com.sg.hackamu.model.User;
+import com.sg.hackamu.services.GetLocation;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity
     private String TAG="MainActivity";
     private ArrayList<User> users=new ArrayList<>();
     String uuid;
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    Intent x;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     AllConnectionsAdapter allConnectionsAdapter;
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("All Users");
         progressBar=findViewById(R.id.progressBarHome);
+        x= new Intent(MainActivity.this, GetLocation.class);
         progressBar.setVisibility(View.VISIBLE);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
@@ -173,6 +178,68 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.turnonlocation) {
+            if(item.isChecked())
+            {
+                MainActivity.this.stopService(x);
+                item.setChecked(false);
+            }
+            else {
+                item.setChecked(true);
+                checkUserPermission();
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.mainactivity, menu);
+        return true;
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                   startService(x);
+                } else {
+                    Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                    checkUserPermission();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        }
+    }
+
+    private void checkUserPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]
+                                {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        REQUEST_LOCATION_PERMISSION);
+            }
+        }
+        startService(x);
+    }
+
+
 
 
 
@@ -233,5 +300,10 @@ public class MainActivity extends AppCompatActivity
                 }
             }, 2000);
         }
+    }
+    @Override
+    protected void onDestroy() {
+        MainActivity.this.stopService(x);
+        super.onDestroy();
     }
 }
