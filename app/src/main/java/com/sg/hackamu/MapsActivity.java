@@ -48,6 +48,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sg.hackamu.model.Faculty;
 import com.sg.hackamu.model.User;
 import com.sg.hackamu.utils.FirebaseUtils;
 
@@ -64,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference reference;
-    private User user;
+    private Faculty user;
     private LocationRequest mLocationRequest;
     LatLng mylatlng;
     double userlatitude;
@@ -93,7 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         firebaseDatabase= FirebaseUtils.getDatabase();
         reference=firebaseDatabase.getReference();
         Intent k=getIntent();
-        user=k.getParcelableExtra("user");
+        user=k.getParcelableExtra("faculty");
         reference.child("geocordinates").child(user.getUuid()).keepSynced(true);
         reference.child("geocordinates").child(user.getUuid()).addValueEventListener(new ValueEventListener() {
             @Override

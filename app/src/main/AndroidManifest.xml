@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sg.hackamu">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -18,7 +17,12 @@
         android:roundIcon="@mipmap/amulogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".FacultyMainActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".FacultySignUp"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".FacultyLogin"
+            android:windowSoftInputMode="adjustResize"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -41,7 +45,8 @@
         </activity>
         <activity
             android:name=".ChatActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SignUpActivity"
             android:windowSoftInputMode="adjustResize" />
@@ -61,10 +66,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".services.GetLocation"
-            android:label="Get Location" >
-        </service>
+            android:label="Get Location" />
     </application>
 
 </manifest>

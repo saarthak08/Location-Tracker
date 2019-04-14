@@ -1,6 +1,7 @@
 package com.sg.hackamu;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -12,7 +13,14 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
+import com.sg.hackamu.utils.FirebaseUtils;
 
 
 public class LauncherActivity extends AppCompatActivity {
@@ -21,12 +29,17 @@ public class LauncherActivity extends AppCompatActivity {
     private Button stbutton;
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    int faculty=0;
     FirebaseAuth.AuthStateListener authStateListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
+        firebaseDatabase= FirebaseUtils.getDatabase();
+        databaseReference=firebaseDatabase.getReference();
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -36,9 +49,33 @@ public class LauncherActivity extends AppCompatActivity {
             }
         };
         if (firebaseUser!= null) {
-            Intent intent = new Intent(LauncherActivity.this, MainActivity.class);
-            startActivity(intent);
-            this.finish();
+            databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot s: dataSnapshot.getChildren())
+                    {
+                        Log.i("taasf",s.getKey());
+                        Log.d("ras",s.getKey());
+                        if(firebaseUser.getUid().equals(s.getKey()))
+                        {
+                            startActivity(new Intent(LauncherActivity.this,FacultyMainActivity.class));
+                            LauncherActivity.this.finish();
+                            faculty=1;
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            if(faculty==0)
+            {
+                startActivity(new Intent(LauncherActivity.this,MainActivity.class));
+                LauncherActivity.this.finish();
+            }
         } else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);
@@ -64,7 +101,8 @@ public class LauncherActivity extends AppCompatActivity {
     public class LauncherActivityClickHandlers{
         public void onFacultyButtonClicked(View view)
         {
-
+            startActivity(new Intent(LauncherActivity.this,FacultyLogin.class));
+            LauncherActivity.this.finish();
         }
 
 

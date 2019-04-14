@@ -3,18 +3,16 @@ package com.sg.hackamu.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
-public class User implements Parcelable {
+public class Faculty implements Parcelable {
     private String name;
 
-    private String password;
+    private String department;
 
+    private String password;
 
     private long id;
 
@@ -25,39 +23,29 @@ public class User implements Parcelable {
 
     private String uuid;
 
-    private String FacultyNo;
+    private String employeeid;
 
-    private String EnNo;
-
-    public User(String name, String password, String email,long id,boolean login,String uuid, String facultyNo, String enNo) {
+    public Faculty(String name, String department, String password, String email, long id, boolean login, String uuid, String employeeid) {
         this.name = name;
+        this.department=department;
         this.password = password;
         this.id = id;
         this.email = email;
         this.login=login;
         this.uuid=uuid;
-        this.FacultyNo=facultyNo;
-        this.EnNo=enNo;
+        this.employeeid=employeeid;
     }
 
-    public String getFacultyNo() {
-        return FacultyNo;
+    public Faculty() {
+
     }
 
-    public void setFacultyNo(String facultyNo) {
-        FacultyNo = facultyNo;
+    public String getEmployeeid() {
+        return employeeid;
     }
 
-    public String getEnNo() {
-        return EnNo;
-    }
-
-    public void setEnNo(String enNo) {
-        EnNo = enNo;
-    }
-
-    public User() {
-
+    public void setEmployeeid(String employeeid) {
+        this.employeeid = employeeid;
     }
 
     public String getUuid() {
@@ -96,6 +84,14 @@ public class User implements Parcelable {
         return id;
     }
 
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -108,11 +104,9 @@ public class User implements Parcelable {
         this.login = login;
     }
 
-
-    protected User(Parcel in) {
+    protected Faculty(Parcel in) {
         name = in.readString();
-        FacultyNo=in.readString();
-        EnNo=in.readString();
+        department=in.readString();
         password = in.readString();
         id = in.readLong();
         email = in.readString();
@@ -128,26 +122,24 @@ public class User implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeString(department);
         dest.writeString(password);
         dest.writeLong(id);
         dest.writeString(email);
         dest.writeByte((byte) (login ? 0x01 : 0x00));
         dest.writeString(uuid);
-        dest.writeString(FacultyNo);
-        dest.writeString(EnNo);
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+    public static final Parcelable.Creator<Faculty> CREATOR = new Parcelable.Creator<Faculty>() {
         @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
+        public Faculty createFromParcel(Parcel in) {
+            return new Faculty(in);
         }
 
         @Override
-        public User[] newArray(int size) {
-            return new User[size];
+        public Faculty[] newArray(int size) {
+            return new Faculty[size];
         }
     };
-
 }

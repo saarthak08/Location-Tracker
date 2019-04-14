@@ -86,6 +86,38 @@
             android:hint="@string/password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_facno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="@dimen/dimen_32x"
+        android:paddingTop="@dimen/dimen_16x"
+        android:paddingRight="@dimen/dimen_32x">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/facno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Faculty Number"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_enrolno"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="@dimen/dimen_32x"
+        android:paddingTop="@dimen/dimen_16x"
+        android:paddingRight="@dimen/dimen_32x">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/enrolno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enrollment_number"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/signupbuttons"

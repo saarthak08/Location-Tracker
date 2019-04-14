@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "e1db7214e7b3216314f06f8ea9f33fcb",
+    "identityHash": "f757163654881639d852aa817951fa62",
     "entities": [
       {
-        "tableName": "user",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT, `password` TEXT, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `email` TEXT, `login` INTEGER NOT NULL, `uuid` TEXT)",
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT, `password` TEXT, `id` INTEGER NOT NULL, `email` TEXT, `login` INTEGER NOT NULL, `uuid` TEXT, `FacultyNo` TEXT, `EnNo` TEXT)",
         "fields": [
           {
             "fieldPath": "name",
@@ -43,13 +43,23 @@
             "columnName": "uuid",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "FacultyNo",
+            "columnName": "FacultyNo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "EnNo",
+            "columnName": "EnNo",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
+          "columnNames": [],
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -58,7 +68,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e1db7214e7b3216314f06f8ea9f33fcb\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f757163654881639d852aa817951fa62\")"
     ]
   }
 }

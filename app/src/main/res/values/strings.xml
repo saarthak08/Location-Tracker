@@ -18,6 +18,7 @@
     <string name="login">Log In</string>
     <string name="signup">Not a member? Sign up</string>
     <string name="name">Name</string>
+    <string name="department">Department</string>
     <string name="signupp">SIGN UP</string>
     <string name="sign_out">Sign Out</string>
     <string name="otherloginoptions">Other Login Options</string>
@@ -28,4 +29,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="location">Show User\'s Location</string>
     <string name="tools">Tools</string>
+    <string name="connected_students">Connected Students</string>
+    <string name="employee_id">Employee ID</string>
+    <string name="enrollment_number">Enrollment Number</string>
 </resources>
