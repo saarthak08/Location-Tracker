@@ -94,8 +94,7 @@ public class ChatActivity extends AppCompatActivity {
         reference = firebaseDatabase.getReference();
         user=i.getParcelableExtra("user");
         if(isuser) {
-            Toast.makeText(ChatActivity.this,""+firebaseUser.getUid()+user.getUuid(),Toast.LENGTH_SHORT).show();
-             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
+              reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
                 reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
