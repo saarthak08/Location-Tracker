@@ -25,5 +25,5 @@
 - [Google Play Services](https://developers.google.com/android/guides/setup)
 
 ## *Note:*
-In order to build the project, you need to replace the word *'YOUR_API_KEY_HERE'* on *'Line No. 23'* in *HackAMU/app/src/debug/res/values/google_maps_api.xml* file with your own Google Maps API_KEY. In order to obtain the API_KEY, register at [Google Maps Platform](https://developers.google.com/maps/documentation/android-sdk/intro)) & get the API_KEY.
+In order to build the project, you need to replace the word *'YOUR_API_KEY_HERE'* on *'Line No. 23'* in *HackAMU/app/src/debug/res/values/google_maps_api.xml* file with your own Google Maps API_KEY. In order to obtain the API_KEY, register at [Google Maps Platform](https://developers.google.com/maps/documentation/android-sdk/intro) & get the API_KEY.
 
