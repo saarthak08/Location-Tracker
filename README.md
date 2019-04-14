@@ -8,6 +8,7 @@
 - Login/ Signup as a student.
 - Chat with any teacher as a student.
 - Get any teacher's location if he or she has enabled it.
+- Student can see the distance between him/her & the teacher if he/she has made location visible.
 - Login/ Signup as faculty/teacher.
 - Chat with any student as a teacher/faculty.
 - Enable/Hide your location if you are a faculty/teacher.
