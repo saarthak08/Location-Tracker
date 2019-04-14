@@ -41,6 +41,8 @@ public class SignUpActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     private String userID;
+    private EditText facNo;
+    private EditText enNo;
     private static final String TAG = "SignUpActivity";
 
 
@@ -70,6 +72,8 @@ public class SignUpActivity extends AppCompatActivity {
         progressBar=signUpBinding.progressBar1;
         email=signUpBinding.emails;
         name=signUpBinding.name;
+        facNo=signUpBinding.facno;
+        enNo=signUpBinding.enrolno;
         password=signUpBinding.passwords;
     }
     @Override
@@ -91,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
     public class SignupactivityClickHandlers{
         public void onSignUpButtonClicked(View v)
         {
-            if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0)
+            if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0&&facNo.getText().toString().trim().length()!=0&&enNo.getText().toString().length()!=0)
             {
                 progressBar.setVisibility(View.VISIBLE);
                 firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
@@ -110,6 +114,8 @@ public class SignUpActivity extends AppCompatActivity {
                             user.setEmail(email.getText().toString().trim());
                             userID=firebaseUser.getUid();
                             user.setUuid(userID);
+                            user.setFacultyno(facNo.getText().toString().trim());
+                            user.setEnno(enNo.getText().toString().trim());
                             user.setName(name.getText().toString().trim());
                             myRef.child("students").child(userID).setValue(user);
                             firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {

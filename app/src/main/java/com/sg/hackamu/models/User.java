@@ -29,6 +29,10 @@ public class User implements Parcelable {
 
     private String uuid;
 
+    private String facultyno;
+
+    private String enno;
+
     public String getFacultyno() {
         return facultyno;
     }
@@ -45,9 +49,6 @@ public class User implements Parcelable {
         this.enno = enno;
     }
 
-    private String facultyno;
-
-    private String enno;
 
 
     public User(String name, String password, String email,long id,boolean login,String uuid, String facultyno, String enno) {

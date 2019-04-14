@@ -64,13 +64,7 @@ public class LauncherActivity extends AppCompatActivity {
                             startActivity(new Intent(LauncherActivity.this, FacultyMainActivity.class));
                             LauncherActivity.this.finish();
                         }
-                        if(faculty==0)
-                        {
-                            startActivity(new Intent(LauncherActivity.this, MainActivity.class));
-                            LauncherActivity.this.finish();
-                        }
                     }
-
                 }
 
                 @Override
@@ -78,6 +72,11 @@ public class LauncherActivity extends AppCompatActivity {
 
                 }
             });
+            if(faculty==0)
+            {
+                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+                LauncherActivity.this.finish();
+            }
         } else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);

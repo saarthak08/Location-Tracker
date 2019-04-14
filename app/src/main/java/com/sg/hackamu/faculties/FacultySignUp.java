@@ -56,6 +56,7 @@ public class FacultySignUp extends AppCompatActivity {
         signUpBinding.setClickHandlers(new SignupactivityClickHandlers());
         firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
+        emplyeeid=findViewById(R.id.employeeid);
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -73,6 +74,7 @@ public class FacultySignUp extends AppCompatActivity {
         email=signUpBinding.emails;
         name=signUpBinding.name;
         department=signUpBinding.department;
+        emplyeeid=signUpBinding.employeeid;
         password=signUpBinding.passwords;
     }
     @Override
@@ -94,7 +96,7 @@ public class FacultySignUp extends AppCompatActivity {
     public class SignupactivityClickHandlers{
         public void onSignUpButtonClicked(View v)
         {
-            if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&department.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0)
+            if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&department.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0&&emplyeeid.getText().toString().trim().length()!=0)
             {
                 progressBar.setVisibility(View.VISIBLE);
                 firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
@@ -109,13 +111,14 @@ public class FacultySignUp extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             userProfileChangeRequest=new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
                             firebaseUser=firebaseAuth.getCurrentUser();
-                            Faculty Faculty=new Faculty();
-                            Faculty.setEmail(email.getText().toString().trim());
+                            Faculty faculty=new Faculty();
+                            faculty.setEmail(email.getText().toString().trim());
                             userID=firebaseUser.getUid();
-                            Faculty.setUuid(userID);
-                            Faculty.setName(name.getText().toString().trim());
-                            Faculty.setDepartment(department.getText().toString().trim());
-                            myRef.child("faculties").child(userID).setValue(Faculty);
+                            faculty.setUuid(userID);
+                            faculty.setEmployeeid(emplyeeid.getText().toString().trim());
+                            faculty.setName(name.getText().toString().trim());
+                            faculty.setDepartment(department.getText().toString().trim());
+                            myRef.child("faculties").child(userID).setValue(faculty);
                             firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

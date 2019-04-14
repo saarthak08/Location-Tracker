@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.sg.hackamu.ChatActivity;
 import com.sg.hackamu.R;
 
-import com.sg.hackamu.databinding.FacultyAdapterListItemBinding;
+import com.sg.hackamu.databinding.FacultiesAdapterListItemBinding;
 
 import java.util.ArrayList;
 
@@ -29,7 +29,7 @@ public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.AllC
     @NonNull
     @Override
     public AllConnectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        FacultyAdapterListItemBinding allconnectionsListItemBinding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.faculty_adapter_list_item,parent,false);
+        FacultiesAdapterListItemBinding allconnectionsListItemBinding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.faculties_adapter_list_item,parent,false);
         return new AllConnectionsViewHolder(allconnectionsListItemBinding);
     }
 
@@ -46,8 +46,8 @@ public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.AllC
 
     public class AllConnectionsViewHolder extends RecyclerView.ViewHolder
     {
-        private FacultyAdapterListItemBinding allconnectionsListItemBinding;
-        public AllConnectionsViewHolder(@NonNull final FacultyAdapterListItemBinding allconnectionsListItemBinding) {
+        private FacultiesAdapterListItemBinding allconnectionsListItemBinding;
+        public AllConnectionsViewHolder(@NonNull final FacultiesAdapterListItemBinding allconnectionsListItemBinding) {
             super(allconnectionsListItemBinding.getRoot());
             this.allconnectionsListItemBinding=allconnectionsListItemBinding;
             allconnectionsListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {

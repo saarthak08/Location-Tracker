@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.sg.hackamu.ChatActivity;
 import com.sg.hackamu.R;
-import com.sg.hackamu.databinding.AllconnectionsListItemBinding;
+import com.sg.hackamu.databinding.StudentsAdapterListItemBinding;
 import com.sg.hackamu.models.User;
 
 import java.util.ArrayList;
@@ -29,13 +29,13 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllCon
     @NonNull
     @Override
     public AllConnectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        AllconnectionsListItemBinding allconnectionsListItemBinding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.allconnections_list_item,parent,false);
-        return new AllConnectionsViewHolder(allconnectionsListItemBinding);
+        StudentsAdapterListItemBinding StudentsAdapterListItemBinding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.students_adapter_list_item,parent,false);
+        return new AllConnectionsViewHolder(StudentsAdapterListItemBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AllConnectionsViewHolder holder, int position) {
-        holder.allconnectionsListItemBinding.setUser(users.get(position));
+        holder.StudentsAdapterListItemBinding.setUser(users.get(position));
 
     }
 
@@ -46,11 +46,11 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllCon
 
     public class AllConnectionsViewHolder extends RecyclerView.ViewHolder
     {
-        private AllconnectionsListItemBinding allconnectionsListItemBinding;
-        public AllConnectionsViewHolder(@NonNull final AllconnectionsListItemBinding allconnectionsListItemBinding) {
-            super(allconnectionsListItemBinding.getRoot());
-            this.allconnectionsListItemBinding=allconnectionsListItemBinding;
-            allconnectionsListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+        private StudentsAdapterListItemBinding StudentsAdapterListItemBinding;
+        public AllConnectionsViewHolder(@NonNull final StudentsAdapterListItemBinding StudentsAdapterListItemBinding) {
+            super(StudentsAdapterListItemBinding.getRoot());
+            this.StudentsAdapterListItemBinding=StudentsAdapterListItemBinding;
+            StudentsAdapterListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos=getAdapterPosition();

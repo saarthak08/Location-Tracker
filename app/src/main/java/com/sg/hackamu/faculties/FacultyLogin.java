@@ -42,7 +42,7 @@ public class FacultyLogin extends AppCompatActivity {
 
         loginBinding= DataBindingUtil.setContentView(FacultyLogin.this,R.layout.activity_faculty_login);
         loginBinding.setClickHandlers(new FacultyLoginActivityClickHandlers());
-        getSupportActionBar().setTitle("FACULTY Log In");
+        getSupportActionBar().setTitle("Faculty Log In");
         firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
         authStateListener=new FirebaseAuth.AuthStateListener() {

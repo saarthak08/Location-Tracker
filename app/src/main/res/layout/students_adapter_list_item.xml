@@ -55,6 +55,28 @@
                 android:layout_below="@+id/textView2"
                 android:text="@{user.email}"
                 tools:ignore="RtlSymmetry" />
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dimen_8x"
+                android:paddingStart="@dimen/dimen_8x"
+                android:paddingLeft="@dimen/dimen_8x"
+                android:textSize="14sp"
+                android:layout_below="@+id/textView3"
+                android:text="@{`Faculty No: `+user.facultyno}"
+                tools:ignore="RtlSymmetry" />
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dimen_8x"
+                android:paddingStart="@dimen/dimen_8x"
+                android:paddingLeft="@dimen/dimen_8x"
+                android:textSize="14sp"
+                android:layout_below="@+id/textView4"
+                android:text="@{`Enrollment No: ` +user.enno}"
+                tools:ignore="RtlSymmetry" />
 
         </RelativeLayout>
 

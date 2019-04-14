@@ -181,9 +181,11 @@ public class FacultyMainActivity extends AppCompatActivity
         User fc=new User();
         uuid= dataSnapshot.getKey();
         if(!uuid.equals(firebaseUser.getUid())) {
-            fc.setName((dataSnapshot.getValue(Faculty.class).getName()));
+            fc.setName((dataSnapshot.getValue(User.class).getName()));
             fc.setUuid(uuid);
-            fc.setEmail(dataSnapshot.getValue(Faculty.class).getEmail());
+            fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
+            fc.setFacultyno(dataSnapshot.getValue(User.class).getFacultyno());
+            fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
             users.add(fc);
         }
     }

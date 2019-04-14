@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity
                 u.setName((dataSnapshot.getValue(Faculty.class).getName()));
                 u.setUuid(uuid);
                 u.setEmail(dataSnapshot.getValue(Faculty.class).getEmail());
+                u.setDepartment(dataSnapshot.getValue(Faculty.class).getDepartment());
+                u.setEmployeeid(dataSnapshot.getValue(Faculty.class).getEmployeeid());
                 faculties.add(u);
             }
         }
