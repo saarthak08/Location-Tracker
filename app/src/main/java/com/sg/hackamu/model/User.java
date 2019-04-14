@@ -10,17 +10,23 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+@Entity(tableName = "user")
 public class User implements Parcelable {
+    @ColumnInfo(name = "name")
     private String name;
 
+    @ColumnInfo(name = "password")
     private String password;
 
 
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = true)
     private long id;
 
+    @ColumnInfo(name = "email")
     private String email;
 
-
+    @ColumnInfo(name = "login")
     private boolean login;
 
     private String uuid;
@@ -28,6 +34,7 @@ public class User implements Parcelable {
     private String FacultyNo;
 
     private String EnNo;
+
 
     public User(String name, String password, String email,long id,boolean login,String uuid) {
         this.name = name;
@@ -37,6 +44,7 @@ public class User implements Parcelable {
         this.login=login;
         this.uuid=uuid;
     }
+
 
     public String getFacultyNo() {
         return FacultyNo;
@@ -54,6 +62,7 @@ public class User implements Parcelable {
         EnNo = enNo;
     }
 
+    @Ignore
     public User() {
 
     }
@@ -106,7 +115,7 @@ public class User implements Parcelable {
         this.login = login;
     }
 
-
+    @Ignore
     protected User(Parcel in) {
         name = in.readString();
         password = in.readString();
