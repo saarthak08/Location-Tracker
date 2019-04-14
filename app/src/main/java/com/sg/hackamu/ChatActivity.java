@@ -243,6 +243,9 @@ public class ChatActivity extends AppCompatActivity {
         if (id == R.id.requestlocation) {
            checkUserPermission();
         }
+        else if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }
