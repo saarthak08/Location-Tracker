@@ -17,7 +17,7 @@
 
 
 
-## *Libraies Used:*
+## *Libraries Used:*
 - [Retrofit](https://github.com/square/retrofit)
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
