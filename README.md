@@ -6,11 +6,11 @@
 
 ## *Features:*
 - Login/ Signup as a student.
-- Chat with any teacher.
-- See any teacher's location if he or she has enabled it.
+- Chat with any teacher as a student.
+- Get any teacher's location if he or she has enabled it.
 - Login/ Signup as faculty/teacher.
-- Chat with any student.
-- Enable/Hide your location.
+- Chat with any student as a teacher/faculty.
+- Enable/Hide your location if you are a faculty/teacher.
 - Offline Login/SignUp system implemented via Room Database.
 
 
