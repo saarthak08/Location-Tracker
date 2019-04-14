@@ -6,7 +6,7 @@
     <data>
         <variable
             name="ClickHandlers"
-            type="com.sg.hackamu.LoginActivity.LoginActivityClickHandlers"/>
+            type="com.sg.hackamu.students.LoginActivity.LoginActivityClickHandlers"/>
     </data>
 
     <LinearLayout

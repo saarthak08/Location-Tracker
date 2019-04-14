@@ -3,7 +3,7 @@ package com.sg.hackamu.offlinelogin.services;
 import android.os.AsyncTask;
 
 import com.sg.hackamu.offlinelogin.UsersDAO;
-import com.sg.hackamu.model.User;
+import com.sg.hackamu.models.User;
 
 public class DeleteUser extends AsyncTask<User,Void,Void> {
     public UsersDAO usersDAO;

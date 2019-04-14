@@ -30,10 +30,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sg.hackamu.adapter.ChatAdapter;
-import com.sg.hackamu.model.ChatMessage;
-import com.sg.hackamu.model.Faculty;
-import com.sg.hackamu.model.User;
+import com.sg.hackamu.adapters.ChatAdapter;
+import com.sg.hackamu.models.ChatMessage;
+import com.sg.hackamu.models.Faculty;
+import com.sg.hackamu.models.User;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
-        x=new Intent(ChatActivity.this,MapsActivity.class);
+        x=new Intent(ChatActivity.this, MapsActivity.class);
         if (i.hasExtra("user")) {
             user = i.getParcelableExtra("user");
             getSupportActionBar().setTitle(user.getName());

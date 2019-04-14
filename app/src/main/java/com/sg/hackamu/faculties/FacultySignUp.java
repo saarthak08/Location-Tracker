@@ -1,4 +1,4 @@
-package com.sg.hackamu;
+package com.sg.hackamu.faculties;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +22,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityFacultySignUpBinding;
 //import com.sg.hackamu.model.Faculty;
-import com.sg.hackamu.model.Faculty;
+import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 public class FacultySignUp extends AppCompatActivity {
@@ -64,7 +65,7 @@ public class FacultySignUp extends AppCompatActivity {
             }
         };
 
-        getSupportActionBar().setTitle("FACULTY LOG IN");
+        getSupportActionBar().setTitle("Faculty Sign Up");
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
         signUpButton=signUpBinding.signupbuttons;

@@ -1,12 +1,8 @@
-package com.sg.hackamu.model;
+package com.sg.hackamu.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
 public class Faculty implements Parcelable {
     private String name;
 
@@ -109,6 +105,7 @@ public class Faculty implements Parcelable {
         department=in.readString();
         password = in.readString();
         id = in.readLong();
+        employeeid=in.readString();
         email = in.readString();
         login = in.readByte() != 0x00;
         uuid = in.readString();
@@ -125,6 +122,7 @@ public class Faculty implements Parcelable {
         dest.writeString(department);
         dest.writeString(password);
         dest.writeLong(id);
+        dest.writeString(employeeid);
         dest.writeString(email);
         dest.writeByte((byte) (login ? 0x01 : 0x00));
         dest.writeString(uuid);

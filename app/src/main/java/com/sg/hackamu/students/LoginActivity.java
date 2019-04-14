@@ -1,4 +1,4 @@
-package com.sg.hackamu;
+package com.sg.hackamu.students;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sg.hackamu.LauncherActivity;
+import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {

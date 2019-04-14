@@ -17,11 +17,11 @@
         android:roundIcon="@mipmap/amulogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FacultyMainActivity"
+        <activity android:name=".faculties.FacultyMainActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".FacultySignUp"
+        <activity android:name=".faculties.FacultySignUp"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".FacultyLogin"
+        <activity android:name=".faculties.FacultyLogin"
             android:windowSoftInputMode="adjustResize"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -45,16 +45,16 @@
         </activity>
         <activity
             android:name=".ChatActivity"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".students.MainActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".students.SignUpActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".students.LoginActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".MainActivity"
+            android:name=".students.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

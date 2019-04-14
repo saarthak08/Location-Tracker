@@ -1,9 +1,7 @@
-package com.sg.hackamu.model;
+package com.sg.hackamu.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.firebase.database.IgnoreExtraProperties;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -31,36 +29,39 @@ public class User implements Parcelable {
 
     private String uuid;
 
-    private String FacultyNo;
+    public String getFacultyno() {
+        return facultyno;
+    }
 
-    private String EnNo;
+    public void setFacultyno(String facultyno) {
+        this.facultyno = facultyno;
+    }
+
+    public String getEnno() {
+        return enno;
+    }
+
+    public void setEnno(String enno) {
+        this.enno = enno;
+    }
+
+    private String facultyno;
+
+    private String enno;
 
 
-    public User(String name, String password, String email,long id,boolean login,String uuid) {
+    public User(String name, String password, String email,long id,boolean login,String uuid, String facultyno, String enno) {
         this.name = name;
         this.password = password;
         this.id = id;
         this.email = email;
         this.login=login;
         this.uuid=uuid;
+        this.facultyno=facultyno;
+        this.enno=enno;
     }
 
 
-    public String getFacultyNo() {
-        return FacultyNo;
-    }
-
-    public void setFacultyNo(String facultyNo) {
-        FacultyNo = facultyNo;
-    }
-
-    public String getEnNo() {
-        return EnNo;
-    }
-
-    public void setEnNo(String enNo) {
-        EnNo = enNo;
-    }
 
     @Ignore
     public User() {
@@ -118,6 +119,8 @@ public class User implements Parcelable {
     @Ignore
     protected User(Parcel in) {
         name = in.readString();
+        facultyno=in.readString();
+        enno=in.readString();
         password = in.readString();
         id = in.readLong();
         email = in.readString();
@@ -134,6 +137,8 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(password);
+        dest.writeString(facultyno);
+        dest.writeString(enno);
         dest.writeLong(id);
         dest.writeString(email);
         dest.writeByte((byte) (login ? 0x01 : 0x00));

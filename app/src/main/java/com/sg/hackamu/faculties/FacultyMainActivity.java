@@ -1,4 +1,4 @@
-package com.sg.hackamu;
+package com.sg.hackamu.faculties;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +22,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -39,10 +38,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sg.hackamu.adapter.AllConnectionsAdapter;
-import com.sg.hackamu.adapter.faculty_Adapter;
-import com.sg.hackamu.model.Faculty;
-import com.sg.hackamu.model.User;
+import com.sg.hackamu.R;
+import com.sg.hackamu.adapters.StudentsAdapter;
+import com.sg.hackamu.models.Faculty;
+import com.sg.hackamu.models.User;
 import com.sg.hackamu.services.GetLocation;
 import com.sg.hackamu.utils.FirebaseUtils;
 
@@ -65,7 +64,7 @@ public class FacultyMainActivity extends AppCompatActivity
     Intent x;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
-    AllConnectionsAdapter allConnectionsAdapter;
+    StudentsAdapter studentsAdapter;
     FloatingActionButton floatingActionButton;
     boolean check=false;
 
@@ -87,8 +86,8 @@ public class FacultyMainActivity extends AppCompatActivity
         floatingActionButton.setVisibility(View.VISIBLE);
         recyclerView=findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(FacultyMainActivity.this));
-        allConnectionsAdapter=new AllConnectionsAdapter(FacultyMainActivity.this,users);
-        recyclerView.setAdapter(allConnectionsAdapter);
+        studentsAdapter =new StudentsAdapter(FacultyMainActivity.this,users);
+        recyclerView.setAdapter(studentsAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(FacultyMainActivity.this,DividerItemDecoration.VERTICAL));
         authStateListener=new FirebaseAuth.AuthStateListener() {
@@ -135,7 +134,7 @@ public class FacultyMainActivity extends AppCompatActivity
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 showData(dataSnapshot);
                 progressBar.setVisibility(View.INVISIBLE);
-                allConnectionsAdapter.notifyDataSetChanged();
+                studentsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -235,7 +234,7 @@ public class FacultyMainActivity extends AppCompatActivity
 
     public void loadLauncherActivity()
     {
-        startActivity(new Intent(FacultyMainActivity.this,FacultyLogin.class));
+        startActivity(new Intent(FacultyMainActivity.this, FacultyLogin.class));
         FacultyMainActivity.this.finish();
     }
 

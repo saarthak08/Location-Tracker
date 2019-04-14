@@ -1,4 +1,4 @@
-package com.sg.hackamu.model;
+package com.sg.hackamu.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

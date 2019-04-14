@@ -1,7 +1,6 @@
 package com.sg.hackamu;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -13,13 +12,16 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
+import com.sg.hackamu.faculties.FacultyLogin;
+import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.students.LoginActivity;
+import com.sg.hackamu.students.MainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 
@@ -59,12 +61,12 @@ public class LauncherActivity extends AppCompatActivity {
                         if(firebaseUser.getUid().equals(s.getKey()))
                         {
                             faculty=1;
-                            startActivity(new Intent(LauncherActivity.this,FacultyMainActivity.class));
+                            startActivity(new Intent(LauncherActivity.this, FacultyMainActivity.class));
                             LauncherActivity.this.finish();
                         }
                         if(faculty==0)
                         {
-                            startActivity(new Intent(LauncherActivity.this,MainActivity.class));
+                            startActivity(new Intent(LauncherActivity.this, MainActivity.class));
                             LauncherActivity.this.finish();
                         }
                     }
@@ -101,14 +103,14 @@ public class LauncherActivity extends AppCompatActivity {
     public class LauncherActivityClickHandlers{
         public void onFacultyButtonClicked(View view)
         {
-            startActivity(new Intent(LauncherActivity.this,FacultyLogin.class));
+            startActivity(new Intent(LauncherActivity.this, FacultyLogin.class));
             LauncherActivity.this.finish();
         }
 
 
         public void onStudentButtonClicked(View view)
         {
-            startActivity(new Intent(LauncherActivity.this,LoginActivity.class));
+            startActivity(new Intent(LauncherActivity.this, LoginActivity.class));
             LauncherActivity.this.finish();
         }
     }

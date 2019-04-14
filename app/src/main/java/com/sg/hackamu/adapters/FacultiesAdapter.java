@@ -1,4 +1,4 @@
-package com.sg.hackamu.adapter;
+package com.sg.hackamu.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.sg.hackamu.ChatActivity;
 import com.sg.hackamu.R;
-import com.sg.hackamu.databinding.AllconnectionsListItemBinding;
-import com.sg.hackamu.model.User;
+
+import com.sg.hackamu.databinding.FacultyAdapterListItemBinding;
 
 import java.util.ArrayList;
 
@@ -17,37 +17,37 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AllConnectionsAdapter extends RecyclerView.Adapter<AllConnectionsAdapter.AllConnectionsViewHolder> {
+public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.AllConnectionsViewHolder> {
     private Context context;
-    private ArrayList<User> users;
+    private ArrayList<com.sg.hackamu.models.Faculty> Faculty;
 
-    public AllConnectionsAdapter(Context context, ArrayList<User> users) {
+    public FacultiesAdapter(Context context, ArrayList<com.sg.hackamu.models.Faculty> Faculty) {
         this.context = context;
-        this.users = users;
+        this.Faculty = Faculty;
     }
 
     @NonNull
     @Override
     public AllConnectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        AllconnectionsListItemBinding allconnectionsListItemBinding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.allconnections_list_item,parent,false);
+        FacultyAdapterListItemBinding allconnectionsListItemBinding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.faculty_adapter_list_item,parent,false);
         return new AllConnectionsViewHolder(allconnectionsListItemBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AllConnectionsViewHolder holder, int position) {
-        holder.allconnectionsListItemBinding.setUser(users.get(position));
+        holder.allconnectionsListItemBinding.setFaculty(Faculty.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return users==null?0:users.size();
+        return Faculty==null?0:Faculty.size();
     }
 
     public class AllConnectionsViewHolder extends RecyclerView.ViewHolder
     {
-        private AllconnectionsListItemBinding allconnectionsListItemBinding;
-        public AllConnectionsViewHolder(@NonNull final AllconnectionsListItemBinding allconnectionsListItemBinding) {
+        private FacultyAdapterListItemBinding allconnectionsListItemBinding;
+        public AllConnectionsViewHolder(@NonNull final FacultyAdapterListItemBinding allconnectionsListItemBinding) {
             super(allconnectionsListItemBinding.getRoot());
             this.allconnectionsListItemBinding=allconnectionsListItemBinding;
             allconnectionsListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
@@ -55,7 +55,7 @@ public class AllConnectionsAdapter extends RecyclerView.Adapter<AllConnectionsAd
                 public void onClick(View v) {
                     int pos=getAdapterPosition();
                     Intent i=new Intent(context, ChatActivity.class);
-                    i.putExtra("user",users.get(pos));
+                    i.putExtra("faculty",Faculty.get(pos));
                     context.startActivity(i);
                 }
             });

@@ -1,10 +1,7 @@
-package com.sg.hackamu;
+package com.sg.hackamu.students;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -19,16 +16,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sg.hackamu.adapter.AllConnectionsAdapter;
-import com.sg.hackamu.adapter.faculty_Adapter;
-import com.sg.hackamu.model.Faculty;
-import com.sg.hackamu.model.User;
-import com.sg.hackamu.services.GetLocation;
+import com.sg.hackamu.R;
+import com.sg.hackamu.adapters.FacultiesAdapter;
+import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -40,7 +34,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -65,7 +58,7 @@ public class MainActivity extends AppCompatActivity
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
-    faculty_Adapter allConnectionsAdapter;
+    FacultiesAdapter allConnectionsAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         myRef.child("faculties").keepSynced(true);
         recyclerView=findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        allConnectionsAdapter=new faculty_Adapter(MainActivity.this,faculties);
+        allConnectionsAdapter=new FacultiesAdapter(MainActivity.this,faculties);
         recyclerView.setAdapter(allConnectionsAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
@@ -210,7 +203,7 @@ public class MainActivity extends AppCompatActivity
 
     public void loadLauncherActivity()
     {
-        startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
         MainActivity.this.finish();
     }
 

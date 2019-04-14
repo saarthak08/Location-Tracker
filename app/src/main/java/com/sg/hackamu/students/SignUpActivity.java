@@ -1,4 +1,4 @@
-package com.sg.hackamu;
+package com.sg.hackamu.students;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivitySignUpBinding;
-import com.sg.hackamu.model.User;
+import com.sg.hackamu.models.User;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 public class SignUpActivity extends AppCompatActivity {

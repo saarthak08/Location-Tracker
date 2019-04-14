@@ -1,4 +1,4 @@
-package com.sg.hackamu.adapter;
+package com.sg.hackamu.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,11 +8,10 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.sg.hackamu.R;
-import com.sg.hackamu.model.ChatMessage;
+import com.sg.hackamu.models.ChatMessage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

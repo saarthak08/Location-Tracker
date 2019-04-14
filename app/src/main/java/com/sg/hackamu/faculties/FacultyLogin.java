@@ -1,4 +1,4 @@
-package com.sg.hackamu;
+package com.sg.hackamu.faculties;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sg.hackamu.LauncherActivity;
+import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityFacultyLoginBinding;
 
 public class FacultyLogin extends AppCompatActivity {
@@ -40,7 +42,7 @@ public class FacultyLogin extends AppCompatActivity {
 
         loginBinding= DataBindingUtil.setContentView(FacultyLogin.this,R.layout.activity_faculty_login);
         loginBinding.setClickHandlers(new FacultyLoginActivityClickHandlers());
-        getSupportActionBar().setTitle("FACULTY LOG IN");
+        getSupportActionBar().setTitle("FACULTY Log In");
         firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
         authStateListener=new FirebaseAuth.AuthStateListener() {
