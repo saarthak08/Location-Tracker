@@ -33,7 +33,6 @@ public class LauncherActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    int faculty=0;
     FirebaseAuth.AuthStateListener authStateListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +55,8 @@ public class LauncherActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for(DataSnapshot s: dataSnapshot.getChildren())
                     {
-                        Log.i("taasf",s.getKey());
-                        Log.d("ras",s.getKey());
                         if(firebaseUser.getUid().equals(s.getKey()))
                         {
-                            faculty=1;
                             startActivity(new Intent(LauncherActivity.this, FacultyMainActivity.class));
                             LauncherActivity.this.finish();
                         }
@@ -72,11 +68,25 @@ public class LauncherActivity extends AppCompatActivity {
 
                 }
             });
-            if(faculty==0)
-            {
-                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
-                LauncherActivity.this.finish();
-            }
+          databaseReference.child("students").addValueEventListener(new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                  for(DataSnapshot s: dataSnapshot.getChildren())
+                  {
+                      if(firebaseUser.getUid().equals(s.getKey()))
+                      {
+                          startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+                          LauncherActivity.this.finish();
+                      }
+                  }
+
+              }
+
+              @Override
+              public void onCancelled(@NonNull DatabaseError databaseError) {
+
+              }
+          });
         } else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);

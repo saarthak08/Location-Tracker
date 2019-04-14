@@ -45,7 +45,6 @@
         </activity>
         <activity
             android:name=".ChatActivity"
-            android:parentActivityName=".students.MainActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".students.SignUpActivity"

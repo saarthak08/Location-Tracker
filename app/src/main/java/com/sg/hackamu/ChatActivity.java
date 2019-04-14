@@ -81,6 +81,8 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         progressBar = findViewById(R.id.progressBarChat);
         progressBar.setVisibility(View.VISIBLE);
         editText = findViewById(R.id.chattext);
