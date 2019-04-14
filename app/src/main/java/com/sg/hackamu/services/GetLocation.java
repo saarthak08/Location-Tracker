@@ -84,7 +84,7 @@ public class GetLocation extends Service {
                                 if (locationResult.getLastLocation() != null) {
                                     if(locationResult.getLastLocation().hasAccuracy())
                                     {
-                                        if(locationResult.getLastLocation().getAccuracy()<30)
+                                        if(locationResult.getLastLocation().getAccuracy()<80)
                                         {
                                             onLocationChanged(locationResult.getLastLocation());
 
