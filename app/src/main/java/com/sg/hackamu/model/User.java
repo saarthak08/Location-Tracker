@@ -29,15 +29,13 @@ public class User implements Parcelable {
 
     private String EnNo;
 
-    public User(String name, String password, String email,long id,boolean login,String uuid, String facultyNo, String enNo) {
+    public User(String name, String password, String email,long id,boolean login,String uuid) {
         this.name = name;
         this.password = password;
         this.id = id;
         this.email = email;
         this.login=login;
         this.uuid=uuid;
-        this.FacultyNo=facultyNo;
-        this.EnNo=enNo;
     }
 
     public String getFacultyNo() {
@@ -111,8 +109,6 @@ public class User implements Parcelable {
 
     protected User(Parcel in) {
         name = in.readString();
-        FacultyNo=in.readString();
-        EnNo=in.readString();
         password = in.readString();
         id = in.readLong();
         email = in.readString();
@@ -133,8 +129,6 @@ public class User implements Parcelable {
         dest.writeString(email);
         dest.writeByte((byte) (login ? 0x01 : 0x00));
         dest.writeString(uuid);
-        dest.writeString(FacultyNo);
-        dest.writeString(EnNo);
     }
 
     @SuppressWarnings("unused")

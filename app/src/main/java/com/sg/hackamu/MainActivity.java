@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
-        myRef.child("students").keepSynced(true);
+        myRef.child("faculties").keepSynced(true);
         recyclerView=findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         allConnectionsAdapter=new faculty_Adapter(MainActivity.this,faculties);
@@ -156,9 +156,9 @@ public class MainActivity extends AppCompatActivity
             Faculty u=new Faculty();
             uuid= dataSnapshot.getKey();
             if(!uuid.equals(firebaseUser.getUid())) {
-                u.setName((dataSnapshot.getValue(User.class).getName()));
+                u.setName((dataSnapshot.getValue(Faculty.class).getName()));
                 u.setUuid(uuid);
-                u.setEmail(dataSnapshot.getValue(User.class).getEmail());
+                u.setEmail(dataSnapshot.getValue(Faculty.class).getEmail());
                 faculties.add(u);
             }
         }

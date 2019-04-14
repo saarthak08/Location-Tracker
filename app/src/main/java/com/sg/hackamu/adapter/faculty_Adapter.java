@@ -55,7 +55,7 @@ public class faculty_Adapter extends RecyclerView.Adapter<faculty_Adapter.AllCon
                 public void onClick(View v) {
                     int pos=getAdapterPosition();
                     Intent i=new Intent(context, ChatActivity.class);
-                    i.putExtra("Faculty",Faculty.get(pos));
+                    i.putExtra("faculty",Faculty.get(pos));
                     context.startActivity(i);
                 }
             });

@@ -43,7 +43,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class ChatActivity extends AppCompatActivity {
     User user;
     FirebaseAuth.AuthStateListener authStateListener;
-    FirebaseDatabase firebaseDatabase = FirebaseUtils.getDatabase();
+    FirebaseDatabase firebaseDatabase;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -90,47 +90,50 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         chatAdapter = new ChatAdapter(chatMessages, ChatActivity.this, firebaseUser);
         recyclerView.setAdapter(chatAdapter);
+        firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
+        user=i.getParcelableExtra("user");
         if(isuser) {
-            reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
-            reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    if (dataSnapshot != null) {
-                        ChatMessage chatMessage = new ChatMessage();
-                        chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
-                        chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
-                        chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
-                        chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
-                        chatMessages.add(chatMessage);
+            Toast.makeText(ChatActivity.this,""+firebaseUser.getUid()+user.getUuid(),Toast.LENGTH_SHORT).show();
+             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
+                reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        if (dataSnapshot != null) {
+                            ChatMessage chatMessage = new ChatMessage();
+                            chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
+                            chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
+                            chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
+                            chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
+                            chatMessages.add(chatMessage);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            chatAdapter.notifyDataSetChanged();
+                        }
                         progressBar.setVisibility(View.INVISIBLE);
-                        chatAdapter.notifyDataSetChanged();
                     }
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
 
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                }
+                    }
 
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                }
+                    }
 
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                }
+                    }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    progressBar.setVisibility(View.INVISIBLE);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        progressBar.setVisibility(View.INVISIBLE);
 
-                }
-            });
-        }
+                    }
+                });
+            }
         else
         {
             reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).keepSynced(true);

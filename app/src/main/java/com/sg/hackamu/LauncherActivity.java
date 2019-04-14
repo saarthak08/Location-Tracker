@@ -58,9 +58,14 @@ public class LauncherActivity extends AppCompatActivity {
                         Log.d("ras",s.getKey());
                         if(firebaseUser.getUid().equals(s.getKey()))
                         {
+                            faculty=1;
                             startActivity(new Intent(LauncherActivity.this,FacultyMainActivity.class));
                             LauncherActivity.this.finish();
-                            faculty=1;
+                        }
+                        if(faculty==0)
+                        {
+                            startActivity(new Intent(LauncherActivity.this,MainActivity.class));
+                            LauncherActivity.this.finish();
                         }
                     }
 
@@ -71,11 +76,6 @@ public class LauncherActivity extends AppCompatActivity {
 
                 }
             });
-            if(faculty==0)
-            {
-                startActivity(new Intent(LauncherActivity.this,MainActivity.class));
-                LauncherActivity.this.finish();
-            }
         } else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);

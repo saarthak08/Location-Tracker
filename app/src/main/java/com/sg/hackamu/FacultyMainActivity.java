@@ -82,7 +82,7 @@ public class FacultyMainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
-        myRef.child("Faculty").keepSynced(true);
+        myRef.child("students").keepSynced(true);
         floatingActionButton=findViewById(R.id.floatingActionButton);
         floatingActionButton.setVisibility(View.VISIBLE);
         recyclerView=findViewById(R.id.recycler_view);
