@@ -79,11 +79,6 @@ public class GetLocation extends Service {
         LocationSettingsRequest locationSettingsRequest = builder.build();
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         settingsClient.checkLocationSettings(locationSettingsRequest);
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
-
-        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-            buildAlertMessageNoGps();
-        }
                 getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
                             @Override
                             public void onLocationResult(LocationResult locationResult) {
@@ -142,22 +137,6 @@ public class GetLocation extends Service {
         stopSelf();
         super.onDestroy();
     }
-    void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builders = new AlertDialog.Builder(this);
-        builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builders.create();
-        alert.show();
-    }
+
 }
 

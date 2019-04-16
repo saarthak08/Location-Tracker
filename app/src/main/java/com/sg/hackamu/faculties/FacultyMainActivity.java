@@ -3,6 +3,7 @@ package com.sg.hackamu.faculties;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -168,9 +172,15 @@ public class FacultyMainActivity extends AppCompatActivity
                 }
                 else
                 {
-                    check=true;
-                    Snackbar.make(v,"Location Visible",Snackbar.LENGTH_SHORT).show();
-                    checkUserPermission();
+                    final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+                    if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                        buildAlertMessageNoGps();
+                    }
+                    else{
+                        check=true;
+                        Snackbar.make(v,"Location Visible",Snackbar.LENGTH_SHORT).show();
+                        checkUserPermission();
+                    }
 
                 }
             }
@@ -303,5 +313,23 @@ public class FacultyMainActivity extends AppCompatActivity
     protected void onDestroy() {
         FacultyMainActivity.this.stopService(x);
         super.onDestroy();
+    }
+    void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builders = new AlertDialog.Builder(this);
+        builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        Toast.makeText(FacultyMainActivity.this,"Error! Turn on GPS! ",Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builders.create();
+        alert.show();
     }
 }

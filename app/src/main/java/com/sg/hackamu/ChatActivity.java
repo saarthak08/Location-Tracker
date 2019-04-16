@@ -2,6 +2,7 @@ package com.sg.hackamu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -9,8 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.adapters.ChatAdapter;
+import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.User;
@@ -241,7 +246,14 @@ public class ChatActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.requestlocation) {
-           checkUserPermission();
+            final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                buildAlertMessageNoGps();
+            }
+            else {
+                checkUserPermission();
+            }
         }
         else if (item.getItemId() == android.R.id.home) {
             finish();
@@ -300,7 +312,24 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-
+    void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builders = new AlertDialog.Builder(this);
+        builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        Toast.makeText(ChatActivity.this,"Error! Turn on GPS! ",Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builders.create();
+        alert.show();
+    }
 
 }
 
