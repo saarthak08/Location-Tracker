@@ -289,9 +289,15 @@ public class ChatActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]
                                 {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                         REQUEST_LOCATION_PERMISSION);
+            } else {
+                startActivity(x);
             }
         }
-        startActivity(x);
+        else
+        {
+            startActivity(x);
+
+        }
     }
 
 

@@ -99,7 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
                 else{
-                    Toast.makeText(MapsActivity.this,"Error! User has not updated his/her location",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivity.this,"Error! "+ user.getName()+" has not updated location",Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -120,7 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googleMap.clear();
         MarkerOptions markerOptions=new MarkerOptions();
         if(userlatLng!=null) {
-            markerOptions.position(userlatLng).title("User Position");
+            markerOptions.position(userlatLng).title(user.getName());
             googleMap.addMarker(markerOptions);
         }
         mMap = googleMap;
@@ -149,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location != null) {
                             if(location.hasAccuracy())
                             {
-                                if(location.getAccuracy()<10)
+                                if(location.getAccuracy()<20)
                                 {
                                     onLocationChanged(location);
 

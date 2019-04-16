@@ -290,8 +290,14 @@ public class FacultyMainActivity extends AppCompatActivity
                                 {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                         REQUEST_LOCATION_PERMISSION);
             }
+            else
+            {
+                startService(x);
+            }
         }
-        startService(x);
+        else{
+            startService(x);
+        }
     }
     @Override
     protected void onDestroy() {

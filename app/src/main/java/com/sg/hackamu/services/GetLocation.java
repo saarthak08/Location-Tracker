@@ -40,8 +40,8 @@ public class GetLocation extends Service {
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest mLocationRequest;
-    private long UPDATE_INTERVAL = 20 * 1000;  /* 20 secs */
-    private long FASTEST_INTERVAL = 10000; /* 10 sec */
+    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private FirebaseUser firebaseUser;
     private FirebaseAuth firebaseAuth;
     private Context context;
@@ -61,6 +61,7 @@ public class GetLocation extends Service {
         firebaseUser=firebaseAuth.getCurrentUser();
         firebaseDatabase=FirebaseDatabase.getInstance();
         reference=firebaseDatabase.getReference();
+        getLastLocation();
         startLocationUpdates();
     }
 
@@ -84,7 +85,7 @@ public class GetLocation extends Service {
                                 if (locationResult.getLastLocation() != null) {
                                     if(locationResult.getLastLocation().hasAccuracy())
                                     {
-                                        if(locationResult.getLastLocation().getAccuracy()<80)
+                                        if(locationResult.getLastLocation().getAccuracy()<20)
                                         {
                                             onLocationChanged(locationResult.getLastLocation());
 
