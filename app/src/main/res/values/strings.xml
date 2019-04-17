@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">LocShare</string>
-    <string name="library_login">LIBRARY LOGIN</string>
-    <string name="teacher_s_login">Faculty LOGIN</string>
-    <string name="student_login">STUDENT LOGIN</string>
-    <string name="alumni_login">ALUMNI LOGIN</string>
+    <string name="teacher_s_login">Faculty Login</string>
+    <string name="student_login">Student Login</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -19,7 +17,7 @@
     <string name="signup">Not a member? Sign up</string>
     <string name="name">Name</string>
     <string name="department">Department</string>
-    <string name="signupp">SIGN UP</string>
+    <string name="signupp">Sign Up</string>
     <string name="sign_out">Sign Out</string>
     <string name="otherloginoptions">Other Login Options</string>
     <string name="messages">Messages</string>

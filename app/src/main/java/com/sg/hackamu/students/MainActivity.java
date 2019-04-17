@@ -18,7 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
+import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
+import com.sg.hackamu.services.LocationNotification;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import androidx.annotation.NonNull;
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity
               //  Toast.makeText(MainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
-
+        startService(new Intent(MainActivity.this, LocationNotification.class));
     }
     private void showData(DataSnapshot dataSnapshot){
             Faculty u=new Faculty();

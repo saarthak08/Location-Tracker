@@ -7,6 +7,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -16,12 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,11 +73,17 @@ public class FacultyMainActivity extends AppCompatActivity
     String uuid;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     Intent x;
+    View parent;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     StudentsAdapter studentsAdapter;
     FloatingActionButton floatingActionButton;
-    boolean check=false;
+    public static boolean check=false;
+    int notificationId=2;
+    NotificationCompat.Builder builder;
+    public static int l=0;
+    NotificationManagerCompat notificationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +96,10 @@ public class FacultyMainActivity extends AppCompatActivity
         x= new Intent(FacultyMainActivity.this, GetLocation.class);
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
+        parent=findViewById(android.R.id.content);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
+        showNotification();
         myRef.child("students").keepSynced(true);
         floatingActionButton=findViewById(R.id.floatingActionButton);
         floatingActionButton.setVisibility(View.VISIBLE);
@@ -167,7 +182,9 @@ public class FacultyMainActivity extends AppCompatActivity
                 if(check)
                 {
                    check=false;
-                    getApplication().stopService(x);
+                   l=0;
+                    getApplicationContext().stopService(x);
+                    notificationManager.cancel(notificationId);
                     Snackbar.make(v,"Location Hidden",Snackbar.LENGTH_SHORT).show();
                 }
                 else
@@ -178,7 +195,6 @@ public class FacultyMainActivity extends AppCompatActivity
                     }
                     else{
                         check=true;
-                        Snackbar.make(v,"Location Visible",Snackbar.LENGTH_SHORT).show();
                         checkUserPermission();
                     }
 
@@ -279,6 +295,9 @@ public class FacultyMainActivity extends AppCompatActivity
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    l=1;
+                    Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
+                    notificationManager.notify(notificationId, builder.build());
                     startService(x);
                 } else {
                     Toast.makeText(FacultyMainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
@@ -302,16 +321,25 @@ public class FacultyMainActivity extends AppCompatActivity
             }
             else
             {
+                l=1;
+                Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
+                notificationManager.notify(notificationId, builder.build());
                 startService(x);
             }
         }
         else{
+            l=1;
+            Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
+            notificationManager.notify(notificationId, builder.build());
             startService(x);
         }
     }
+
+
     @Override
     protected void onDestroy() {
-        FacultyMainActivity.this.stopService(x);
+        myRef.child("geocordinates").child(firebaseUser.getUid()).removeValue();
+        getApplicationContext().stopService(x);
         super.onDestroy();
     }
     void buildAlertMessageNoGps() {
@@ -331,5 +359,29 @@ public class FacultyMainActivity extends AppCompatActivity
                 });
         final AlertDialog alert = builders.create();
         alert.show();
+    }
+
+    public void showNotification() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name ="Location Updates";
+            String description = "Your realtime location is currently shared.";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("CHANNEL", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+        builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
+                .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+                .setContentTitle("Location Updates")
+                .setContentText("Your realtime location is currently shared.")
+                .setColorized(true)
+                .setVibrate(new long[]{1000, 1000})
+                .setPriority(NotificationCompat.PRIORITY_HIGH).setOngoing(true);
+        notificationManager  = NotificationManagerCompat.from(getApplicationContext());
+        //notificationManager.notify(notificationId, builder.build());
     }
 }

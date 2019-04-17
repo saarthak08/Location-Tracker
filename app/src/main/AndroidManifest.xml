@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
 
     <application
         android:allowBackup="true"
@@ -73,6 +75,7 @@
         <service
             android:name=".services.GetLocation"
             android:label="Get Location" />
+        <service android:name=".services.LocationNotification"/>
     </application>
 
 </manifest>
