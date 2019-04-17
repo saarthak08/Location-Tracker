@@ -46,7 +46,6 @@ public class GetLocation extends Service {
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private FirebaseUser firebaseUser;
     private FirebaseAuth firebaseAuth;
-    private Context context;
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
 
@@ -87,7 +86,7 @@ public class GetLocation extends Service {
                                 if (locationResult.getLastLocation() != null) {
                                     if(locationResult.getLastLocation().hasAccuracy())
                                     {
-                                        if(locationResult.getLastLocation().getAccuracy()<20)
+                                        if(locationResult.getLastLocation().getAccuracy()<40)
                                         {
                                             onLocationChanged(locationResult.getLastLocation());
 
@@ -102,7 +101,6 @@ public class GetLocation extends Service {
 
     public void onLocationChanged(Location location) {
         // You can now create a LatLng Object for use with maps
-       // Toast.makeText(context,"hello",Toast.LENGTH_SHORT).show();
         reference.child("geocordinates").child(firebaseUser.getUid()).setValue(location);
         //reference.child(("geocordinates")).child(firebaseUser.getUid()).child("latitude").setValue(location.getLatitude());
         //reference.child("geocordinates").child(firebaseUser.getUid()).child("longitude").setValue(location.getLongitude());
@@ -134,6 +132,7 @@ public class GetLocation extends Service {
 
     @Override
     public void onDestroy() {
+        reference.child("geocordinates").child(firebaseUser.getUid()).removeValue();
         stopSelf();
         super.onDestroy();
     }
