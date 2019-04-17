@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gradient_2_start"
+    android:orientation="vertical"
+    tools:context=".utils.VerifyActivity">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/amulogo" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:padding="@dimen/dimen_8x"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/verify_your_email"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textverify"
+        android:layout_width="match_parent"
+        android:padding="@dimen/dimen_16x"
+        android:layout_height="wrap_content"
+        android:text="A verification link is sent to "
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:layout_marginLeft="@dimen/dimen_16x"
+        android:layout_marginStart="@dimen/dimen_16x"
+        android:layout_marginRight="@dimen/dimen_16x"
+        android:layout_marginEnd="@dimen/dimen_16x"
+        android:layout_marginBottom="@dimen/dimen_4x"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/ok" />
+
+    <Button
+        android:id="@+id/buttonresendverify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_4x"
+        android:text="Resend Verification Link" />
+
+    <Button
+        android:id="@+id/buttoncancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_4x"
+        android:text="Cancel" />
+
+
+</LinearLayout>

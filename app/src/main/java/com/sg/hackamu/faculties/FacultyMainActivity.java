@@ -167,7 +167,7 @@ public class FacultyMainActivity extends AppCompatActivity
                 if(check)
                 {
                    check=false;
-                    FacultyMainActivity.this.stopService(x);
+                    getApplication().stopService(x);
                     Snackbar.make(v,"Location Hidden",Snackbar.LENGTH_SHORT).show();
                 }
                 else

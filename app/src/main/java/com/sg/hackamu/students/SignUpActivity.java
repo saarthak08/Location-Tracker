@@ -26,6 +26,7 @@ import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivitySignUpBinding;
 import com.sg.hackamu.models.User;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.utils.VerifyActivity;
 
 public class SignUpActivity extends AppCompatActivity {
     private Button signUpButton;
@@ -117,7 +118,6 @@ public class SignUpActivity extends AppCompatActivity {
                             user.setFacultyno(facNo.getText().toString().trim());
                             user.setEnno(enNo.getText().toString().trim());
                             user.setName(name.getText().toString().trim());
-                            myRef.child("students").child(userID).setValue(user);
                             firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -126,9 +126,11 @@ public class SignUpActivity extends AppCompatActivity {
                                     }                                }
                             });
                             progressBar.setVisibility(View.GONE);
-                            Intent i = new Intent(SignUpActivity.this, MainActivity.class);
+                            myRef.child("students").child(firebaseUser.getUid()).setValue(user);
+                            Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
+                            i.putExtra("student",user);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
-                            SignUpActivity.this.finish();
                         } else {
                         }
                     }

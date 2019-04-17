@@ -23,6 +23,7 @@ import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.students.LoginActivity;
 import com.sg.hackamu.students.MainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.utils.VerifyActivity;
 
 
 public class LauncherActivity extends AppCompatActivity {
@@ -50,6 +51,12 @@ public class LauncherActivity extends AppCompatActivity {
             }
         };
         if (firebaseUser!= null) {
+            if(!firebaseUser.isEmailVerified())
+            {
+                startActivity(new Intent(LauncherActivity.this, VerifyActivity.class));
+                LauncherActivity.this.finish();
+            }
+            else{
             databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -87,7 +94,7 @@ public class LauncherActivity extends AppCompatActivity {
 
               }
           });
-        } else {
+        } }else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);
             launcherBinding.setClickHandlers(new LauncherActivityClickHandlers());

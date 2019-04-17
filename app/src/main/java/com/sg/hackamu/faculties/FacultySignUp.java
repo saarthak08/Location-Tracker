@@ -27,6 +27,7 @@ import com.sg.hackamu.databinding.ActivityFacultySignUpBinding;
 //import com.sg.hackamu.model.Faculty;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.utils.VerifyActivity;
 
 public class FacultySignUp extends AppCompatActivity {
 
@@ -118,7 +119,6 @@ public class FacultySignUp extends AppCompatActivity {
                             faculty.setEmployeeid(emplyeeid.getText().toString().trim());
                             faculty.setName(name.getText().toString().trim());
                             faculty.setDepartment(department.getText().toString().trim());
-                            myRef.child("faculties").child(userID).setValue(faculty);
                             firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -126,10 +126,12 @@ public class FacultySignUp extends AppCompatActivity {
                                         Log.d("Hello", "User profile updated.");
                                     }                                }
                             });
+                            myRef.child("faculties").child(firebaseUser.getUid()).setValue(faculty);
                             progressBar.setVisibility(View.GONE);
-                            Intent i = new Intent(FacultySignUp.this, FacultyMainActivity.class);
+                            Intent i = new Intent(FacultySignUp.this, VerifyActivity.class);
+                            i.putExtra("faculty",faculty);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
-                            FacultySignUp.this.finish();
                         } else {
                         }
                     }

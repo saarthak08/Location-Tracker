@@ -32,4 +32,6 @@
     <string name="connected_students">Connected Students</string>
     <string name="employee_id">Employee ID</string>
     <string name="enrollment_number">Enrollment Number</string>
+    <string name="verify_your_email">Verify your Email!</string>
+    <string name="ok">OK</string>
 </resources>
