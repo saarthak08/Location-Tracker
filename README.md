@@ -1,4 +1,4 @@
-# HackAMU
+# LocShare
 ![HackAMUCover](https://user-images.githubusercontent.com/38679082/56091329-285bfd00-5ecb-11e9-9443-d947606b63ac.png)
 
 >An android application which I build in a hackathon event *'HackAMU'* in my college annual fest *'ZARF'*.
