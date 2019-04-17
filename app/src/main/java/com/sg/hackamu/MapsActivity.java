@@ -102,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
                 else{
-                    Toast.makeText(MapsActivity.this,"Error! "+ user.getName()+" has not updated location",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivity.this,user.getName()+" isn't sharing location now.",Toast.LENGTH_SHORT).show();
                 }
             }
 

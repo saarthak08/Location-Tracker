@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private String TAG="MainActivity";
     private ArrayList<Faculty> faculties=new ArrayList<>();
     String uuid;
+    Intent l;
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("All Faculties");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
+         l=new Intent(MainActivity.this,LocationNotification.class);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
         myRef.child("faculties").keepSynced(true);
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity
               //  Toast.makeText(MainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
-        startService(new Intent(MainActivity.this, LocationNotification.class));
+        startService(l);
     }
     private void showData(DataSnapshot dataSnapshot){
             Faculty u=new Faculty();
@@ -232,5 +234,11 @@ public class MainActivity extends AppCompatActivity
                 }
             }, 2000);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        getApplicationContext().stopService(l);
+        super.onDestroy();
     }
 }

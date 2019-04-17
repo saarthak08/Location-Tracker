@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
 import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 public class LocationNotification extends Service {
     private FirebaseAuth firebaseAuth;
+    Faculty faculty;
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -55,6 +57,7 @@ public class LocationNotification extends Service {
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         if(uuid.equals(dataSnapshot.getKey()))
                         {
+
                             String name=(String)dataSnapshot.child("name").getValue();
                             showNotification(name);
                         }
@@ -127,5 +130,11 @@ public class LocationNotification extends Service {
         notificationManager.notify(notificationId, builder.build());
         return notificationId;
 
+    }
+
+    @Override
+    public void onDestroy() {
+        stopSelf();
+        super.onDestroy();
     }
 }

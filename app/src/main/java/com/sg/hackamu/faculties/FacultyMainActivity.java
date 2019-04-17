@@ -374,14 +374,21 @@ public class FacultyMainActivity extends AppCompatActivity
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+
+        Intent intent = new Intent(this, FacultyMainActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
                 .setContentTitle("Location Updates")
-                .setContentText("Your realtime location is currently shared.")
+                .setContentText("Your realtime location is currently shared.\nTap to hide it.")
                 .setColorized(true)
+                .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{1000, 1000})
                 .setPriority(NotificationCompat.PRIORITY_HIGH).setOngoing(true);
         notificationManager  = NotificationManagerCompat.from(getApplicationContext());
         //notificationManager.notify(notificationId, builder.build());
     }
+
 }
