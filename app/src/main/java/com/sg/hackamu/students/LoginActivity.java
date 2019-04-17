@@ -20,9 +20,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.LauncherActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityLoginBinding;
+import com.sg.hackamu.faculties.FacultyLogin;
+import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.utils.FirebaseUtils;
 
 public class LoginActivity extends AppCompatActivity {
     private Button signupButton;
@@ -34,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding loginBinding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private FirebaseDatabase firebaseDatabase=FirebaseUtils.getDatabase();
+    private DatabaseReference databaseReference;
     private  FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
@@ -57,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar=loginBinding.progressBar1;
         loginButton=loginBinding.loginButton;
         email=loginBinding.email;
+        databaseReference=firebaseDatabase.getReference();
         password=loginBinding.password;
     }
     @Override
@@ -88,10 +99,48 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            progressBar.setVisibility(View.GONE);
-                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i);
-                            LoginActivity.this.finish();
+                            firebaseAuth=FirebaseAuth.getInstance();
+                            firebaseUser=firebaseAuth.getCurrentUser();
+                            databaseReference.child("students").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot ds:dataSnapshot.getChildren())
+                                    {
+                                        if(ds.getKey().equals(firebaseUser.getUid()))
+                                        {
+                                            if(ds.getKey().equals(firebaseUser.getUid()))
+                                            {
+                                                progressBar.setVisibility(View.GONE);
+                                                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                                startActivity(i);
+                                                LoginActivity.this.finish();
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot ds:dataSnapshot.getChildren())
+                                    {
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(LoginActivity.this,"Error! Invalid Credentials",Toast.LENGTH_SHORT).show();
+                                        firebaseAuth.signOut();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
                         }
                     }

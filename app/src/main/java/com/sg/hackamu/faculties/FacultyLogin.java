@@ -1,6 +1,7 @@
 package com.sg.hackamu.faculties;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -20,9 +21,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.LauncherActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityFacultyLoginBinding;
+import com.sg.hackamu.utils.FirebaseUtils;
 
 public class FacultyLogin extends AppCompatActivity {
     private Button signupButton;
@@ -34,7 +42,10 @@ public class FacultyLogin extends AppCompatActivity {
     private ActivityFacultyLoginBinding loginBinding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private FirebaseDatabase firebaseDatabase= FirebaseUtils.getDatabase();
+    private DatabaseReference databaseReference;
     private  FirebaseAuth.AuthStateListener authStateListener;
+    private boolean login=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +68,7 @@ public class FacultyLogin extends AppCompatActivity {
         progressBar=loginBinding.progressBar1;
         loginButton=loginBinding.loginButton;
         email=loginBinding.email;
+        databaseReference=firebaseDatabase.getReference();
         password=loginBinding.password;
     }
 
@@ -77,7 +89,6 @@ public class FacultyLogin extends AppCompatActivity {
     public class FacultyLoginActivityClickHandlers{
         public void onLoginButtonClicked(View view) {
             if (email.getText().toString().trim().length() != 0 && password.getText().toString().trim().length() != 0) {
-
                 progressBar.setVisibility(View.VISIBLE);
                 firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -89,10 +100,48 @@ public class FacultyLogin extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            progressBar.setVisibility(View.GONE);
-                            Intent i = new Intent(FacultyLogin.this, FacultyMainActivity.class);
-                            startActivity(i);
-                            FacultyLogin.this.finish();
+                            firebaseAuth=FirebaseAuth.getInstance();
+                            firebaseUser=firebaseAuth.getCurrentUser();
+                            databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot ds:dataSnapshot.getChildren())
+                                    {
+                                        if(ds.getKey().equals(firebaseUser.getUid()))
+                                        {
+                                            progressBar.setVisibility(View.GONE);
+                                            Intent i = new Intent(FacultyLogin.this, FacultyMainActivity.class);
+                                            startActivity(i);
+                                            FacultyLogin.this.finish();
+
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            databaseReference.child("students").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot ds:dataSnapshot.getChildren())
+                                    {
+                                        if(ds.getKey().equals(firebaseUser.getUid()))
+                                        {
+                                            progressBar.setVisibility(View.GONE);
+                                            Toast.makeText(FacultyLogin.this,"Error! Invalid Credentials",Toast.LENGTH_SHORT).show();
+                                            firebaseAuth.signOut();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
                         }
                     }
