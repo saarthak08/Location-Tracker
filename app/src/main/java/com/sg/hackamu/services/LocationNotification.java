@@ -2,6 +2,7 @@ package com.sg.hackamu.services;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sg.hackamu.MapsActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
@@ -57,9 +59,9 @@ public class LocationNotification extends Service {
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         if(uuid.equals(dataSnapshot.getKey()))
                         {
-
+                            faculty=dataSnapshot.getValue(Faculty.class);
                             String name=(String)dataSnapshot.child("name").getValue();
-                            showNotification(name);
+                            showNotification(name,faculty);
                         }
                     }
 
@@ -108,7 +110,7 @@ public class LocationNotification extends Service {
         });
     }
 
-    public int showNotification(String name)
+    public int showNotification(String name,Faculty faculty)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence names ="Location Updates";
@@ -119,11 +121,16 @@ public class LocationNotification extends Service {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("faculty",faculty);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
                 .setContentTitle("Location Updates")
                 .setVibrate(new long[]{1000, 1000})
                 .setColorized(true)
+                .setContentIntent(pendingIntent)
                 .setContentText(name+" updated realtime location.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
