@@ -68,7 +68,6 @@ public class FacultyMainActivity extends AppCompatActivity
     FirebaseUser firebaseUser;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
-    FirebaseAuth.AuthStateListener authStateListener;
     private String TAG="MainActivityFaculty";
     private ArrayList<User> users=new ArrayList<>();
     String uuid;
@@ -112,14 +111,6 @@ public class FacultyMainActivity extends AppCompatActivity
         recyclerView.setAdapter(studentsAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(FacultyMainActivity.this,DividerItemDecoration.VERTICAL));
-        authStateListener=new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                firebaseUser=firebaseAuth.getCurrentUser();
-                Log.d("Auth State","Auth State Changed");
-
-            }
-        };
         swipeRefreshLayout=findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -218,20 +209,6 @@ public class FacultyMainActivity extends AppCompatActivity
             users.add(fc);
         }
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(authStateListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(authStateListener!=null)
-        {
-            firebaseAuth.removeAuthStateListener(authStateListener);
-        }
-    }
 
 
 
@@ -250,10 +227,6 @@ public class FacultyMainActivity extends AppCompatActivity
 
         } else if (id == R.id.signout) {
 
-            if(authStateListener!=null)
-            {
-                firebaseAuth.removeAuthStateListener(authStateListener);
-            }
             firebaseAuth.signOut();
             loadLauncherActivity();
         }

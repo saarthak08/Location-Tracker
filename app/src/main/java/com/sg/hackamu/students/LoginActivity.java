@@ -30,6 +30,7 @@ import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityLoginBinding;
 import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.models.User;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.ForgotPassword;
 
@@ -108,9 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for(DataSnapshot ds:dataSnapshot.getChildren())
                                     {
-                                        if(ds.getKey().equals(firebaseUser.getUid()))
-                                        {
-                                            if(ds.getKey().equals(firebaseUser.getUid()))
+                                          if(ds.getKey().equals(firebaseUser.getUid()))
                                             {
                                                 progressBar.setVisibility(View.GONE);
                                                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
@@ -118,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 LoginActivity.this.finish();
 
                                             }
-                                        }
+
                                     }
                                 }
 
@@ -130,11 +129,12 @@ public class LoginActivity extends AppCompatActivity {
                             databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for(DataSnapshot ds:dataSnapshot.getChildren())
-                                    {
-                                        progressBar.setVisibility(View.GONE);
-                                        Toast.makeText(LoginActivity.this,"Error! Invalid Credentials",Toast.LENGTH_SHORT).show();
-                                        firebaseAuth.signOut();
+                                    for(DataSnapshot ds:dataSnapshot.getChildren()) {
+                                        if (ds.getKey().equals(firebaseUser.getUid())) {
+                                            progressBar.setVisibility(View.GONE);
+                                            Toast.makeText(LoginActivity.this, "Error! Invalid Credentials", Toast.LENGTH_SHORT).show();
+                                            firebaseAuth.signOut();
+                                        }
                                     }
                                 }
 

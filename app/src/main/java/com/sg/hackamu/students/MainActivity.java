@@ -20,6 +20,7 @@ import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
+import com.sg.hackamu.models.User;
 import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.LocationNotification;
 import com.sg.hackamu.utils.FirebaseUtils;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     FirebaseAuth firebaseAuth;
     ProgressBar progressBar;
     FirebaseUser firebaseUser;
+    User user;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     FirebaseAuth.AuthStateListener authStateListener;
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity
         });
         View headerView = navigationView.getHeaderView(0);
         TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-        email.setText(firebaseUser.getEmail());
+        //email.setText(firebaseUser.getEmail());
         TextView name=headerView.findViewById(R.id.namenav);
         name.setText(firebaseUser.getDisplayName());
         myRef.child("faculties").addChildEventListener(new ChildEventListener() {
