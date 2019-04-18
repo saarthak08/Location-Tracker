@@ -96,7 +96,8 @@ public class ChatActivity extends AppCompatActivity {
         editText = findViewById(R.id.chattext);
         floatingActionButton = findViewById(R.id.floatingActionButtonSend);
         recyclerView = findViewById(R.id.recyclerViewChat);
-        recyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(ChatActivity.this);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         chatAdapter = new ChatAdapter(chatMessages, ChatActivity.this, firebaseUser);
         recyclerView.setAdapter(chatAdapter);
@@ -119,6 +120,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);
                         progressBar.setVisibility(View.INVISIBLE);
+                        recyclerView.scrollToPosition(chatMessages.size()-1);
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                 }
@@ -164,6 +166,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessages.add(chatMessage);
                         progressBar.setVisibility(View.INVISIBLE);
                         chatAdapter.notifyDataSetChanged();
+                        recyclerView.scrollToPosition(chatMessages.size()-1);
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                 }
@@ -214,12 +217,16 @@ public class ChatActivity extends AppCompatActivity {
                         senderchatMessage.setSenderuuid(firebaseUser.getUid());
                         reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
                         reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                        recyclerView.scrollToPosition(chatMessages.size()-1);
+
                     }else
                     {
                         senderchatMessage.setRecieveruuid(faculty.getUuid());
                         senderchatMessage.setSenderuuid(firebaseUser.getUid());
                         reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
                         reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                        recyclerView.scrollToPosition(chatMessages.size()-1);
+
                     }
                     editText.setText("");
                 }
