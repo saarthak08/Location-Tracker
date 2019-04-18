@@ -77,6 +77,8 @@
             android:name=".services.GetLocation"
             android:label="Get Location" />
         <service android:name=".services.LocationNotification"/>
+        <service android:name=".services.ChatNotification"
+            android:label="Chat Notification Serivce"/>
     </application>
 
 </manifest>

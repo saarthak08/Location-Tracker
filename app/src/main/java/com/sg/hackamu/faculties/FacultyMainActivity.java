@@ -53,6 +53,7 @@ import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.StudentsAdapter;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.User;
+import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.GetLocation;
 import com.sg.hackamu.utils.FirebaseUtils;
 
@@ -79,9 +80,10 @@ public class FacultyMainActivity extends AppCompatActivity
     StudentsAdapter studentsAdapter;
     FloatingActionButton floatingActionButton;
     public static boolean check=false;
-    int notificationId=2;
+    int notificationId=1;
     NotificationCompat.Builder builder;
     public static int l=0;
+    Intent o;
     NotificationManagerCompat notificationManager;
 
 
@@ -99,6 +101,7 @@ public class FacultyMainActivity extends AppCompatActivity
         parent=findViewById(android.R.id.content);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
+        o=new Intent(FacultyMainActivity.this, ChatNotification.class);
         showNotification();
         myRef.child("students").keepSynced(true);
         floatingActionButton=findViewById(R.id.floatingActionButton);
@@ -201,7 +204,7 @@ public class FacultyMainActivity extends AppCompatActivity
                 }
             }
         });
-
+        startService(o);
     }
     private void showData(DataSnapshot dataSnapshot){
         User fc=new User();
@@ -340,6 +343,7 @@ public class FacultyMainActivity extends AppCompatActivity
     protected void onDestroy() {
         myRef.child("geocordinates").child(firebaseUser.getUid()).removeValue();
         getApplicationContext().stopService(x);
+        getApplicationContext().stopService(o);
         super.onDestroy();
     }
     void buildAlertMessageNoGps() {
@@ -385,8 +389,9 @@ public class FacultyMainActivity extends AppCompatActivity
                 .setContentText("Your realtime location is currently shared.\nTap to hide it.")
                 .setColorized(true)
                 .setContentIntent(pendingIntent)
-                .setVibrate(new long[]{1000, 1000})
+                .setVibrate(new long[]{500, 500})
                 .setPriority(NotificationCompat.PRIORITY_HIGH).setOngoing(true);
+
         notificationManager  = NotificationManagerCompat.from(getApplicationContext());
         //notificationManager.notify(notificationId, builder.build());
     }

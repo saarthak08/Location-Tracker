@@ -61,7 +61,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ChatAdapter chatAdapter;
     Faculty faculty;
-    boolean running;
+    public static boolean running;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     Intent x;
     boolean isuser;

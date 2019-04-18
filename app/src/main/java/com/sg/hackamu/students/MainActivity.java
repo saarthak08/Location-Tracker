@@ -20,6 +20,7 @@ import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
+import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.LocationNotification;
 import com.sg.hackamu.utils.FirebaseUtils;
 
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Faculty> faculties=new ArrayList<>();
     String uuid;
     Intent l;
+    Intent o;
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("All Faculties");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
+        o=new Intent(MainActivity.this, ChatNotification.class);
          l=new Intent(MainActivity.this,LocationNotification.class);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
@@ -148,6 +151,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
         startService(l);
+        startService(o);
     }
     private void showData(DataSnapshot dataSnapshot){
             Faculty u=new Faculty();
@@ -239,6 +243,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         getApplicationContext().stopService(l);
+        getApplicationContext().stopService(o);
         super.onDestroy();
     }
 }

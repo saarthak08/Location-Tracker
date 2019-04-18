@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -129,13 +131,15 @@ public class LocationNotification extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
                 .setContentTitle("Location Updates")
-                .setVibrate(new long[]{1000, 1000})
+                .setVibrate(new long[]{500, 500})
                 .setColorized(true)
                 .setContentIntent(pendingIntent)
                 .setContentText(name+" updated realtime location.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(notificationId, builder.build());
+        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(uri);
         return notificationId;
 
     }
