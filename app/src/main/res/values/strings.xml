@@ -32,4 +32,6 @@
     <string name="enrollment_number">Enrollment Number</string>
     <string name="verify_your_email">Verify your Email!</string>
     <string name="ok">OK</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="enter_your_email_amp_tap_on_ok_button"><![CDATA[Enter your Email & tap on \'OK\' button:]]></string>
 </resources>

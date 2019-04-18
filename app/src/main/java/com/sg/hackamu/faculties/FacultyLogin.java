@@ -30,7 +30,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.LauncherActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityFacultyLoginBinding;
+import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.utils.ForgotPassword;
 
 public class FacultyLogin extends AppCompatActivity {
     private Button signupButton;
@@ -70,6 +72,7 @@ public class FacultyLogin extends AppCompatActivity {
         email=loginBinding.email;
         databaseReference=firebaseDatabase.getReference();
         password=loginBinding.password;
+        forgotpass=loginBinding.textViewforgotfac;
     }
 
     @Override
@@ -160,13 +163,16 @@ public class FacultyLogin extends AppCompatActivity {
 
         public void onForgotPasswordClicked (View view)
         {
-
+            Intent t=new Intent(FacultyLogin.this, ForgotPassword.class);
+            t.putExtra("isuser",false);
+            startActivity(t);
         }
         public void onLoginAsFacultyClicked (View view)
         {
             startActivity(new Intent(FacultyLogin.this, LauncherActivity.class));
             FacultyLogin.this.finish();
         }
+
     }
 }
 
