@@ -9,18 +9,28 @@ public class ChatMessage implements Parcelable {
     private String messageText;
     private String senderuuid;
     private String recieveruuid;
+    private boolean read=false;
     private long messageTime=new Date().getTime();
 
-    public ChatMessage(String messageText, String senderuuid,String recieveruuid) {
+    public ChatMessage(String messageText, String senderuuid,String recieveruuid,boolean read) {
         this.messageText = messageText;
         this.recieveruuid=recieveruuid;
         this.senderuuid=senderuuid;
+        this.read=read;
         // Initialize to current time
         messageTime = new Date().getTime();
     }
 
     public ChatMessage(){
 
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     public String getMessageText() {
@@ -55,10 +65,12 @@ public class ChatMessage implements Parcelable {
         this.messageTime = messageTime;
     }
 
+
     protected ChatMessage(Parcel in) {
         messageText = in.readString();
         senderuuid = in.readString();
         recieveruuid = in.readString();
+        read = in.readByte() != 0x00;
         messageTime = in.readLong();
     }
 
@@ -72,6 +84,7 @@ public class ChatMessage implements Parcelable {
         dest.writeString(messageText);
         dest.writeString(senderuuid);
         dest.writeString(recieveruuid);
+        dest.writeByte((byte) (read ? 0x01 : 0x00));
         dest.writeLong(messageTime);
     }
 

@@ -30,5 +30,16 @@
             android:paddingEnd="@dimen/dimen_8x"
             android:text="Text"
             android:textSize="12sp" />
+    <TextView
+        android:id="@+id/textViewread"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewmytime"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:paddingStart="@dimen/dimen_8x"
+        android:paddingEnd="@dimen/dimen_8x"
+        android:text="Text"
+        android:textSize="12sp"  />
     </RelativeLayout>
 

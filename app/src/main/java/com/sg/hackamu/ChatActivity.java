@@ -34,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.adapters.ChatAdapter;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.ChatMessage;
@@ -60,6 +61,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ChatAdapter chatAdapter;
     Faculty faculty;
+    boolean running;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     Intent x;
     boolean isuser;
@@ -67,6 +69,7 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        running=true;
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
         x=new Intent(ChatActivity.this, MapsActivity.class);
@@ -101,60 +104,21 @@ public class ChatActivity extends AppCompatActivity {
         reference = firebaseDatabase.getReference();
         user=i.getParcelableExtra("user");
         if(isuser) {
-              reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
-                reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        if (dataSnapshot != null) {
-                            ChatMessage chatMessage = new ChatMessage();
-                            chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
-                            chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
-                            chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
-                            chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
-                            chatMessages.add(chatMessage);
-                            progressBar.setVisibility(View.INVISIBLE);
-                            chatAdapter.notifyDataSetChanged();
-                        }
-                        progressBar.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        progressBar.setVisibility(View.INVISIBLE);
-
-                    }
-                });
-            }
-        else
-        {
-            reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).keepSynced(true);
-            reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).addChildEventListener(new ChildEventListener() {
+            reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
+            reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    if (dataSnapshot != null) {
-                        ChatMessage chatMessage = new ChatMessage();
-                        chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
-                        chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
-                        chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
-                        chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshots, @Nullable String s) {
+                    if (dataSnapshots != null&&running) {
+                        final ChatMessage chatMessage = new ChatMessage();
+                        chatMessage.setMessageText(dataSnapshots.getValue(ChatMessage.class).getMessageText());
+                        chatMessage.setSenderuuid(dataSnapshots.getValue(ChatMessage.class).getSenderuuid());
+                        chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
+                        chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
+                        chatMessage.setRead(true);
+                        reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
+                        chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);
                         progressBar.setVisibility(View.INVISIBLE);
-                        chatAdapter.notifyDataSetChanged();
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                 }
@@ -181,42 +145,86 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
         }
-            authStateListener = new FirebaseAuth.AuthStateListener() {
+        else
+        {
+            reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).keepSynced(true);
+            reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                    firebaseUser = firebaseAuth.getCurrentUser();
-                    Log.d("Auth State", "Auth State Changed");
+                public void onChildAdded(@NonNull final DataSnapshot dataSnapshots, @Nullable String s) {
+                    if (dataSnapshots != null&&running) {
+                        final ChatMessage chatMessage = new ChatMessage();
+                        chatMessage.setMessageText(dataSnapshots.getValue(ChatMessage.class).getMessageText());
+                        chatMessage.setSenderuuid(dataSnapshots.getValue(ChatMessage.class).getSenderuuid());
+                        chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
+                        chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
+                        chatMessage.setRead(true);
+
+                        reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
+                        chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
+                        chatMessages.add(chatMessage);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        chatAdapter.notifyDataSetChanged();
+                    }
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
                 }
-            };
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (editText.getText().toString().trim().length() != 0) {
-                        try {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                        } catch (Exception e) {
 
-                        }
-                        senderchatMessage = new ChatMessage();
-                        senderchatMessage.setMessageText(editText.getText().toString().trim());
-                        if(isuser) {
-                            senderchatMessage.setRecieveruuid(user.getUuid());
-                            senderchatMessage.setSenderuuid(firebaseUser.getUid());
-                            reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                            reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        }else
-                        {
-                            senderchatMessage.setRecieveruuid(faculty.getUuid());
-                            senderchatMessage.setSenderuuid(firebaseUser.getUid());
-                            reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                            reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        }
-                        editText.setText("");
-                    }
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    progressBar.setVisibility(View.INVISIBLE);
+
                 }
             });
+        }
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser = firebaseAuth.getCurrentUser();
+                Log.d("Auth State", "Auth State Changed");
+
+            }
+        };
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editText.getText().toString().trim().length() != 0) {
+                    try {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    } catch (Exception e) {
+
+                    }
+                    senderchatMessage = new ChatMessage();
+                    senderchatMessage.setMessageText(editText.getText().toString().trim());
+                    if(isuser) {
+                        senderchatMessage.setRecieveruuid(user.getUuid());
+                        senderchatMessage.setSenderuuid(firebaseUser.getUid());
+                        reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                        reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                    }else
+                    {
+                        senderchatMessage.setRecieveruuid(faculty.getUuid());
+                        senderchatMessage.setSenderuuid(firebaseUser.getUid());
+                        reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                        reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                    }
+                    editText.setText("");
+                }
+            }
+        });
         if (chatMessages.size() == 0) {
             progressBar.setVisibility(View.INVISIBLE);
         }
@@ -224,18 +232,30 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        super.onStart();
         firebaseAuth.addAuthStateListener(authStateListener);
+        super.onStart();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (authStateListener != null) {
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
+        super.onStop();
+
     }
 
+    @Override
+    protected void onPause() {
+        running=false;
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        running=true;
+        super.onResume();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -332,4 +352,3 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 }
-

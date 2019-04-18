@@ -53,38 +53,39 @@ public class LocationNotification extends Service {
         databaseReference.child("geocordinates").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                 uuid=dataSnapshot.getKey();
-                databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        if(uuid.equals(dataSnapshot.getKey()))
-                        {
-                            faculty=dataSnapshot.getValue(Faculty.class);
-                            String name=(String)dataSnapshot.child("name").getValue();
-                            showNotification(name,faculty);
+                if (dataSnapshot.exists()) {
+                    uuid = dataSnapshot.getKey();
+                    databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            if (uuid.equals(dataSnapshot.getKey())) {
+                                faculty = dataSnapshot.getValue(Faculty.class);
+                                String name = (String) dataSnapshot.child("name").getValue();
+                                showNotification(name, faculty);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
 
             @Override

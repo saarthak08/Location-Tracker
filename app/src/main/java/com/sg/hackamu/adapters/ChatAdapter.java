@@ -52,6 +52,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yyyy\nhh:mm a");
             String messageTime = simpleDateFormat.format(chatMessages.get(position).getMessageTime());
             ((MyChatAdapterViewHolder) holder).Time.setText(messageTime);
+            if(chatMessages.get(position).isRead())
+            {
+                ((MyChatAdapterViewHolder)holder).read.setText("Read: Yes");
+            }
+            else{
+                ((MyChatAdapterViewHolder)holder).read.setText("Read: No");
+            }
 
         }
         else {
@@ -82,10 +89,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public class MyChatAdapterViewHolder extends RecyclerView.ViewHolder{
         TextView message;
         TextView Time;
+        TextView read;
         public MyChatAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             message=itemView.findViewById(R.id.textViewmytext);
             Time=itemView.findViewById(R.id.textViewmytime);
+            read=itemView.findViewById(R.id.textViewread);
         }
     }
 

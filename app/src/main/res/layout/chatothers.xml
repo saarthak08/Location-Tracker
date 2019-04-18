@@ -31,5 +31,6 @@
             android:paddingEnd="@dimen/dimen_8x"
             android:text="Text"
             android:textSize="12sp" />
-    </RelativeLayout>
+
+</RelativeLayout>
 
