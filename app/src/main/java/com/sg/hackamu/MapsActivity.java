@@ -2,14 +2,18 @@ package com.sg.hackamu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -30,6 +34,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 
@@ -51,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference reference;
     private Faculty user;
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
     private LocationRequest mLocationRequest;
     LatLng mylatlng;
     double userlatitude;
@@ -68,7 +75,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER )) {
+            buildAlertMessageNoGps();
+        }
+        else{
+            checkUserPermission();
+        }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+    }
+
+    public void MapUpdates()
+    {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -94,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     marker.setAccuracy(dataSnapshot.child("accuracy").getValue(Float.class));
                     marker.setAltitude(dataSnapshot.child("altitude").getValue(Double.class));
                     userlatLng = new LatLng(userlatitude, userlongitude);
-                   // Toast.makeText(MapsActivity.this, "" + userlongitude + userlatitude, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(MapsActivity.this, "" + userlongitude + userlatitude, Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
                     if(mapFragment!=null) {
@@ -215,6 +234,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 },
                 Looper.myLooper());
+    }
+
+    void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builders = new AlertDialog.Builder(this);
+        builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        permissions();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        Toast.makeText(MapsActivity.this,"Error! Turn on GPS! ",Toast.LENGTH_SHORT).show();
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builders.create();
+        alert.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    MapUpdates();
+                } else {
+                    Toast.makeText(MapsActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        }
+    }
+
+    private void checkUserPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]
+                                {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        REQUEST_LOCATION_PERMISSION);
+            }
+            else
+            {
+                MapUpdates();
+            }
+        }
+        else{
+            MapUpdates();
+        }
+    }
+
+    public void permissions()
+    {
+        checkUserPermission();
     }
 
 

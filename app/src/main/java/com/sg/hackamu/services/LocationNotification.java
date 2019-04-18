@@ -55,7 +55,7 @@ public class LocationNotification extends Service {
         databaseReference.child("geocordinates").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()) {
+                if (dataSnapshot.exists()&&dataSnapshot.getChildrenCount()!=0) {
                     uuid = dataSnapshot.getKey();
                     databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
                         @Override
@@ -117,7 +117,7 @@ public class LocationNotification extends Service {
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence names ="Location Updates";
-            String description = name+" updated realtime location.";
+            String description = name+" is currently realtime location.";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("CHANNEL", names, importance);
             channel.setDescription(description);
@@ -126,7 +126,8 @@ public class LocationNotification extends Service {
         }
         Intent intent = new Intent(this, MapsActivity.class);
         intent.putExtra("faculty",faculty);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
@@ -134,7 +135,7 @@ public class LocationNotification extends Service {
                 .setVibrate(new long[]{500, 500})
                 .setColorized(true)
                 .setContentIntent(pendingIntent)
-                .setContentText(name+" updated realtime location.")
+                .setContentText(name+" is currently sharing realtime location.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(notificationId, builder.build());
