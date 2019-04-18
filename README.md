@@ -13,6 +13,7 @@
 - Chat with any student as a teacher/faculty.
 - Enable/Hide your location if you are a faculty/teacher.
 - Offline Login/SignUp system implemented via Room Database.
+- Push notifications on several events like message recieved, self location shared or location shared by any faculty/teacher.
 
 
 
