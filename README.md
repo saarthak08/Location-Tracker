@@ -25,3 +25,7 @@
 - [Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/data-binding)
 - [Firebase & its Services](https://firebase.google.com/docs/android/setup)
 - [Google Play Services](https://developers.google.com/android/guides/setup)
+
+
+## *Note:*
+This app has two faces, one for students & one for faculty. If you want to test all the functionalities, then two android mobile phones with two different emails are required at the same time. One for the student & another for the faculty. After this, start location sharing with the device signed up as faculty, the other device will be automatically notified. Chat services can also be tested.
