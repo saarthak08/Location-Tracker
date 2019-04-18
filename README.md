@@ -29,3 +29,6 @@
 
 ## *Note:*
 This app has two faces, one for students & one for faculty. If you want to test all the functionalities, then two android mobile phones with two different emails are required at the same time. One for the student & another for the faculty. After this, start location sharing with the device signed up as faculty, the other device will be automatically notified. Chat services can also be tested.
+
+## *APK Link:*
+https://drive.google.com/open?id=1T6hRrZEpEUejbDmXAW5bG7WLTtmyHSeM
