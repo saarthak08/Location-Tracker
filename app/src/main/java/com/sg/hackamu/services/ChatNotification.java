@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.ChatActivity;
 import com.sg.hackamu.MapsActivity;
 import com.sg.hackamu.R;
@@ -59,122 +60,111 @@ public class ChatNotification extends Service {
         firebaseUser=firebaseAuth.getCurrentUser();
         firebaseDatabase= FirebaseUtils.getDatabase();
         databaseReference=firebaseDatabase.getReference();
-        databaseReference.child("chats").child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
+        databaseReference.child("chats").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull final DataSnapshot dataSnapshots, @Nullable String s) {
-                databaseReference.child("chats").child(firebaseUser.getUid()).child(dataSnapshots.getKey()).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshotk, @Nullable String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(final DataSnapshot d:dataSnapshot.getChildren())
+                {
+                    databaseReference.child("chats").child(d.getKey()).child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            if(!(dataSnapshot.getValue(ChatMessage.class).isRead())&&!ChatActivity.running)
+                            {
+                                final String uuid=d.getKey();
+                                databaseReference.child("students").addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        if (uuid.equals(dataSnapshot.getKey())) {
+                                            user = dataSnapshot.getValue(User.class);
+                                            isuser = true;
+                                            showNotification();
+                                        }
+                                            }
 
-                        if(!(dataSnapshotk.getValue(ChatMessage.class).isRead())&&!ChatActivity.running)
-                        {
-                            final String uuid=dataSnapshots.getKey();
-                            databaseReference.child("students").addChildEventListener(new ChildEventListener() {
-                                @Override
-                                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                    if(uuid.equals(dataSnapshot.getKey()))
-                                    {
-                                        user=dataSnapshot.getValue(User.class);
-                                        isuser=true;
-                                        showNotification();
+
+                                    @Override
+                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
                                     }
-                                }
 
-                                @Override
-                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    @Override
+                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                                }
-
-                                @Override
-                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                }
-
-                                @Override
-                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                            databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
-                                @Override
-                                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                    if(uuid.equals(dataSnapshot.getKey()))
-                                    {
-                                        faculty=dataSnapshot.getValue(Faculty.class);
-                                        isuser=false;
-                                        showNotification();
                                     }
-                                }
 
-                                @Override
-                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    @Override
+                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                }
+                                    }
 
-                                @Override
-                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
+                                    }
+                                });
+                                databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        if (uuid.equals(dataSnapshot.getKey())) {
+                                            if (faculty == null) {
+                                                faculty = dataSnapshot.getValue(Faculty.class);
+                                                isuser = false;
+                                                showNotification();
+                                            }
+                                        }
+                                    }
 
-                                @Override
-                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                }
+                                    @Override
+                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    }
 
-                                }
-                            });
-                        }
-                        else
-                        {
-                            if(notificationManager!=null) {
-                                notificationManager.cancel(notificationId);
+                                    @Override
+                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                             }
+                            else {
+                                if (notificationManager != null) {
+                                    notificationManager.cancel(notificationId);
+                                }
+                            }
+
                         }
-                    }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                        }
+                    });
+                }
             }
 
             @Override
@@ -197,22 +187,22 @@ public class ChatNotification extends Service {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-        Intent intent = new Intent(this, ChatActivity.class);
+       /* Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
         intent.putExtra("user",user);
         intent.setAction(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);*/
+       // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,null, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(R.drawable.ic_nav_message)
                 .setContentTitle("New Message")
                 .setVibrate(new long[]{1000, 1000})
                 .setColorized(true)
-                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setContentText(user.getName()+" dropped you a message.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH).setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(notificationId, builder.build());
+        this.user=null;
         return notificationId;
         }
         else
@@ -226,23 +216,23 @@ public class ChatNotification extends Service {
                 NotificationManager notificationManager = getSystemService(NotificationManager.class);
                 notificationManager.createNotificationChannel(channel);
             }
-            Intent intent = new Intent(this, ChatActivity.class);
+            /*Intent intent = new Intent(this, ChatActivity.class);
             intent.putExtra("faculty",faculty);
             intent.setAction(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);*/
+           // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, null, 0);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                     .setSmallIcon(R.drawable.ic_nav_message)
                     .setContentTitle("New Message")
                     .setVibrate(new long[]{500,500})
                     .setColorized(true)
-                    .setContentIntent(pendingIntent)
                     .setContentText(faculty.getName()+" dropped you a message.")
                     .setPriority(NotificationCompat.PRIORITY_HIGH).setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
             notificationManager = NotificationManagerCompat.from(getApplicationContext());
             Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             builder.setSound(uri);
             notificationManager.notify(notificationId, builder.build());
+            this.faculty=null;
             return notificationId;
 
         }
@@ -259,5 +249,11 @@ public class ChatNotification extends Service {
         List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
         ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
         return componentInfo.getPackageName().equals(myPackage);
+    }
+
+    private boolean isNotificationVisible() {
+        Intent notificationIntent = new Intent(this, ChatActivity.class);
+        PendingIntent test = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_NO_CREATE);
+        return test != null;
     }
 }

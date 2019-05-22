@@ -60,8 +60,7 @@ public class MainActivity extends AppCompatActivity
     private String TAG="MainActivity";
     private ArrayList<Faculty> faculties=new ArrayList<>();
     String uuid;
-    Intent l;
-    Intent o;
+
 
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -75,8 +74,6 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("All Faculties");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
-        o=new Intent(MainActivity.this, ChatNotification.class);
-         l=new Intent(MainActivity.this,LocationNotification.class);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
         myRef.child("faculties").keepSynced(true);
@@ -152,6 +149,8 @@ public class MainActivity extends AppCompatActivity
               //  Toast.makeText(MainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
+        Intent l=new Intent(MainActivity.this,LocationNotification.class);
+        Intent o=new Intent(MainActivity.this, ChatNotification.class);
         startService(l);
         startService(o);
     }
@@ -244,6 +243,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
+        Intent l=new Intent(MainActivity.this,LocationNotification.class);
+        Intent o=new Intent(MainActivity.this, ChatNotification.class);
         getApplicationContext().stopService(l);
         getApplicationContext().stopService(o);
         super.onDestroy();

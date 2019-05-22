@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout android:layout_width="wrap_content"
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -30,6 +31,7 @@
             android:paddingEnd="@dimen/dimen_8x"
             android:text="Text"
             android:textSize="12sp" />
+
     <TextView
         android:id="@+id/textViewread"
         android:layout_width="wrap_content"
@@ -40,6 +42,7 @@
         android:paddingStart="@dimen/dimen_8x"
         android:paddingEnd="@dimen/dimen_8x"
         android:text="Text"
-        android:textSize="12sp"  />
+        android:textSize="12sp"
+        app:fontFamily="@font/amita" />
     </RelativeLayout>
 

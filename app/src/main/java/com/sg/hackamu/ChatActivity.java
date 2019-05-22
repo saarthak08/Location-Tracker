@@ -160,7 +160,6 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
                         chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
                         chatMessage.setRead(true);
-
                         reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);

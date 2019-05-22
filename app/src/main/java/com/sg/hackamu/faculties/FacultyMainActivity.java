@@ -72,7 +72,6 @@ public class FacultyMainActivity extends AppCompatActivity
     private ArrayList<User> users=new ArrayList<>();
     String uuid;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    Intent x;
     View parent;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
@@ -82,7 +81,6 @@ public class FacultyMainActivity extends AppCompatActivity
     int notificationId=1;
     NotificationCompat.Builder builder;
     public static int l=0;
-    Intent o;
     NotificationManagerCompat notificationManager;
 
 
@@ -94,13 +92,11 @@ public class FacultyMainActivity extends AppCompatActivity
         // setSupportActionBar(toolbar);
         //getSupportActionBar().setTitle("All Users");
         // getActionBar().setTitle("All Users");
-        x= new Intent(FacultyMainActivity.this, GetLocation.class);
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
         parent=findViewById(android.R.id.content);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
-        o=new Intent(FacultyMainActivity.this, ChatNotification.class);
         showNotification();
         myRef.child("students").keepSynced(true);
         floatingActionButton=findViewById(R.id.floatingActionButton);
@@ -177,6 +173,7 @@ public class FacultyMainActivity extends AppCompatActivity
                 {
                    check=false;
                    l=0;
+                    Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
                     getApplicationContext().stopService(x);
                     notificationManager.cancel(notificationId);
                     Snackbar.make(v,"Location Hidden",Snackbar.LENGTH_SHORT).show();
@@ -195,6 +192,7 @@ public class FacultyMainActivity extends AppCompatActivity
                 }
             }
         });
+        Intent o=new Intent(FacultyMainActivity.this, ChatNotification.class);
         startService(o);
     }
     private void showData(DataSnapshot dataSnapshot){
@@ -274,6 +272,7 @@ public class FacultyMainActivity extends AppCompatActivity
                     l=1;
                     Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
                     notificationManager.notify(notificationId, builder.build());
+                    Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
                     startService(x);
                 } else {
                     Toast.makeText(FacultyMainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
@@ -300,6 +299,7 @@ public class FacultyMainActivity extends AppCompatActivity
                 l=1;
                 Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
                 notificationManager.notify(notificationId, builder.build());
+                Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
                 startService(x);
             }
         }
@@ -307,6 +307,7 @@ public class FacultyMainActivity extends AppCompatActivity
             l=1;
             Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
             notificationManager.notify(notificationId, builder.build());
+            Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
             startService(x);
         }
     }
@@ -315,7 +316,9 @@ public class FacultyMainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         myRef.child("geocordinates").child(firebaseUser.getUid()).removeValue();
+        Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
         getApplicationContext().stopService(x);
+        Intent o=new Intent(FacultyMainActivity.this, ChatNotification.class);
         getApplicationContext().stopService(o);
         super.onDestroy();
     }
