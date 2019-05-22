@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -29,6 +30,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.net.InetAddress;
+
 public class LocationNotification extends Service {
     private FirebaseAuth firebaseAuth;
     Faculty faculty;
@@ -48,76 +51,84 @@ public class LocationNotification extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        firebaseAuth=FirebaseAuth.getInstance();
-        firebaseUser=firebaseAuth.getCurrentUser();
-        firebaseDatabase= FirebaseUtils.getDatabase();
-        databaseReference=firebaseDatabase.getReference();
-        databaseReference.child("geocordinates").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()&&dataSnapshot.getChildrenCount()!=0) {
-                    uuid = dataSnapshot.getKey();
-                    databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            if (uuid.equals(dataSnapshot.getKey())) {
-                                faculty = dataSnapshot.getValue(Faculty.class);
-                                String name = (String) dataSnapshot.child("name").getValue();
-                                showNotification(name, faculty);
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseDatabase = FirebaseUtils.getDatabase();
+        databaseReference = firebaseDatabase.getReference();
+            databaseReference.child("geocordinates").addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() != 0) {
+                        uuid = dataSnapshot.getKey();
+                        databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                if (uuid.equals(dataSnapshot.getKey())) {
+                                    if (isNetworkConnected()) {
+                                        faculty = dataSnapshot.getValue(Faculty.class);
+                                        String name = (String) dataSnapshot.child("name").getValue();
+                                        showNotification(name, faculty);
+                                    }
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            }
+                }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                notificationManager.cancel(notificationId);
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    if(notificationManager!=null)
+                    {
+                        if(notificationManager.areNotificationsEnabled())
+                        {
+                            notificationManager.cancel(notificationId);
+                        }
+                    }
 
-            }
+                }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
     }
 
     public int showNotification(String name,Faculty faculty)
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence names ="Location Updates";
-            String description = name+" is currently realtime location.";
+            String description = name+" is currently sharing realtime location.";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("CHANNEL", names, importance);
             channel.setDescription(description);
@@ -150,4 +161,10 @@ public class LocationNotification extends Service {
         stopSelf();
         super.onDestroy();
     }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
+
 }

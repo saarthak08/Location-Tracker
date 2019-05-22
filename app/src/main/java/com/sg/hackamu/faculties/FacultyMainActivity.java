@@ -329,7 +329,6 @@ public class FacultyMainActivity extends AppCompatActivity
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        checkUserPermission();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
