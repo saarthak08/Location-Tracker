@@ -129,8 +129,10 @@ public class ChatActivity extends AppCompatActivity {
                     recyclerView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            recyclerView.smoothScrollToPosition(
-                                    recyclerView.getAdapter().getItemCount() - 1);
+                            if(recyclerView.getAdapter().getItemCount()>0) {
+                                recyclerView.smoothScrollToPosition(
+                                        recyclerView.getAdapter().getItemCount() - 1);
+                            }
                         }
                     }, 100);
                 }
