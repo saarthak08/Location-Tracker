@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="preloaded_fonts" translatable="false">
+        <item>@font/almendra_display</item>
+        <item>@font/almendra_italic</item>
         <item>@font/amita</item>
+        <item>@font/berkshire_swash</item>
+        <item>@font/homemade_apple</item>
+        <item>@font/new_rocker</item>
+        <item>@font/trade_winds</item>
     </array>
 </resources>

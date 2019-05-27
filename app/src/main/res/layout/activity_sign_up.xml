@@ -9,7 +9,9 @@
             type="com.sg.hackamu.students.SignUpActivity.SignupactivityClickHandlers"/>
     </data>
 
-
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,6 +23,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:padding="@dimen/dimen_64x"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:srcCompat="@drawable/amulogo"
@@ -135,4 +138,5 @@
         android:textColorHint="@color/white" />
 
 </LinearLayout>
+</androidx.core.widget.NestedScrollView>
 </layout>

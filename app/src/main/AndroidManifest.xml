@@ -64,6 +64,7 @@
         <activity
             android:name=".students.LoginActivity"
             android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".students.MainActivity"
             android:label="@string/title_activity_main"
