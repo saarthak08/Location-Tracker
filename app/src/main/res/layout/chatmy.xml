@@ -30,6 +30,7 @@
             android:paddingStart="@dimen/dimen_8x"
             android:paddingEnd="@dimen/dimen_8x"
             android:text="Text"
+            android:textColor="@color/gradient_4_start"
             android:textSize="12sp" />
 
     <TextView
@@ -42,6 +43,7 @@
         android:paddingStart="@dimen/dimen_8x"
         android:paddingEnd="@dimen/dimen_8x"
         android:text="Text"
+        android:textColor="@color/gradient_4_start"
         android:textSize="12sp"
         app:fontFamily="@font/amita" />
     </RelativeLayout>

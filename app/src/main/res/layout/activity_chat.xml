@@ -6,14 +6,15 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/chatbg"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ChatActivity">
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="@dimen/dimen_4x"
-        android:layout_marginStart="@dimen/dimen_4x"
-        android:layout_marginEnd="@dimen/dimen_4x"
+        android:paddingTop="@dimen/dimen_4x"
+        android:paddingStart="@dimen/dimen_4x"
+        android:paddingEnd="@dimen/dimen_4x"
         android:id="@+id/recyclerViewChat"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -41,9 +42,16 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_64x"
-        android:layout_marginEnd="@dimen/dimen_64x"
-        android:layout_marginRight="@dimen/dimen_64x"
+        android:layout_height="52dp"
+        android:layout_marginEnd="52dp"
+        android:layout_marginRight="52dp"
+        android:background="@drawable/chatboxcircle"
+        app:hintEnabled="false"
+        android:gravity="bottom"
+        android:foregroundGravity="bottom"
+        android:paddingBottom="@dimen/dimen_4x"
+        android:paddingStart="@dimen/dimen_4x"
+        android:paddingEnd="@dimen/dimen_4x"
         app:layout_constraintEnd_toStartOf="@id/floatingActionButtonSend"
         app:layout_constraintStart_toStartOf="@+id/recyclerViewChat"
         app:layout_constraintTop_toBottomOf="@id/recyclerViewChat">
@@ -52,18 +60,20 @@
             android:id="@+id/chattext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_message"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
             android:paddingStart="@dimen/dimen_16x"
             android:paddingLeft="@dimen/dimen_16x"
             android:paddingEnd="@dimen/dimen_16x"
-            android:paddingRight="@dimen/dimen_16x"
-            android:paddingBottom="@dimen/dimen_8x" />
+            android:textSize="@dimen/text_16x"
+            android:hint="@string/enter_message"
+            android:paddingRight="@dimen/dimen_16x" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButtonSend"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:clickable="true"
         android:focusable="true"
         android:foregroundGravity="center"

@@ -12,8 +12,8 @@
     <color name="gradient_2_start">#88d3ce</color>
     <color name="gradient_2_end">#6e45e2</color>
     <color name="gradient_3_start">#84fab0</color>
-    <color name="gradient_3_end">#8fd3f4</color>
+    <color name="gradient_3_end">#5A95B1</color>
     <color name="gradient_4_start">#89f7fe</color>
     <color name="gradient_4_end">#66a6ff</color>
-    <color name="colorBackground">#94B7C3</color>
+    <color name="colorBackground">#Ffffff</color>
 </resources>

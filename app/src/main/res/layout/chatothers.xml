@@ -29,6 +29,7 @@
             android:layout_alignParentLeft="true"
             android:paddingStart="@dimen/dimen_8x"
             android:paddingEnd="@dimen/dimen_8x"
+            android:textColor="@color/gradient_4_start"
             android:text="Text"
             android:textSize="12sp" />
 
