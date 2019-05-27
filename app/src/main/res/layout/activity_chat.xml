@@ -1,73 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/constraintlayout"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/constraintlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ChatActivity">
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="@dimen/dimen_4x"
-            android:layout_marginStart="@dimen/dimen_4x"
-            android:layout_marginEnd="@dimen/dimen_4x"
-            android:id="@+id/recyclerViewChat"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dimen_64x"
-            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="@dimen/dimen_4x"
+        android:layout_marginStart="@dimen/dimen_4x"
+        android:layout_marginEnd="@dimen/dimen_4x"
+        android:id="@+id/recyclerViewChat"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dimen_64x"
+        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <ProgressBar
-            android:id="@+id/progressBarChat"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ProgressBar
+        android:id="@+id/progressBarChat"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_64x"
+        android:layout_marginEnd="@dimen/dimen_64x"
+        android:layout_marginRight="@dimen/dimen_64x"
+        app:layout_constraintEnd_toStartOf="@id/floatingActionButtonSend"
+        app:layout_constraintStart_toStartOf="@+id/recyclerViewChat"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewChat">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/chattext"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_64x"
-            android:layout_marginEnd="@dimen/dimen_64x"
-            android:layout_marginRight="@dimen/dimen_64x"
-            app:layout_constraintEnd_toStartOf="@id/floatingActionButtonSend"
-            app:layout_constraintStart_toStartOf="@+id/recyclerViewChat"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewChat">
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_message"
+            android:paddingStart="@dimen/dimen_16x"
+            android:paddingLeft="@dimen/dimen_16x"
+            android:paddingEnd="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_16x"
+            android:paddingBottom="@dimen/dimen_8x" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/chattext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/enter_message"
-                android:paddingStart="@dimen/dimen_16x"
-                android:paddingLeft="@dimen/dimen_16x"
-                android:paddingEnd="@dimen/dimen_16x"
-                android:paddingRight="@dimen/dimen_16x"
-                android:paddingBottom="@dimen/dimen_8x" />
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButtonSend"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foregroundGravity="center"
+        app:layout_constraintStart_toEndOf="@id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewChat"
+        app:srcCompat="@drawable/ic_menu_send" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButtonSend"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foregroundGravity="center"
-            app:layout_constraintStart_toEndOf="@id/textInputLayout"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewChat"
-            app:srcCompat="@drawable/ic_menu_send" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

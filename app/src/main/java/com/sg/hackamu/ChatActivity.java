@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -75,10 +77,7 @@ public class ChatActivity extends AppCompatActivity {
     Faculty faculty;
     public static boolean running;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private static Observable<Boolean> observable;
-    private static CompositeDisposable compositeDisposable=new CompositeDisposable();
     Intent x;
-    Boolean read;
     boolean isuser;
 
 
@@ -104,6 +103,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         progressBar = findViewById(R.id.progressBarChat);
@@ -119,38 +119,23 @@ public class ChatActivity extends AppCompatActivity {
         firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
         user=i.getParcelableExtra("user");
-        final TextView readtext=findViewById(R.id.textViewread);
-        observable=Observable.create(new ObservableOnSubscribe<Boolean>() {
+        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                emitter.onNext(read);
-                emitter.onComplete();
+            public void onLayoutChange(View v,
+                                       int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    recyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.smoothScrollToPosition(
+                                    recyclerView.getAdapter().getItemCount() - 1);
+                        }
+                    }, 100);
+                }
             }
         });
-        compositeDisposable.add(observable.subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<Boolean>() {
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if(aBoolean)
-                {
-                    readtext.setText("Yes");
-                }
-                else {
-                    readtext.setText("No");
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        }));
+    final TextView readtext=findViewById(R.id.textViewread);
         if(isuser) {
             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
@@ -163,7 +148,6 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
                         chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
                         chatMessage.setRead(true);
-                        read=true;
                         reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);
@@ -208,7 +192,6 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
                         chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
                         chatMessage.setRead(true);
-                        read=true;
                         reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);
