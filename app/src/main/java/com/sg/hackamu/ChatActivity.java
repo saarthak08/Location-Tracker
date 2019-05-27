@@ -75,6 +75,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ChatAdapter chatAdapter;
     Faculty faculty;
+    private CompositeDisposable compositeDisposable=new CompositeDisposable();
     public static boolean running;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     Intent x;
@@ -159,6 +160,22 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        ChatMessage chatMessage=new ChatMessage();
+                        int index=-1;
+                        chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
+                        chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
+                        chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
+                        chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
+                        chatMessage.setRead(true);
+                        for(ChatMessage c:chatMessages)
+                        {
+                            if(chatMessage.getMessageTime()==c.getMessageTime())
+                            {
+                                index=chatMessages.indexOf(c);
+                            }
+                        }
+                    chatMessages.set(index,chatMessage);
+                    chatAdapter.notifyDataSetChanged();
 
                 }
 
@@ -204,6 +221,23 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        ChatMessage chatMessage=new ChatMessage();
+                        int index=-1;
+                        chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
+                        chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
+                        chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
+                        chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
+                        chatMessage.setRead(true);
+                        for(ChatMessage c:chatMessages)
+                        {
+                            if(chatMessage.getMessageTime()==c.getMessageTime())
+                            {
+                                index=chatMessages.indexOf(c);
+                            }
+                        }
+                        chatMessages.set(index,chatMessage);
+                        chatAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -266,33 +300,6 @@ public class ChatActivity extends AppCompatActivity {
         if (chatMessages.size() == 0) {
             progressBar.setVisibility(View.INVISIBLE);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        firebaseAuth.addAuthStateListener(authStateListener);
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        if (authStateListener != null) {
-            firebaseAuth.removeAuthStateListener(authStateListener);
-        }
-        super.onStop();
-
-    }
-
-    @Override
-    protected void onPause() {
-        running=false;
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        running=true;
-        super.onResume();
     }
 
     @Override
@@ -389,4 +396,37 @@ public class ChatActivity extends AppCompatActivity {
         alert.show();
     }
 
+
+    @Override
+    protected void onStart() {
+        firebaseAuth.addAuthStateListener(authStateListener);
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        if (authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+        super.onStop();
+
+    }
+
+    @Override
+    protected void onPause() {
+        running=false;
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        running=true;
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
 }

@@ -26,8 +26,6 @@ import io.reactivex.schedulers.Schedulers;
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<ChatMessage> chatMessages;
     private Context context;
-    public Observable<Boolean> booleanObservable;
-    public CompositeDisposable compositeDisposable;
     public static int VIEW_TYPE_MYCHAT= 0;
     public static int VIEW_TYPE_OTHERSCHAT = 1;
     FirebaseUser firebaseUser;
@@ -37,7 +35,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.chatMessages = chatMessages;
         this.context = context;
         this.firebaseUser=firebaseUser;
-        compositeDisposable=new CompositeDisposable();
 
     }
 
@@ -70,29 +67,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             else{
                 ((MyChatAdapterViewHolder)holder).read.setText("Read: No");
-                booleanObservable=Observable.just(chatMessages.get(position).isRead());
-                compositeDisposable.add(booleanObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if(aBoolean)
-                        {
-                            ((MyChatAdapterViewHolder)holder).read.setText("Read: Yes");
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("ReadRxError",e.getMessage());
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                }));
             }
 
         }
