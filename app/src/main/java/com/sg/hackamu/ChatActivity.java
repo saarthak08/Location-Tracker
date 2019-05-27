@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,6 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.sg.hackamu.adapters.ChatAdapter;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.ChatMessage;
@@ -43,6 +45,16 @@ import com.sg.hackamu.models.User;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import java.util.ArrayList;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -63,7 +75,10 @@ public class ChatActivity extends AppCompatActivity {
     Faculty faculty;
     public static boolean running;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private static Observable<Boolean> observable;
+    private static CompositeDisposable compositeDisposable=new CompositeDisposable();
     Intent x;
+    Boolean read;
     boolean isuser;
 
 
@@ -104,6 +119,38 @@ public class ChatActivity extends AppCompatActivity {
         firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
         user=i.getParcelableExtra("user");
+        final TextView readtext=findViewById(R.id.textViewread);
+        observable=Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                emitter.onNext(read);
+                emitter.onComplete();
+            }
+        });
+        compositeDisposable.add(observable.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(new DisposableObserver<Boolean>() {
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if(aBoolean)
+                {
+                    readtext.setText("Yes");
+                }
+                else {
+                    readtext.setText("No");
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        }));
         if(isuser) {
             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
@@ -116,6 +163,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
                         chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
                         chatMessage.setRead(true);
+                        read=true;
                         reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);
@@ -160,6 +208,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
                         chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
                         chatMessage.setRead(true);
+                        read=true;
                         reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);

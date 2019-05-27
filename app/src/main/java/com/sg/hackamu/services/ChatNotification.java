@@ -68,6 +68,7 @@ public class ChatNotification extends Service {
                     databaseReference.child("chats").child(d.getKey()).child(firebaseUser.getUid()).addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            final ChatMessage message=dataSnapshot.getValue(ChatMessage.class);
                             if(!(dataSnapshot.getValue(ChatMessage.class).isRead())&&!ChatActivity.running)
                             {
                                 final String uuid=d.getKey();
@@ -77,7 +78,7 @@ public class ChatNotification extends Service {
                                         if (uuid.equals(dataSnapshot.getKey())) {
                                             user = dataSnapshot.getValue(User.class);
                                             isuser = true;
-                                            showNotification();
+                                            showNotification(user,faculty,message,isuser);
                                         }
                                             }
 
@@ -109,7 +110,7 @@ public class ChatNotification extends Service {
                                             if (faculty == null) {
                                                 faculty = dataSnapshot.getValue(Faculty.class);
                                                 isuser = false;
-                                                showNotification();
+                                                showNotification(user,faculty,message,isuser);
                                             }
                                         }
                                     }
@@ -174,31 +175,35 @@ public class ChatNotification extends Service {
         });
     }
 
-    public int showNotification()
+    public int showNotification(User user,Faculty faculty,ChatMessage message,boolean isuser)
     {
+        int requestID = (int) System.currentTimeMillis();
         if(isuser)
         {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence names ="New Message";
-            String description = user.getName()+" dropped you a message.";
+            String description = user.getName();
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("CHANNEL", names, importance);
-            channel.setDescription(description);
+            channel.setDescription(description+message.getMessageText());
+            channel.setName(names);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-       /* Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
         intent.putExtra("user",user);
         intent.setAction(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);*/
-       // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,null, 0);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestID,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(R.drawable.ic_nav_message)
-                .setContentTitle("New Message")
+                .setContentTitle(user.getName())
                 .setVibrate(new long[]{1000, 1000})
                 .setColorized(true)
+                .setContentIntent(pendingIntent)
+                .setContentText(message.getMessageText())
                 .setAutoCancel(true)
-                .setContentText(user.getName()+" dropped you a message.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH).setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(notificationId, builder.build());
@@ -209,24 +214,28 @@ public class ChatNotification extends Service {
         {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 CharSequence names ="New Message";
-                String description = faculty.getName()+" dropped you a message.";
+                String description = faculty.getName();
                 int importance = NotificationManager.IMPORTANCE_DEFAULT;
                 NotificationChannel channel = new NotificationChannel("CHANNEL", names, importance);
-                channel.setDescription(description);
+                channel.setDescription(description+message.getMessageText());
+                channel.setName(names);
                 NotificationManager notificationManager = getSystemService(NotificationManager.class);
                 notificationManager.createNotificationChannel(channel);
             }
-            /*Intent intent = new Intent(this, ChatActivity.class);
+            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
             intent.putExtra("faculty",faculty);
             intent.setAction(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);*/
-           // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, null, 0);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, requestID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                     .setSmallIcon(R.drawable.ic_nav_message)
-                    .setContentTitle("New Message")
+                    .setContentTitle(faculty.getName())
                     .setVibrate(new long[]{500,500})
                     .setColorized(true)
-                    .setContentText(faculty.getName()+" dropped you a message.")
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .setContentText(message.getMessageText())
                     .setPriority(NotificationCompat.PRIORITY_HIGH).setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
             notificationManager = NotificationManagerCompat.from(getApplicationContext());
             Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
