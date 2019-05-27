@@ -19,7 +19,6 @@
 
 
 ## *Libraries Used:*
-- [Retrofit](https://github.com/square/retrofit)
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
 - [Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/data-binding)
@@ -32,4 +31,4 @@
 - Location & distance may not be too accurate as it depends on several factors like internet connection speed, location mode etc. Accuracy improves by time.
 
 ## *Screenshots:*
-<img src="https://user-images.githubusercontent.com/38679082/58202271-aeead200-7cf4-11e9-943d-7203f6be1a77.png" alt="Location Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202274-aeead200-7cf4-11e9-9d80-b477ed379bd6.png" alt="Navigation Drawer" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202278-b01bff00-7cf4-11e9-8874-f466a3dfb220.jpeg" alt="Faculty Activity Location On" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202277-af836880-7cf4-11e9-8f7f-e1e7ad119a08.jpeg" alt="Faculty Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202275-af836880-7cf4-11e9-8c06-2a60882b6bac.png" alt="Students Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202279-b01bff00-7cf4-11e9-9c4e-46574220d948.jpeg" alt="Chat Activity" width="250"/>
+<img src="https://user-images.githubusercontent.com/38679082/58202271-aeead200-7cf4-11e9-943d-7203f6be1a77.png" alt="Location Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202274-aeead200-7cf4-11e9-9d80-b477ed379bd6.png" alt="Navigation Drawer" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202278-b01bff00-7cf4-11e9-8874-f466a3dfb220.jpeg" alt="Faculty Activity Location On" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58437536-053a8500-80e8-11e9-90cf-76ca374b79f3.jpeg" alt="Faculty Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202275-af836880-7cf4-11e9-8c06-2a60882b6bac.png" alt="Students Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58437535-04a1ee80-80e8-11e9-945d-9ee4baacfe83.jpeg" alt="Chat Activity" width="250"/>
