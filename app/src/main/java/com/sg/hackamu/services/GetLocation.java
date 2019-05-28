@@ -157,7 +157,7 @@ public class GetLocation extends Service {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                     .setSmallIcon(R.drawable.amulogo)
                     .setContentTitle("Location Updates")
-                    .setContentText("Your realtime location is currently shared. If hiding the location doesn't work, then clear the app from memory")
+                    .setContentText("Your realtime location is currently shared.")
                     .setColorized(true)
                     .setOnlyAlertOnce(true)
                     .setOngoing(true)

@@ -126,6 +126,7 @@ public class LocationNotification extends Service {
 
     public int showNotification(String name,Faculty faculty)
     {
+        int requestID = (int) System.currentTimeMillis();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence names ="Location Updates";
             String description = name+" is currently sharing realtime location.";
@@ -139,7 +140,8 @@ public class LocationNotification extends Service {
         intent.putExtra("faculty",faculty);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
                 .setContentTitle("Location Updates")
