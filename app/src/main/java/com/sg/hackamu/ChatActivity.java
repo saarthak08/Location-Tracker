@@ -38,25 +38,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.sg.hackamu.adapters.ChatAdapter;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.User;
 import com.sg.hackamu.utils.FirebaseUtils;
-
 import java.util.ArrayList;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -75,7 +64,6 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ChatAdapter chatAdapter;
     Faculty faculty;
-    private CompositeDisposable compositeDisposable=new CompositeDisposable();
     public static boolean running;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     Intent x;
@@ -429,6 +417,5 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        compositeDisposable.clear();
     }
 }

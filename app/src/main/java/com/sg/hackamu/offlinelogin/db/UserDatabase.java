@@ -11,7 +11,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {User.class}, version=2)
+@Database(entities = {User.class}, version=2,exportSchema = false)
 public abstract class UserDatabase extends RoomDatabase {
     public abstract UsersDAO getUsersDAO();
     private static UserDatabase instance;
