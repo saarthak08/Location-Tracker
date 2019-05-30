@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -57,6 +58,9 @@ public class GetLocation extends Service {
     FirebaseDatabase firebaseDatabase;
     int notificationId=2;
     public static int runservice=0;
+    public static NotificationManagerCompat notificationManager;
+    public static NotificationCompat.Builder builder;
+
 
 
 
@@ -75,6 +79,7 @@ public class GetLocation extends Service {
         runservice=1;
             getLastLocation();
             startLocationUpdates();
+            showNotification();
     }
 
 
@@ -152,29 +157,37 @@ public class GetLocation extends Service {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("CHANNEL", name, importance);
             channel.setDescription(description);
-
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
-                    .setSmallIcon(R.drawable.amulogo)
+
+        Intent intent = new Intent(this, FacultyMainActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+             builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
+                    .setSmallIcon(android.R.drawable.ic_menu_mylocation)
                     .setContentTitle("Location Updates")
                     .setContentText("Your realtime location is currently shared.")
                     .setColorized(true)
                     .setOnlyAlertOnce(true)
+                    .setContentIntent(pendingIntent)
                     .setOngoing(true)
-                    .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                     .setVibrate(new long[]{500, 500})
                     .setPriority(NotificationCompat.PRIORITY_HIGH);
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+         notificationManager = NotificationManagerCompat.from(getApplicationContext());
             notificationManager.notify(notificationId, builder.build());
     }
     @Override
     public void onDestroy() {
         FacultyMainActivity.l=0;
         runservice=0;
+        notificationManager.cancel(notificationId);
         reference.child("geocordinates").child(firebaseUser.getUid()).removeValue();
         super.onDestroy();
     }
+
 
 }
 

@@ -77,10 +77,7 @@ public class FacultyMainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     StudentsAdapter studentsAdapter;
     FloatingActionButton floatingActionButton;
-    int notificationId=1;
-    NotificationCompat.Builder builder;
     public static int l=0;
-    NotificationManagerCompat notificationManager;
 
 
     @Override
@@ -94,7 +91,6 @@ public class FacultyMainActivity extends AppCompatActivity
         parent=findViewById(android.R.id.content);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
-        showNotification();
         myRef.child("students").keepSynced(true);
         floatingActionButton=findViewById(R.id.floatingActionButton);
         floatingActionButton.setVisibility(View.VISIBLE);
@@ -171,7 +167,6 @@ public class FacultyMainActivity extends AppCompatActivity
                    l=0;
                     Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
                     getApplicationContext().stopService(x);
-                    notificationManager.cancel(notificationId);
                     Snackbar.make(v,"Location Hidden",Snackbar.LENGTH_SHORT).show();
                 }
                 else
@@ -266,7 +261,6 @@ public class FacultyMainActivity extends AppCompatActivity
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     l=1;
                     Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
-                    notificationManager.notify(notificationId, builder.build());
                     Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
                     startService(x);
                 } else {
@@ -293,7 +287,6 @@ public class FacultyMainActivity extends AppCompatActivity
             {
                 l=1;
                 Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
-                notificationManager.notify(notificationId, builder.build());
                 Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
                 startService(x);
             }
@@ -301,7 +294,6 @@ public class FacultyMainActivity extends AppCompatActivity
         else{
             l=1;
             Snackbar.make(parent,"Location Visible",Snackbar.LENGTH_SHORT).show();
-            notificationManager.notify(notificationId, builder.build());
             Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
             startService(x);
         }
@@ -327,40 +319,15 @@ public class FacultyMainActivity extends AppCompatActivity
         alert.show();
     }
 
-    public void showNotification() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name ="Location Updates";
-            String description = "Your realtime location is currently shared.";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("CHANNEL", name, importance);
-            channel.setDescription(description);
+    @Override
+    protected void onDestroy() {
+        myRef.child("geocordinates").child(firebaseUser.getUid()).removeValue();
+        GetLocation.notificationManager.cancel(2);
+        Intent x=new Intent(getApplicationContext(),GetLocation.class);
+        getApplicationContext().stopService(x);
+        super.onDestroy();
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        Intent intent = new Intent(this, FacultyMainActivity.class);
-        intent.setAction(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
-                .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-                .setContentTitle("Location Updates")
-                .setContentText("Your realtime location is currently shared.\nTap to hide it.")
-                .setColorized(true)
-                .setContentIntent(pendingIntent)
-                .setVibrate(new long[]{500, 500})
-                .setPriority(NotificationCompat.PRIORITY_HIGH).setOngoing(true);
-
-        notificationManager  = NotificationManagerCompat.from(getApplicationContext());
-        //notificationManager.notify(notificationId, builder.build());
     }
 
-    public void permissions()
-    {
-        checkUserPermission();
-    }
 
 }
