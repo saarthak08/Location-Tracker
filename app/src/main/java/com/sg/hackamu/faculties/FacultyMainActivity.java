@@ -55,6 +55,7 @@ import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.User;
 import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.GetLocation;
+import com.sg.hackamu.students.MainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import java.util.ArrayList;
@@ -322,9 +323,11 @@ public class FacultyMainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         myRef.child("geocordinates").child(firebaseUser.getUid()).removeValue();
-        GetLocation.notificationManager.cancel(2);
-        Intent x=new Intent(getApplicationContext(),GetLocation.class);
-        getApplicationContext().stopService(x);
+        if(GetLocation.runservice==1) {
+            GetLocation.notificationManager.cancel(2);
+            Intent x = new Intent(getApplicationContext(), GetLocation.class);
+            getApplicationContext().stopService(x);
+        }
         super.onDestroy();
 
     }

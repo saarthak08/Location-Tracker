@@ -149,6 +149,7 @@ public class LocationNotification extends Service {
                 .setVibrate(new long[]{500, 500})
                 .setColorized(true)
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .setContentText(name+" is currently sharing realtime location.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());

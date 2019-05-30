@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -27,11 +28,18 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CustomCap;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -45,6 +53,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -60,21 +71,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private LocationRequest mLocationRequest;
     LatLng mylatlng;
+    private static final int COLOR_BLACK_ARGB = 0xff000000;
+    private static final int POLYLINE_STROKE_WIDTH_PX = 12;
     double userlatitude;
     double userlongitude;
     MarkerOptions markerOptions;
     LatLng userlatLng;
+    Polyline polyline1;
     Location marker;
+    List<LatLng> polylinelist;
     Location currentLocation;
     private TextView textView;
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
-    @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        polylinelist=new ArrayList<LatLng>(2);
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER )) {
             buildAlertMessageNoGps();
@@ -118,6 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .findFragmentById(R.id.map);
                     if(mapFragment!=null) {
                         mapFragment.getMapAsync(MapsActivity.this);
+
                     }
                 }
                 else{
@@ -144,9 +160,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(userlatLng!=null) {
             markerOptions.position(userlatLng).title(user.getName());
             googleMap.addMarker(markerOptions);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userlatitude, userlongitude), 17.0f));
+            if(mylatlng!=null)
+            {
+                if(polyline1==null) {
+                    Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
+                    polyline1 = googleMap.addPolyline(new PolylineOptions()
+                            .add(mylatlng,
+                                    mylatlng,
+                                    userlatLng).width(5).color(Color.BLUE).geodesic(true).zIndex(5f).visible(true));
+                }
+                else
+                {
+                    polylinelist.clear();
+                    polylinelist.add(mylatlng);
+                    polylinelist.add(userlatLng);
+                    polyline1.setPoints(polylinelist);
+                }
+            }
         }
         mMap = googleMap;
-
     }
 
     public void onLocationChanged(Location location) {
@@ -155,6 +188,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         if(mapFragment!=null) {
             mapFragment.getMapAsync(MapsActivity.this);
+
         }
     }
 
@@ -212,8 +246,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
-
-
                         // do work here
                         if (locationResult != null) {
                             if(marker!=null) {
@@ -298,5 +330,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         checkUserPermission();
     }
 
+
+
+    private void stylePolyline(Polyline polyline) {
+        String type = "";
+        // Get the data object stored with the polyline.
+        if (polyline.getTag() != null) {
+            type = polyline.getTag().toString();
+        }
+
+        switch (type) {
+            // If no type is given, allow the API to use the default.
+            case "A":
+                // Use a custom bitmap as the cap at the start of the line.
+                polyline.setStartCap(
+                        new CustomCap(
+                                BitmapDescriptorFactory.fromResource(android.R.drawable.arrow_down_float
+                                ), 10));
+                break;
+            case "B":
+                // Use a round cap at the start of the line.
+                polyline.setStartCap(new RoundCap());
+                break;
+        }
+
+        polyline.setEndCap(new RoundCap());
+        polyline.setWidth(POLYLINE_STROKE_WIDTH_PX);
+        polyline.setColor(COLOR_BLACK_ARGB);
+        polyline.setJointType(JointType.ROUND);
+    }
 
 }
