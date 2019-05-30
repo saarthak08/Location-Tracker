@@ -164,7 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(mylatlng!=null)
             {
                 if(polyline1==null) {
-                    Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
                     polyline1 = googleMap.addPolyline(new PolylineOptions()
                             .add(mylatlng,
                                     mylatlng,
@@ -172,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else
                 {
+                 //   Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
                     polylinelist.clear();
                     polylinelist.add(mylatlng);
                     polylinelist.add(userlatLng);

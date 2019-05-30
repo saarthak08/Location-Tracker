@@ -25,6 +25,7 @@
         <activity android:name=".utils.VerifyActivity" />
         <activity
             android:name=".faculties.FacultyMainActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".faculties.FacultySignUp"
@@ -68,6 +69,7 @@
         <activity
             android:name=".students.MainActivity"
             android:label="@string/title_activity_main"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LauncherActivity"

@@ -196,7 +196,7 @@ public class ChatNotification extends Service {
         intent.putExtra("user",user);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), requestID,new Intent[]{new Intent(getApplicationContext(), FacultyMainActivity.class),intent}, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(R.drawable.ic_nav_message)
@@ -228,8 +228,8 @@ public class ChatNotification extends Service {
             intent.putExtra("faculty",faculty);
             intent.setAction(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), requestID,new Intent[]{new Intent(getApplicationContext(), MainActivity.class),intent}, PendingIntent.FLAG_ONE_SHOT);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), requestID,new Intent[]{new Intent(getApplicationContext(), MainActivity.class),intent}, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                     .setSmallIcon(R.drawable.ic_nav_message)
                     .setContentTitle(faculty.getName())

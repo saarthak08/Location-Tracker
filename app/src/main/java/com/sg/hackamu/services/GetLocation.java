@@ -165,7 +165,7 @@ public class GetLocation extends Service {
         Intent intent = new Intent(this, FacultyMainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
              builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                     .setSmallIcon(android.R.drawable.ic_menu_mylocation)
