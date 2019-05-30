@@ -241,12 +241,4 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        Intent l=new Intent(MainActivity.this,LocationNotification.class);
-        Intent o=new Intent(MainActivity.this, ChatNotification.class);
-        getApplicationContext().stopService(l);
-        getApplicationContext().stopService(o);
-        super.onDestroy();
-    }
 }

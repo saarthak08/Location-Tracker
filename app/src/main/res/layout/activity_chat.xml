@@ -62,9 +62,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="bottom"
+            android:nextFocusDown="@id/chattext"
             android:paddingStart="@dimen/dimen_16x"
             android:paddingLeft="@dimen/dimen_16x"
             android:paddingEnd="@dimen/dimen_16x"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
             android:textSize="@dimen/text_16x"
             android:hint="@string/enter_message"
             android:paddingRight="@dimen/dimen_16x" />

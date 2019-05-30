@@ -56,6 +56,7 @@ public class GetLocation extends Service {
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
     int notificationId=2;
+    public static int runservice=0;
 
 
 
@@ -71,6 +72,7 @@ public class GetLocation extends Service {
         firebaseUser=firebaseAuth.getCurrentUser();
         firebaseDatabase=FirebaseDatabase.getInstance();
         reference=firebaseDatabase.getReference();
+        runservice=1;
             getLastLocation();
             startLocationUpdates();
     }
@@ -169,8 +171,8 @@ public class GetLocation extends Service {
     @Override
     public void onDestroy() {
         FacultyMainActivity.l=0;
+        runservice=0;
         reference.child("geocordinates").child(firebaseUser.getUid()).removeValue();
-        stopSelf();
         super.onDestroy();
     }
 

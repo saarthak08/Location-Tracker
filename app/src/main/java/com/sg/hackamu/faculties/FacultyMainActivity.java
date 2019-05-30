@@ -77,7 +77,6 @@ public class FacultyMainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     StudentsAdapter studentsAdapter;
     FloatingActionButton floatingActionButton;
-    public static boolean check=false;
     int notificationId=1;
     NotificationCompat.Builder builder;
     public static int l=0;
@@ -167,9 +166,8 @@ public class FacultyMainActivity extends AppCompatActivity
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(check)
+                if(GetLocation.runservice==1)
                 {
-                   check=false;
                    l=0;
                     Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
                     getApplicationContext().stopService(x);
@@ -183,7 +181,6 @@ public class FacultyMainActivity extends AppCompatActivity
                         buildAlertMessageNoGps();
                     }
                     else{
-                        check=true;
                         checkUserPermission();
                     }
 
@@ -311,15 +308,6 @@ public class FacultyMainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    protected void onDestroy() {
-        myRef.child("geocordinates").child(firebaseUser.getUid()).removeValue();
-        Intent x= new Intent(FacultyMainActivity.this, GetLocation.class);
-        getApplicationContext().stopService(x);
-        Intent o=new Intent(FacultyMainActivity.this, ChatNotification.class);
-        getApplicationContext().stopService(o);
-        super.onDestroy();
-    }
     void buildAlertMessageNoGps() {
         final AlertDialog.Builder builders = new AlertDialog.Builder(this);
         builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")

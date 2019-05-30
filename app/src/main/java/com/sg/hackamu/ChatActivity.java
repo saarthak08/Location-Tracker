@@ -108,6 +108,7 @@ public class ChatActivity extends AppCompatActivity {
         firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
         user=i.getParcelableExtra("user");
+        editText.requestFocus();
         recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v,
@@ -150,6 +151,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    try{
                         ChatMessage chatMessage=new ChatMessage();
                         int index=-1;
                         chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
@@ -165,7 +167,11 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         }
                     chatMessages.set(index,chatMessage);
-                    chatAdapter.notifyDataSetChanged();
+                    chatAdapter.notifyDataSetChanged();}
+                    catch (Exception e)
+                    {
+                        Log.d("ReadStatusUpdateError",e.getMessage());
+                    }
 
                 }
 
@@ -211,23 +217,26 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                        ChatMessage chatMessage=new ChatMessage();
-                        int index=-1;
-                        chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
-                        chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
-                        chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
-                        chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
-                        chatMessage.setRead(true);
-                        for(ChatMessage c:chatMessages)
-                        {
-                            if(chatMessage.getMessageTime()==c.getMessageTime())
-                            {
-                                index=chatMessages.indexOf(c);
+                        try {
+                            ChatMessage chatMessage = new ChatMessage();
+                            int index = -1;
+                            chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
+                            chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
+                            chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
+                            chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
+                            chatMessage.setRead(true);
+                            for (ChatMessage c : chatMessages) {
+                                if (chatMessage.getMessageTime() == c.getMessageTime()) {
+                                    index = chatMessages.indexOf(c);
+                                }
                             }
+                            chatMessages.set(index, chatMessage);
+                            chatAdapter.notifyDataSetChanged();
                         }
-                        chatMessages.set(index,chatMessage);
-                        chatAdapter.notifyDataSetChanged();
+                        catch (Exception e)
+                        {
+                            Log.d("ReadStatusUpdateError",e.getMessage());
+                        }
                 }
 
                 @Override
@@ -260,10 +269,11 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (editText.getText().toString().trim().length() != 0) {
                     try {
-                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        InputMethodManager imm = (InputMethodManager) ChatActivity.this
+                                .getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(recyclerView, InputMethodManager.SHOW_IMPLICIT);
                     } catch (Exception e) {
-
+                        Log.d("KeyboardException",e.getMessage());
                     }
                     senderchatMessage = new ChatMessage();
                     senderchatMessage.setMessageText(editText.getText().toString().trim());
