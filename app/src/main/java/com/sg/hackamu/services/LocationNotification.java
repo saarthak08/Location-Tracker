@@ -103,12 +103,8 @@ public class LocationNotification extends Service {
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    if(notificationManager!=null)
-                    {
-                        if(notificationManager.areNotificationsEnabled())
-                        {
+                    if(notificationManager!=null) {
                             notificationManager.cancel(notificationId);
-                        }
                     }
 
                 }
