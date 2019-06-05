@@ -21,11 +21,11 @@
 
             <ImageView
                 android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="@dimen/dimen_8x"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:padding="@dimen/dimen_16x"
                 android:layout_gravity="start"
-                app:srcCompat="@android:drawable/sym_def_app_icon" />
+                app:srcCompat="@drawable/user" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

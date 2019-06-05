@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("All Faculties");
+        getSupportActionBar().setTitle("Connected Faculties");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity
         });
         View headerView = navigationView.getHeaderView(0);
         TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-        //email.setText(firebaseUser.getEmail());
+        email.setText(firebaseUser.getEmail());
         TextView name=headerView.findViewById(R.id.namenav);
         name.setText(firebaseUser.getDisplayName());
         myRef.child("faculties").addChildEventListener(new ChildEventListener() {

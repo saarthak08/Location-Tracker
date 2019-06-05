@@ -86,7 +86,7 @@ public class FacultyMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faculty_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("All Students");
+        toolbar.setTitle("Connected Students");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
         parent=findViewById(android.R.id.content);
