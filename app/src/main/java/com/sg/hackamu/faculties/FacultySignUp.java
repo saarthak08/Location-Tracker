@@ -114,7 +114,18 @@ public class FacultySignUp extends AppCompatActivity {
 
 
     public class SignupactivityClickHandlers{
-        public void onSignUpButtonClicked(View v)
+        public void onSignUpButtonClicked(View v) {
+            if (phonenumber.getText().toString().trim().length() != 0) {
+                if (phonenumber.getText().toString().trim().length()>=13&&phonenumber.getText().toString().trim().length()<=14) {
+                    Toast.makeText(getApplicationContext(), "Error! Wrong Phone Number", Toast.LENGTH_SHORT).show();
+                } else {
+                    signup();
+                }
+            } else {
+                signup();
+            }
+        }
+        public void signup()
         {
             if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&department.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0&&emplyeeid.getText().toString().trim().length()!=0)
             {
@@ -161,6 +172,5 @@ public class FacultySignUp extends AppCompatActivity {
                 Toast.makeText(FacultySignUp.this, "Error! Empty Inputs", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 }
