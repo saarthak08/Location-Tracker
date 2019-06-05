@@ -11,15 +11,21 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,6 +36,9 @@ import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+
 public class FacultySignUp extends AppCompatActivity {
 
     private Button signUpButton;
@@ -37,6 +46,8 @@ public class FacultySignUp extends AppCompatActivity {
     public static EditText name;
     private EditText password;
     private EditText department;
+    private EditText college;
+    private EditText phonenumber;
     private ActivityFacultySignUpBinding signUpBinding;
     private ProgressBar progressBar;
     private FirebaseAuth firebaseAuth;
@@ -47,6 +58,8 @@ public class FacultySignUp extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private String userID;
     private EditText emplyeeid;
+    private boolean verification=false;
+    private ImageView profilePicture;
     private static final String TAG = "SignUpActivity";
 
 
@@ -59,6 +72,7 @@ public class FacultySignUp extends AppCompatActivity {
         firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
         emplyeeid=findViewById(R.id.employeeid);
+        profilePicture=findViewById(R.id.imageViewProfilePictureFaculty);
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -75,6 +89,8 @@ public class FacultySignUp extends AppCompatActivity {
         progressBar=signUpBinding.progressBar1;
         email=signUpBinding.emails;
         name=signUpBinding.name;
+        phonenumber=signUpBinding.phoneNumber;
+        college=signUpBinding.college;
         department=signUpBinding.department;
         emplyeeid=signUpBinding.employeeid;
         password=signUpBinding.passwords;
@@ -119,6 +135,8 @@ public class FacultySignUp extends AppCompatActivity {
                             faculty.setEmail(email.getText().toString().trim());
                             userID=firebaseUser.getUid();
                             faculty.setUuid(userID);
+                            faculty.setPhoneno(Long.parseLong(phonenumber.getText().toString().trim()));
+                            faculty.setCollege(college.getText().toString().trim());
                             faculty.setEmployeeid(emplyeeid.getText().toString().trim());
                             faculty.setName(name.getText().toString().trim());
                             faculty.setDepartment(department.getText().toString().trim());

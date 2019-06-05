@@ -132,6 +132,7 @@ public class FacultyMainActivity extends AppCompatActivity
         email.setText(firebaseUser.getEmail());
         TextView name=headerView.findViewById(R.id.namenav);
         name.setText(firebaseUser.getDisplayName());
+        navigationView.setCheckedItem(0);
         myRef.child("students").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -190,11 +191,19 @@ public class FacultyMainActivity extends AppCompatActivity
         User fc=new User();
         uuid= dataSnapshot.getKey();
         if(!uuid.equals(firebaseUser.getUid())) {
-            fc.setName((dataSnapshot.getValue(User.class).getName()));
-            fc.setUuid(uuid);
-            fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
-            fc.setFacultyno(dataSnapshot.getValue(User.class).getFacultyno());
-            fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
+            try {
+                fc.setName((dataSnapshot.getValue(User.class).getName()));
+                fc.setUuid(uuid);
+                fc.setCollege(dataSnapshot.getValue(User.class).getCollege());
+                fc.setDepartment(dataSnapshot.getValue(User.class).getDepartment());
+                fc.setPhoneno(dataSnapshot.getValue(User.class).getPhoneno());
+                fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
+                fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
+            }
+            catch (Exception e)
+            {
+                Log.d("showDataFaculty",e.getMessage());
+            }
             users.add(fc);
         }
     }

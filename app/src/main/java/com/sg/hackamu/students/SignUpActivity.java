@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,6 +36,9 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText email;
     public static EditText name;
     private EditText password;
+    private EditText department;
+    private EditText college;
+    private EditText phonenumber;
     private ActivitySignUpBinding signUpBinding;
     private ProgressBar progressBar;
     private FirebaseAuth firebaseAuth;
@@ -43,7 +48,6 @@ public class SignUpActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     private String userID;
-    private EditText facNo;
     private EditText enNo;
     private static final String TAG = "SignUpActivity";
 
@@ -74,7 +78,9 @@ public class SignUpActivity extends AppCompatActivity {
         progressBar=signUpBinding.progressBar1;
         email=signUpBinding.emails;
         name=signUpBinding.name;
-        facNo=signUpBinding.facno;
+        department=signUpBinding.department;
+        phonenumber=signUpBinding.phoneNumber;
+        college=signUpBinding.college;
         enNo=signUpBinding.enrolno;
         password=signUpBinding.passwords;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -99,45 +105,48 @@ public class SignUpActivity extends AppCompatActivity {
     public class SignupactivityClickHandlers{
         public void onSignUpButtonClicked(View v)
         {
-            if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0&&facNo.getText().toString().trim().length()!=0&&enNo.getText().toString().length()!=0)
+            if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0&&enNo.getText().toString().length()!=0)
             {
                 progressBar.setVisibility(View.VISIBLE);
-                firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            userProfileChangeRequest=new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
-                            firebaseUser=firebaseAuth.getCurrentUser();
-                            User user=new User();
-                            user.setEmail(email.getText().toString().trim());
-                            userID=firebaseUser.getUid();
-                            user.setUuid(userID);
-                            user.setFacultyno(facNo.getText().toString().trim());
-                            user.setEnno(enNo.getText().toString().trim());
-                            user.setName(name.getText().toString().trim());
-                            firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d("Hello", "User profile updated.");
-                                    }                                }
-                            });
+                    firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
                             progressBar.setVisibility(View.GONE);
-                            myRef.child("students").child(firebaseUser.getUid()).setValue(user);
-                            Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
-                            i.putExtra("student",user);
-                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i);
-                        } else {
+                            Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+                    }).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
+                                firebaseUser = firebaseAuth.getCurrentUser();
+                                User user = new User();
+                                user.setEmail(email.getText().toString().trim());
+                                userID = firebaseUser.getUid();
+                                user.setUuid(userID);
+                                user.setPhoneno(Long.parseLong(phonenumber.getText().toString().trim()));
+                                user.setDepartment(department.getText().toString().trim());
+                                user.setCollege(college.getText().toString().trim());
+                                user.setEnno(enNo.getText().toString().trim());
+                                user.setName(name.getText().toString().trim());
+                                firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("Hello", "User profile updated.");
+                                        }
+                                    }
+                                });
+                                progressBar.setVisibility(View.GONE);
+                                myRef.child("students").child(firebaseUser.getUid()).setValue(user);
+                                Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
+                                i.putExtra("student", user);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
+                            } else {
+                            }
+                        }
+                    });
             } else {
                 Toast.makeText(SignUpActivity.this, "Error! Empty Inputs", Toast.LENGTH_SHORT).show();
             }

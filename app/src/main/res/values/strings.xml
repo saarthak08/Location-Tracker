@@ -10,13 +10,13 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="activity_login">Login Activity</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
+    <string name="email">Email*</string>
+    <string name="password">Password*</string>
     <string name="fpwd">Forgot Password?</string>
     <string name="login">Log In</string>
     <string name="signup">Not a member? Sign up</string>
-    <string name="name">Name</string>
-    <string name="department">Department</string>
+    <string name="name">Name*</string>
+    <string name="department">Department/Subject/Field</string>
     <string name="signupp">Sign Up</string>
     <string name="sign_out">Sign Out</string>
     <string name="otherloginoptions">Other Login Options</string>
@@ -30,9 +30,12 @@
     <string name="connected_students">Connected Students</string>
     <string name="employee_id">Employee ID</string>
     <string name="enrollment_number">Enrollment Number</string>
-    <string name="verify_your_email">Verify your Email!</string>
+    <string name="verify_your_email">Verify your Credentials!</string>
     <string name="ok">OK</string>
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="enter_your_email_amp_tap_on_ok_button"><![CDATA[Enter your Email & tap on \'OK\' button:]]></string>
     <string name="choose_profile_picture">Choose Profile Picture</string>
+    <string name="id_number">College/School Unique ID Number*</string>
+    <string name="college_school">College/School</string>
+    <string name="phone_number">Phone Number</string>
 </resources>

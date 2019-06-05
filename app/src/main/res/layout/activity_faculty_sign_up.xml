@@ -18,8 +18,11 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="match_parent"
+            android:id="@+id/imageViewProfilePictureFaculty"
+            android:padding="@dimen/dimen_8x"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimen_8x"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/user" />
 
@@ -58,6 +61,23 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_college"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/dimen_32x"
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_32x">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/college"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/college_school"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_department"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,15 +107,30 @@
                 android:id="@+id/employeeid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/employee_id"
+                android:hint="@string/id_number"
                 android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="@dimen/dimen_32x"
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_32x"
+            app:passwordToggleEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone_number"
+                android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dimen_16x"
             android:paddingLeft="@dimen/dimen_32x"
             android:paddingTop="@dimen/dimen_16x"
             android:paddingRight="@dimen/dimen_32x"
@@ -109,11 +144,12 @@
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dimen_16x"
             android:paddingLeft="@dimen/dimen_32x"
             android:paddingTop="@dimen/dimen_16x"
             android:paddingRight="@dimen/dimen_32x"
@@ -139,6 +175,7 @@
             android:background="@color/colorPrimary"
             android:foreground="?attr/selectableItemBackground"
             android:hint="@string/signupp"
+            android:layout_gravity="bottom"
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
 
