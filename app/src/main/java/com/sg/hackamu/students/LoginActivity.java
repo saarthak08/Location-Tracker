@@ -234,9 +234,20 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onVerificationCompleted(PhoneAuthCredential credential) {
-                                String code = credential.getSmsCode();
+                                final String code = credential.getSmsCode();
                                 if (code != null) {
                                     //verifying the code
+                                    if(!dialog2.isCancelled())
+                                    {
+                                        dialog2.getInputEditText().setText(code);
+                                        dialog2.getBuilder().onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                verifyVerificationCode(code);
+                                            }
+                                        });
+                                        dialog2.getBuilder().positiveFocus(true);
+                                    }
                                     verifyVerificationCode(code);
                                 }
                                 Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
@@ -258,7 +269,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // ...
                             }
                         });
-                dialog2=new MaterialDialog.Builder(LoginActivity.this).title("Enter the verification code you recieved")
+                dialog2=new MaterialDialog.Builder(LoginActivity.this).title("Enter the verification code you recieved!")
                         .positiveText("OK")
                         .negativeText("Cancel")
                         .inputType(InputType.TYPE_CLASS_NUMBER)
@@ -296,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
                 signInWithPhoneAuthCredential(credential);
             } catch (Exception e) {
-                Toast toast = Toast.makeText(LoginActivity.this, "Verification Code is wrong", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(LoginActivity.this, "Verification Code is wrong.", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
@@ -389,7 +400,7 @@ public class LoginActivity extends AppCompatActivity {
                                 //verification unsuccessful.. display an error message
                                 String message = "Error in verification!";
                                 if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    message = "Invalid code entered..."+verificationCode;
+                                    message = "Invalid code entered...";
                                 }
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                             }
@@ -425,9 +436,11 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             else
                             {
-                                Toast.makeText(getApplicationContext(),"Phone Number not registered",Toast.LENGTH_SHORT).show();
-                                //  firebaseUser.delete();
-                                firebaseAuth.signOut();
+                                Toast.makeText(getApplicationContext(),"Phone Number not registered.",Toast.LENGTH_SHORT).show();
+                                if(firebaseUser!=null) {
+                                    firebaseUser.delete();
+                                    firebaseAuth.signOut();
+                                }
                             }
                         }
                     })

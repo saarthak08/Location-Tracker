@@ -125,9 +125,8 @@ public class MainActivity extends AppCompatActivity
                         user = dataSnapshot.getValue(User.class);
                         View headerView = navigationView.getHeaderView(0);
                         TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-
-                        if (user.getEmail().length() == 0) {
-                            email.setText(String.valueOf(user.getPhoneno()));
+                        if (user.getEmail()==null) {
+                            email.setText(user.getPhoneno());
                         } else {
                             email.setText(user.getEmail());
                         }

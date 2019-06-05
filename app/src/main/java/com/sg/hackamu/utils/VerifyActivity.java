@@ -1,6 +1,7 @@
 package com.sg.hackamu.utils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
@@ -26,6 +27,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.LauncherActivity;
@@ -46,6 +50,7 @@ public class VerifyActivity extends AppCompatActivity {
     Button resend;
     Button Cancel;
     User user;
+    String uuid;
     boolean isuser;
     Faculty faculty;
     FirebaseAuth firebaseAuth;
@@ -80,7 +85,7 @@ public class VerifyActivity extends AppCompatActivity {
             isuser=false;
         }
         verifytext=findViewById(R.id.textverify);
-        verifytext.setText("A verification link is sent to \'"+firebaseUser.getEmail()+"\'. Please click on the link to verify it.\nAfter verifying, tap on \'OK\' button to continue.\nTap on \'Cancel\' button to register again if you entered your credentials wrong.");
+        verifytext.setText("A verification link is sent to \'"+user.getEmail()+"\'. Please click on the link to verify it.\nAfter verifying, tap on \'OK\' button to continue.\nTap on \'Cancel\' button to register again if you entered your credentials wrong.");
         resend=findViewById(R.id.buttonresendverify);
         Cancel=findViewById(R.id.buttoncancel);
         ok.setOnClickListener(new View.OnClickListener() {
