@@ -30,11 +30,11 @@ public class User implements Parcelable {
     private String uuid;
     private String college;
     private String department;
-    private long phoneno;
+    private String phoneno;
     private String enno;
 
 
-    public User(String name, String password, long id, String email, boolean login, String uuid, String college, String department, long phoneno, String enno) {
+    public User(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno) {
         this.name = name;
         this.password = password;
         this.id = id;
@@ -69,11 +69,11 @@ public class User implements Parcelable {
         this.department = department;
     }
 
-    public long getPhoneno() {
+    public String getPhoneno() {
         return phoneno;
     }
 
-    public void setPhoneno(long phoneno) {
+    public void setPhoneno(String phoneno) {
         this.phoneno = phoneno;
     }
 
@@ -149,7 +149,7 @@ public class User implements Parcelable {
         dest.writeString(this.uuid);
         dest.writeString(this.college);
         dest.writeString(this.department);
-        dest.writeLong(this.phoneno);
+        dest.writeString(this.phoneno);
         dest.writeString(this.enno);
     }
 
@@ -162,7 +162,7 @@ public class User implements Parcelable {
         this.uuid = in.readString();
         this.college = in.readString();
         this.department = in.readString();
-        this.phoneno = in.readLong();
+        this.phoneno = in.readString();
         this.enno = in.readString();
     }
 

@@ -20,8 +20,9 @@
         android:roundIcon="@android:drawable/ic_dialog_map"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".utils.ForgotPassword"
-            android:windowSoftInputMode="adjustResize"></activity>
+        <activity
+            android:name=".utils.ForgotPassword"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".utils.VerifyActivity" />
         <activity
             android:name=".faculties.FacultyMainActivity"
@@ -65,7 +66,6 @@
         <activity
             android:name=".students.LoginActivity"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".students.MainActivity"
             android:label="@string/title_activity_main"

@@ -7,7 +7,9 @@ import androidx.databinding.DataBindingUtil;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -43,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 public class SignUpActivity extends AppCompatActivity {
     private Button signUpButton;
     private EditText email;
-    public static EditText name;
+    private EditText name;
     private EditText password;
     private EditText department;
     private EditText college;
@@ -58,9 +60,11 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private String userID;
     private EditText enNo;
-    String verificationCode;
-    String mVerificationId;
-    PhoneAuthProvider.ForceResendingToken mResendToken;
+    private boolean verify;
+    private MaterialDialog dialog;
+    private String verificationCode;
+    private String mVerificationId;
+    private PhoneAuthProvider.ForceResendingToken mResendToken;
     private static final String TAG = "SignUpActivity";
 
 
@@ -71,6 +75,8 @@ public class SignUpActivity extends AppCompatActivity {
         signUpBinding = DataBindingUtil.setContentView(SignUpActivity.this, R.layout.activity_sign_up);
         signUpBinding.setClickHandlers(new SignupactivityClickHandlers());
         firebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseUtils.getDatabase();
+        myRef = mFirebaseDatabase.getReference();
         firebaseUser = firebaseAuth.getCurrentUser();
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -114,160 +120,219 @@ public class SignUpActivity extends AppCompatActivity {
 
     public class SignupactivityClickHandlers {
         public void onSignUpButtonClicked(View v) {
-            if (phonenumber.getText().toString().trim().length() != 0) {
-                Toast.makeText(getApplicationContext(), "Error! Wrong Phone Number", Toast.LENGTH_SHORT).show();
-            } else {
-                signup();
-            }
-        }
-
-        public void signup() {
-            if (email.getText().toString().trim().length() != 0 && name.getText().toString().trim().length() != 0 && password.getText().toString().trim().length() != 0 && enNo.getText().toString().length() != 0) {
+            if (name.getText().toString().trim().length() != 0 && password.getText().toString().trim().length() != 0 && enNo.getText().toString().length() != 0) {
                 progressBar.setVisibility(View.VISIBLE);
-                verifyphone();
+                if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() != 0) {
+                    verify=true;
+                    verifyphone();
+                } else if (email.getText().toString().trim().length() == 0 && phonenumber.getText().toString().trim().length() != 0) {
+                    verify=false;
+                    verifyphone();
 
-            } else {
+                } else if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() == 0) {
+                    createUserwithEmail();
+                }
+            }
+            else {
                 Toast.makeText(SignUpActivity.this, "Error! Empty Inputs", Toast.LENGTH_SHORT).show();
             }
         }
 
-        public void verifyphone() {
-            PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
-                    phonenumber.getText().toString().trim(),        // Phone number to verify
-                    60,                 // Timeout duration
-                    TimeUnit.SECONDS,   // Unit of timeout
-                    SignUpActivity.this,               // Activity (for callback binding)
-                    new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            public void verifyphone () {
+                PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
+                        phonenumber.getText().toString().trim(),        // Phone number to verify
+                        60,                 // Timeout duration
+                        TimeUnit.SECONDS,   // Unit of timeout
+                        SignUpActivity.this,               // Activity (for callback binding)
+                        new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
-                        @Override
-                        public void onVerificationCompleted(PhoneAuthCredential credential) {
-                            String code = credential.getSmsCode();
-                            if (code != null) {
-                                //verifying the code
-                                verifyVerificationCode(code);
-                            }
-                            Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
-
-                        }
-
-                        @Override
-                        public void onVerificationFailed(FirebaseException e) {
-                            Log.w("PhoneVerify", "onVerificationFailed", e);
-                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onCodeSent(final String verificationId,
-                                               PhoneAuthProvider.ForceResendingToken token) {
-                            Log.d("Code Sent", "onCodeSent:" + verificationId);
-                            mVerificationId = verificationId;
-                            mResendToken = token;
-                            // ...
-                        }
-                    });
-            new MaterialDialog.Builder(SignUpActivity.this).title("Verify your Phone Number. A one time password(O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.")
-                    .positiveText("OK")
-                    .negativeText("Cancel")
-                    .input("", "", false, new MaterialDialog.InputCallback() {
-                        @Override
-                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            verificationCode = input.toString().trim();
-                        }
-                    })
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            verifyVerificationCode(verificationCode);
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
-                    dialog.cancel();
-                }
-            }).cancelable(false)
-                    .canceledOnTouchOutside(false).show();
-
-        }
-
-        private void verifyVerificationCode(String otp) {
-            //creating the credential
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
-            //signing the user
-            signInWithPhoneAuthCredential(credential);
-        }
-
-        private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-            firebaseAuth.signInWithCredential(credential)
-                    .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                //verification successful we will start the profile activity
-                                firebaseAuth.signOut();
-                                createUser();
-
-                            } else {
-                                //verification unsuccessful.. display an error message
-                                String message = "Error in verification!";
-                                if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    message = "Invalid code entered...";
-                                }
-                                Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), message, Snackbar.LENGTH_LONG);
-                                snackbar.setAction("Dismiss", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                    }
-                                });
-                                snackbar.show();
-                            }
-                        }
-                    });
-        }
-
-        public void createUser() {
-            firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
-                        firebaseUser = firebaseAuth.getCurrentUser();
-                        User user = new User();
-                        user.setEmail(email.getText().toString().trim());
-                        userID = firebaseUser.getUid();
-                        user.setUuid(userID);
-                        user.setPhoneno(Long.parseLong(phonenumber.getText().toString().trim()));
-                        user.setDepartment(department.getText().toString().trim());
-                        user.setCollege(college.getText().toString().trim());
-                        user.setEnno(enNo.getText().toString().trim());
-                        user.setName(name.getText().toString().trim());
-                        firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
+                            public void onVerificationCompleted(PhoneAuthCredential credential) {
+                                String code = credential.getSmsCode();
+                                if (code != null) {
+                                    //verifying the code
+                                    verifyVerificationCode(code);
+                                }
+                                Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
+
+                            }
+
+                            @Override
+                            public void onVerificationFailed(FirebaseException e) {
+                                Log.w("PhoneVerify", "onVerificationFailed", e);
+                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onCodeSent(final String verificationId,
+                                                   PhoneAuthProvider.ForceResendingToken token) {
+                                Log.d("Code Sent", "onCodeSent:" + verificationId);
+                                mVerificationId = verificationId;
+                                mResendToken = token;
+                                // ...
+                            }
+                        });
+                dialog = new MaterialDialog.Builder(SignUpActivity.this).title("Verify your Phone Number. A one time password(O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.")
+                        .positiveText("OK")
+                        .negativeText("Cancel")
+                        .inputType(InputType.TYPE_CLASS_NUMBER)
+                        .input("", "", false, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                verificationCode = input.toString().trim();
+                            }
+                        })
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                try {
+                                    verificationCode = dialog.getInputEditText().getText().toString().trim();
+                                } catch (Exception e) {
+                                    Log.d("verification", e.getMessage());
+                                }
+                                verifyVerificationCode(verificationCode);
+                            }
+                        })
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                                dialog.cancel();
+                            }
+                        }).cancelable(false)
+                        .canceledOnTouchOutside(false).autoDismiss(false).show();
+
+            }
+
+            private void verifyVerificationCode(String otp){
+                //creating the credential
+                try {
+                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
+                    signInWithPhoneAuthCredential(credential);
+                } catch (Exception e) {
+                    Toast toast = Toast.makeText(SignUpActivity.this, "Verification Code is wrong", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            }
+
+            private void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
+                firebaseAuth.signInWithCredential(credential)
+                        .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Log.d("Hello", "User profile updated.");
+                                    if (!dialog.isCancelled()) {
+                                        dialog.dismiss();
+                                        dialog.cancel();
+                                    }
+                                    firebaseUser = firebaseAuth.getCurrentUser();
+                                    User user = new User();
+                                    user.setEmail(email.getText().toString().trim());
+                                    userID = firebaseUser.getUid();
+                                    user.setUuid(userID);
+                                    user.setPhoneno(phonenumber.getText().toString().trim());
+                                    user.setDepartment(department.getText().toString().trim());
+                                    user.setCollege(college.getText().toString().trim());
+                                    user.setEnno(enNo.getText().toString().trim());
+                                    user.setName(name.getText().toString().trim());
+                                    userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
+                                    firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("Hello", "User profile updated."+firebaseUser.getDisplayName());
+                                            }
+                                        }
+                                    });
+                                    progressBar.setVisibility(View.GONE);
+                                    myRef.child("students").child(firebaseUser.getUid()).setValue(user);
+                                    if(verify) {
+                                        Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
+                                        i.putExtra("student", user);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(i);
+                                    }
+                                    else{
+                                        Intent i = new Intent(SignUpActivity.this, MainActivity.class);
+                                        i.putExtra("student", user);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(i);
+                                    }
+                                    //verification successful we will start the profile activity
+
+                                } else {
+                                    //verification unsuccessful.. display an error message
+                                    String message = "Error in verification!";
+                                    if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                        message = "Invalid code entered...";
+                                    }
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-                        progressBar.setVisibility(View.GONE);
-                        myRef.child("students").child(firebaseUser.getUid()).setValue(user);
-                        Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
-                        i.putExtra("student", user);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(i);
-                    } else {
-                    }
-                }
-            });
+            }
+
+            public void createUserwithEmail()
+            {
+                firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(),password.getText().toString().trim())
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    firebaseUser = firebaseAuth.getCurrentUser();
+                                    User user = new User();
+                                    user.setEmail(email.getText().toString().trim());
+                                    userID = firebaseUser.getUid();
+                                    user.setUuid(userID);
+                                    user.setPhoneno(phonenumber.getText().toString().trim());
+                                    user.setDepartment(department.getText().toString().trim());
+                                    user.setCollege(college.getText().toString().trim());
+                                    user.setEnno(enNo.getText().toString().trim());
+                                    user.setName(name.getText().toString().trim());
+                                    userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
+                                    firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("Hello", "User profile updated.");
+                                            }
+                                        }
+                                    });
+                                    progressBar.setVisibility(View.GONE);
+                                    myRef.child("students").child(firebaseUser.getUid()).setValue(user);
+                                    Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
+                                    i.putExtra("student", user);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(i);
+                                    //verification successful we will start the profile activity
+                                } else {
+                                    //verification unsuccessful.. display an error message
+                                    String message = "Error in verification!";
+                                    if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                        message = "Invalid code entered...";
+                                    }
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         }
+
+    @Override
+    protected void onDestroy() {
+        if(verify&&firebaseAuth.getCurrentUser()!=null)
+        {
+                firebaseAuth.getCurrentUser().delete();
+                firebaseAuth.signOut();
+        }
+        super.onDestroy();
     }
 }
 

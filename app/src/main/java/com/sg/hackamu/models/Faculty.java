@@ -13,10 +13,10 @@ public class Faculty implements Parcelable {
     private String uuid;
     private String employeeid;
     private boolean login;
-    private long phoneno;
+    private String phoneno;
     private long id;
 
-    public Faculty(String name, String department, String college, String password, String email, String uuid, String employeeid, boolean login, long phoneno, long id) {
+    public Faculty(String name, String department, String college, String password, String email, String uuid, String employeeid, boolean login, String phoneno, long id) {
         this.name = name;
         this.department = department;
         this.college = college;
@@ -37,11 +37,11 @@ public class Faculty implements Parcelable {
         this.college = college;
     }
 
-    public long getPhoneno() {
+    public String getPhoneno() {
         return phoneno;
     }
 
-    public void setPhoneno(long phoneno) {
+    public void setPhoneno(String phoneno) {
         this.phoneno = phoneno;
     }
 
@@ -129,7 +129,7 @@ public class Faculty implements Parcelable {
         dest.writeString(this.uuid);
         dest.writeString(this.employeeid);
         dest.writeByte(this.login ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.phoneno);
+        dest.writeString(this.phoneno);
         dest.writeLong(this.id);
     }
 
@@ -142,7 +142,7 @@ public class Faculty implements Parcelable {
         this.uuid = in.readString();
         this.employeeid = in.readString();
         this.login = in.readByte() != 0;
-        this.phoneno = in.readLong();
+        this.phoneno = in.readString();
         this.id = in.readLong();
     }
 

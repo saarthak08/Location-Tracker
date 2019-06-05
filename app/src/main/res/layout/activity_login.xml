@@ -98,6 +98,27 @@
             tools:targetApi="lollipop" />
 
         <TextView
+            android:id="@+id/textViewloginviaphone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:paddingLeft="@dimen/dimen_32x"
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingRight="@dimen/dimen_32x"
+            android:paddingBottom="@dimen/dimen_16x"
+            android:text="@string/login_via_phone_number"
+            android:stateListAnimator="@null"
+            android:elevation="4dp"
+            android:onClick="@{ClickHandlers::onLoginViaPhone}"
+            android:textColor="@color/dark_grey"
+            android:textColorHighlight="@color/dark_grey"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            tools:targetApi="lollipop" />
+
+        <TextView
             android:id="@+id/loginasfaculty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

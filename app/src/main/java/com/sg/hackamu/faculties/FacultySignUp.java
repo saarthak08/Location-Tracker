@@ -146,7 +146,7 @@ public class FacultySignUp extends AppCompatActivity {
                             faculty.setEmail(email.getText().toString().trim());
                             userID=firebaseUser.getUid();
                             faculty.setUuid(userID);
-                            faculty.setPhoneno(Long.parseLong(phonenumber.getText().toString().trim()));
+                            faculty.setPhoneno(phonenumber.getText().toString().trim());
                             faculty.setCollege(college.getText().toString().trim());
                             faculty.setEmployeeid(emplyeeid.getText().toString().trim());
                             faculty.setName(name.getText().toString().trim());

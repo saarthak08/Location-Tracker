@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,6 +43,7 @@ public class ChatNotification extends Service {
     private FirebaseUser firebaseUser;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference databaseReference;
     NotificationManagerCompat notificationManager;
     int notificationId=3;
@@ -60,6 +62,15 @@ public class ChatNotification extends Service {
         super.onCreate();
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser = firebaseAuth.getCurrentUser();
+                Log.d("Auth State", "Auth State Changed");
+
+            }
+        };
+        firebaseAuth.addAuthStateListener(authStateListener);
         firebaseDatabase= FirebaseUtils.getDatabase();
         databaseReference=firebaseDatabase.getReference();
         databaseReference.child("chats").addValueEventListener(new ValueEventListener() {

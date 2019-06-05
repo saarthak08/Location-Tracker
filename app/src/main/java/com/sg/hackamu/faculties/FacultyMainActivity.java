@@ -77,6 +77,7 @@ public class FacultyMainActivity extends AppCompatActivity
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     StudentsAdapter studentsAdapter;
+    private  FirebaseAuth.AuthStateListener authStateListener;
     FloatingActionButton floatingActionButton;
     public static int l=0;
 
@@ -112,6 +113,14 @@ public class FacultyMainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
+        authStateListener=new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser=firebaseAuth.getCurrentUser();
+                Log.d("Auth State","Auth State Changed");
+
+            }
+        };
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -132,7 +141,7 @@ public class FacultyMainActivity extends AppCompatActivity
         email.setText(firebaseUser.getEmail());
         TextView name=headerView.findViewById(R.id.namenav);
         name.setText(firebaseUser.getDisplayName());
-        navigationView.setCheckedItem(0);
+        navigationView.getMenu().getItem(0).setChecked(true);
         myRef.child("students").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -338,8 +347,21 @@ public class FacultyMainActivity extends AppCompatActivity
             getApplicationContext().stopService(x);
         }
         super.onDestroy();
-
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(authStateListener!=null)
+        {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+    }
 
 }

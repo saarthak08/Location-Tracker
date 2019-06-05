@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
 import com.sg.hackamu.faculties.FacultyMainActivity;
@@ -81,16 +82,17 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         allConnectionsAdapter=new FacultiesAdapter(MainActivity.this,faculties);
         recyclerView.setAdapter(allConnectionsAdapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
+        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseUser=firebaseAuth.getCurrentUser();
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 firebaseUser=firebaseAuth.getCurrentUser();
                 Log.d("Auth State","Auth State Changed");
-
             }
         };
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
         swipeRefreshLayout=findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -98,10 +100,8 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        firebaseAuth=FirebaseAuth.getInstance();
-        firebaseUser=firebaseAuth.getCurrentUser();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -117,12 +117,53 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-        View headerView = navigationView.getHeaderView(0);
-        TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-        email.setText(firebaseUser.getEmail());
-        TextView name=headerView.findViewById(R.id.namenav);
-        name.setText(firebaseUser.getDisplayName());
-        navigationView.setCheckedItem(0);
+        myRef.child("students").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                try {
+                    if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
+                        user = dataSnapshot.getValue(User.class);
+                        View headerView = navigationView.getHeaderView(0);
+                        TextView email = (TextView) headerView.findViewById(R.id.emailnav);
+
+                        if (user.getEmail().length() == 0) {
+                            email.setText(String.valueOf(user.getPhoneno()));
+                        } else {
+                            email.setText(user.getEmail());
+                        }
+                        TextView name = headerView.findViewById(R.id.namenav);
+                        name.setText(user.getName());
+                    }
+                }
+                    catch(Exception e)
+                    {
+                        Log.d("NavMenu", e.getMessage());
+                    }
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        navigationView.getMenu().getItem(0).setChecked(true);
         myRef.child("faculties").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -207,7 +248,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.connections) {
 
         } else if (id == R.id.signout) {
-
             if(authStateListener!=null)
             {
                 firebaseAuth.removeAuthStateListener(authStateListener);
@@ -249,5 +289,6 @@ public class MainActivity extends AppCompatActivity
             }, 2000);
         }
     }
+
 
 }

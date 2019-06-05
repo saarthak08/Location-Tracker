@@ -30,12 +30,14 @@
     <string name="connected_students">Connected Students</string>
     <string name="employee_id">Employee ID</string>
     <string name="enrollment_number">Enrollment Number</string>
-    <string name="verify_your_email">Verify your Email!</string>
+    <string name="verify_your_email">Verify your Credentials!</string>
     <string name="ok">OK</string>
     <string name="forgot_your_password">Forgot your password?</string>
     <string name="enter_your_email_amp_tap_on_ok_button"><![CDATA[Enter your Email & tap on \'OK\' button:]]></string>
     <string name="choose_profile_picture">Choose Profile Picture</string>
     <string name="id_number">College/School Unique ID Number*</string>
     <string name="college_school">College/School</string>
-    <string name="phone_number">Phone Number</string>
+    <string name="phone_number">Phone Number*</string>
+    <string name="you_can_sign_up_via_email_or_phone_number_or_both">You can sign up via Email or Phone Number or Both.</string>
+    <string name="login_via_phone_number">Login via Phone Number</string>
 </resources>

@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +39,7 @@ public class LocationNotification extends Service {
     Faculty faculty;
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference databaseReference;
     String uuid;
     NotificationManagerCompat notificationManager;
@@ -54,6 +56,15 @@ public class LocationNotification extends Service {
         super.onCreate();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                firebaseUser = firebaseAuth.getCurrentUser();
+                Log.d("Auth State", "Auth State Changed");
+
+            }
+        };
+        firebaseAuth.addAuthStateListener(authStateListener);
         firebaseDatabase = FirebaseUtils.getDatabase();
         databaseReference = firebaseDatabase.getReference();
             databaseReference.child("geocordinates").addChildEventListener(new ChildEventListener() {
