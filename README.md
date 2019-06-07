@@ -32,3 +32,6 @@
 
 ## *Screenshots:*
 <img src="https://user-images.githubusercontent.com/38679082/58437534-04a1ee80-80e8-11e9-9cde-a3c30d873b8c.jpeg" alt="Launcher Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202271-aeead200-7cf4-11e9-943d-7203f6be1a77.png" alt="Location Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202274-aeead200-7cf4-11e9-9d80-b477ed379bd6.png" alt="Navigation Drawer" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202278-b01bff00-7cf4-11e9-8874-f466a3dfb220.jpeg" alt="Faculty Activity Location On" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58437536-053a8500-80e8-11e9-90cf-76ca374b79f3.jpeg" alt="Faculty Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58202275-af836880-7cf4-11e9-8c06-2a60882b6bac.png" alt="Students Activity" width="250"/> .    <img src="https://user-images.githubusercontent.com/38679082/58437535-04a1ee80-80e8-11e9-945d-9ee4baacfe83.jpeg" alt="Chat Activity" width="250"/>
+
+## *Debug APK Link:*
+https://drive.google.com/open?id=1mveYXMcVNZzIrc7fU6THPu0V6q8JwtDH
