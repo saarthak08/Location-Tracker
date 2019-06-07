@@ -36,6 +36,8 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="24dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/amita"
         android:background="@color/gradient_3_start"
         android:layout_alignParentBottom="true"
         android:text="@string/error_getting_distance" />
