@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +37,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CustomCap;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,6 +57,8 @@ import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +67,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private FloatingActionButton floatingActionButton;
     LocationManager locationManager;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -75,8 +81,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int POLYLINE_STROKE_WIDTH_PX = 12;
     double userlatitude;
     double userlongitude;
-    MarkerOptions markerOptions;
+    Marker marker2;
+    private MarkerOptions markerOptions;
     LatLng userlatLng;
+    int count=0;
     Polyline polyline1;
     Location marker;
     List<LatLng> polylinelist;
@@ -89,6 +97,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        marker = new Location("");
+        markerOptions=new MarkerOptions();
+        floatingActionButton=findViewById(R.id.floatingActionButtonMaps);
         polylinelist=new ArrayList<LatLng>(2);
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER )) {
@@ -97,9 +108,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else{
             checkUserPermission();
         }
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (mMap != null) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userlatitude, userlongitude), 17.0f));
+                    }
+                } catch (Exception e) {
+                    Log.d("Maps",e.getMessage());
+
+                }
+            }    });
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
     }
+
 
     public void MapUpdates()
     {
@@ -122,7 +147,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     startLocationUpdates();
                     userlatitude = dataSnapshot.child("latitude").getValue(Double.class);
                     userlongitude = dataSnapshot.child("longitude").getValue(Double.class);
-                    marker = new Location("");
+                    if(marker!=null)
+                    {
+                        marker.reset();
+                    }
                     marker.setLatitude(userlatitude);
                     marker.setLongitude(userlongitude);
                     marker.setAccuracy(dataSnapshot.child("accuracy").getValue(Float.class));
@@ -155,16 +183,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googleMap.setMyLocationEnabled(true);
         googleMap.setIndoorEnabled(true);
         googleMap.setTrafficEnabled(true);
-        googleMap.clear();
-        MarkerOptions markerOptions=new MarkerOptions();
         if(userlatLng!=null) {
+            if(marker2!=null)
+            {
+                marker2.remove();
+            }
             markerOptions.position(userlatLng).title(user.getName());
-            googleMap.addMarker(markerOptions);
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userlatitude, userlongitude), 17.0f));
+            marker2=googleMap.addMarker(markerOptions);
+            if(count==0) {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userlatitude, userlongitude), 17.0f));
+                count++;
+            }
             if(mylatlng!=null)
             {
                 if(polyline1==null) {
-                   // Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
                     polyline1 = googleMap.addPolyline(new PolylineOptions()
                             .add(mylatlng,
                                     mylatlng,
@@ -172,7 +205,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else
                 {
-                 //   Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
+                    //   Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
                     polylinelist.clear();
                     polylinelist.add(mylatlng);
                     polylinelist.add(userlatLng);
@@ -206,7 +239,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location != null) {
                             if(location.hasAccuracy())
                             {
-                                if(location.getAccuracy()<20)
+                                if(location.getAccuracy()<30)
                                 {
                                     onLocationChanged(location);
 
@@ -251,8 +284,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (locationResult != null) {
                             if(marker!=null) {
                                 currentLocation = locationResult.getLastLocation();
-                                currentLocation.distanceTo(marker);
-                                textView.setText("Distance: "+ currentLocation.distanceTo(marker)+" metres (approx)");
+                                String str=Float.toString(currentLocation.distanceTo(marker));
+                                double x=Double.parseDouble(str);
+                                DecimalFormat df = new DecimalFormat("#");
+                                df.setMaximumFractionDigits(2);
+                                textView.setText("Distance: "+ df.format(x)+" metres (approx)");
                             }
                             //Toast.makeText(MapsActivity.this,"Distance: "+currentLocation.distanceTo(marker)+"metres",Toast.LENGTH_SHORT).show();
                             if(locationResult.getLastLocation().hasAccuracy())
@@ -271,7 +307,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     void buildAlertMessageNoGps() {
         final AlertDialog.Builder builders = new AlertDialog.Builder(this);
-        builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")
+        builders.setMessage("Your GPS seems to be disabled or isn't set to \'High Accuracy\'. Do you want to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
