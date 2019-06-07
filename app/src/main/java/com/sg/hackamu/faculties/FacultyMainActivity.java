@@ -76,9 +76,7 @@ public class FacultyMainActivity extends AppCompatActivity
     View parent;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
-    private Faculty faculty;
     StudentsAdapter studentsAdapter;
-    private  FirebaseAuth.AuthStateListener authStateListener;
     FloatingActionButton floatingActionButton;
     public static int l=0;
 
@@ -88,14 +86,12 @@ public class FacultyMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faculty_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Connected Students");
+        toolbar.setTitle("All Students");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
         parent=findViewById(android.R.id.content);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
-        firebaseAuth=FirebaseAuth.getInstance();
-        firebaseUser=firebaseAuth.getCurrentUser();
         myRef.child("students").keepSynced(true);
         floatingActionButton=findViewById(R.id.floatingActionButton);
         floatingActionButton.setVisibility(View.VISIBLE);
@@ -112,16 +108,10 @@ public class FacultyMainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        authStateListener=new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                firebaseUser=firebaseAuth.getCurrentUser();
-                Log.d("Auth State","Auth State Changed");
-
-            }
-        };
+        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseUser=firebaseAuth.getCurrentUser();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -137,63 +127,17 @@ public class FacultyMainActivity extends AppCompatActivity
 
             }
         });
-        firebaseUser=firebaseAuth.getCurrentUser();
         View headerView = navigationView.getHeaderView(0);
         TextView email = (TextView) headerView.findViewById(R.id.emailnav);
         email.setText(firebaseUser.getEmail());
         TextView name=headerView.findViewById(R.id.namenav);
         name.setText(firebaseUser.getDisplayName());
-        navigationView.getMenu().getItem(0).setChecked(true);
         myRef.child("students").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 showData(dataSnapshot);
                 progressBar.setVisibility(View.INVISIBLE);
                 studentsAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        myRef.child("faculties").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                try {
-                    if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
-                        faculty = dataSnapshot.getValue(Faculty.class);
-                        View headerView = navigationView.getHeaderView(0);
-                        TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-                        if (faculty.getEmail()==null) {
-                            email.setText(faculty.getPhoneno());
-                        } else {
-                            email.setText(faculty.getEmail());
-                        }
-                        TextView name = headerView.findViewById(R.id.namenav);
-                        name.setText(faculty.getName());
-                    }
-                }
-                catch(Exception e)
-                {
-                    Log.d("NavMenu", e.getMessage());
-                }
-
             }
 
             @Override
@@ -246,19 +190,11 @@ public class FacultyMainActivity extends AppCompatActivity
         User fc=new User();
         uuid= dataSnapshot.getKey();
         if(!uuid.equals(firebaseUser.getUid())) {
-            try {
-                fc.setName((dataSnapshot.getValue(User.class).getName()));
-                fc.setUuid(uuid);
-                fc.setCollege(dataSnapshot.getValue(User.class).getCollege());
-                fc.setDepartment(dataSnapshot.getValue(User.class).getDepartment());
-                fc.setPhoneno(dataSnapshot.getValue(User.class).getPhoneno());
-                fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
-                fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
-            }
-            catch (Exception e)
-            {
-                Log.d("showDataFaculty",e.getMessage());
-            }
+            fc.setName((dataSnapshot.getValue(User.class).getName()));
+            fc.setUuid(uuid);
+            fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
+            fc.setFacultyno(dataSnapshot.getValue(User.class).getFacultyno());
+            fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
             users.add(fc);
         }
     }
@@ -386,35 +322,15 @@ public class FacultyMainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        try {
-            myRef.child("geocordinates").child(faculty.getUuid()).removeValue();
+        myRef.child("geocordinates").child(firebaseUser.getUid()).removeValue();
+        if(GetLocation.runservice==1) {
+            GetLocation.notificationManager.cancel(2);
+            Intent x = new Intent(getApplicationContext(), GetLocation.class);
+            getApplicationContext().stopService(x);
         }
-        catch(Exception e)
-        {
-            Log.d("TAG",e.getMessage());
-        }
-            if (GetLocation.runservice == 1) {
-                GetLocation.notificationManager.cancel(2);
-                Intent x = new Intent(getApplicationContext(), GetLocation.class);
-                getApplicationContext().stopService(x);
-            }
-
         super.onDestroy();
+
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(authStateListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(authStateListener!=null)
-        {
-            firebaseAuth.removeAuthStateListener(authStateListener);
-        }
-    }
 
 }

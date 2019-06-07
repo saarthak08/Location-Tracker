@@ -51,55 +51,50 @@ public class LauncherActivity extends AppCompatActivity {
             }
         };
         if (firebaseUser!= null) {
-            try{
-            if(!firebaseUser.isEmailVerified()&&firebaseUser.getEmail().length()!=0)
+            if(!firebaseUser.isEmailVerified())
             {
                 startActivity(new Intent(LauncherActivity.this, VerifyActivity.class));
                 LauncherActivity.this.finish();
             }
             else{
-                databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot s: dataSnapshot.getChildren())
+            databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for(DataSnapshot s: dataSnapshot.getChildren())
+                    {
+                        if(firebaseUser.getUid().equals(s.getKey()))
                         {
-                            if(firebaseUser.getUid().equals(s.getKey()))
-                            {
-                                startActivity(new Intent(LauncherActivity.this, FacultyMainActivity.class));
-                                LauncherActivity.this.finish();
-                            }
+                            startActivity(new Intent(LauncherActivity.this, FacultyMainActivity.class));
+                            LauncherActivity.this.finish();
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-                databaseReference.child("students").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot s: dataSnapshot.getChildren())
-                        {
-                            if(firebaseUser.getUid().equals(s.getKey()))
-                            {
-                                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
-                                LauncherActivity.this.finish();
-                            }
-                        }
+                }
+            });
+          databaseReference.child("students").addValueEventListener(new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                  for(DataSnapshot s: dataSnapshot.getChildren())
+                  {
+                      if(firebaseUser.getUid().equals(s.getKey()))
+                      {
+                          startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+                          LauncherActivity.this.finish();
+                      }
+                  }
 
-                    }
+              }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+              @Override
+              public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
-            }}
-          catch (Exception e)
-            {
-                Log.d("LauncherException",e.getMessage());
-            }}else {
+              }
+          });
+        } }else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);
             launcherBinding.setClickHandlers(new LauncherActivityClickHandlers());

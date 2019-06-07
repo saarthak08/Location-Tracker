@@ -21,11 +21,11 @@
 
         <ImageView
             android:id="@+id/imageView3"
-            android:layout_width="116dp"
-            android:layout_height="116dp"
-            android:padding="@dimen/dimen_16x"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dimen_8x"
             android:layout_gravity="start"
-            app:srcCompat="@drawable/user" />
+            app:srcCompat="@android:drawable/sym_def_app_icon" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                 android:paddingLeft="@dimen/dimen_8x"
                 android:textSize="14sp"
                 android:layout_below="@+id/textView2"
-                android:text="@{user.department}"
+                android:text="@{user.email}"
                 tools:ignore="RtlSymmetry" />
             <TextView
                 android:id="@+id/textView4"
@@ -65,7 +65,7 @@
                 android:paddingLeft="@dimen/dimen_8x"
                 android:textSize="14sp"
                 android:layout_below="@+id/textView3"
-                android:text="@{user.college}"
+                android:text="@{`Faculty No: `+user.facultyno}"
                 tools:ignore="RtlSymmetry" />
             <TextView
                 android:id="@+id/textView5"
@@ -76,7 +76,7 @@
                 android:paddingLeft="@dimen/dimen_8x"
                 android:textSize="14sp"
                 android:layout_below="@+id/textView4"
-                android:text="@{`ID No: ` +user.enno}"
+                android:text="@{`Enrollment No: ` +user.enno}"
                 tools:ignore="RtlSymmetry" />
 
         </RelativeLayout>

@@ -18,42 +18,24 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageViewProfilePictureFaculty"
-            android:padding="@dimen/dimen_8x"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dimen_8x"
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/user" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="@dimen/text_16x"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/trade_winds"
-            android:text="@string/choose_profile_picture" />
-        <TextView
-            android:layout_marginTop="@dimen/dimen_16x"
-            android:id="@+id/textViewInfo"
-            android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="@dimen/dimen_4x"
-            android:textSize="@dimen/text_16x"
-            android:fontFamily="@font/new_rocker"
-            android:layout_height="wrap_content"
-            android:text="@string/you_can_sign_up_via_email_or_phone_number_or_both" />
+            android:layout_weight="1"
+            android:padding="@dimen/dimen_64x"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/amulogo"
+            tools:ignore="contentDescription" />
 
         <ProgressBar
             android:id="@+id/progressBar1"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="49dp"
             android:layout_height="44dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_gravity="center" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_name"
@@ -70,23 +52,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
                 android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_college"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingLeft="@dimen/dimen_32x"
-            android:paddingTop="@dimen/dimen_16x"
-            android:paddingRight="@dimen/dimen_32x">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/college"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/college_school"
-                android:inputType="text" />
-
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_department"
@@ -118,7 +83,7 @@
                 android:id="@+id/employeeid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/id_number"
+                android:hint="@string/employee_id"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,23 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingLeft="@dimen/dimen_32x"
-            android:paddingTop="@dimen/dimen_16x"
-            android:paddingRight="@dimen/dimen_32x"
-            app:passwordToggleEnabled="false">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/phone_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/phone_number"
-                android:inputType="phone" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimen_16x"
             android:paddingLeft="@dimen/dimen_32x"
             android:paddingTop="@dimen/dimen_16x"
             android:paddingRight="@dimen/dimen_32x"
@@ -156,12 +105,11 @@
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimen_16x"
             android:paddingLeft="@dimen/dimen_32x"
             android:paddingTop="@dimen/dimen_16x"
             android:paddingRight="@dimen/dimen_32x"
@@ -187,7 +135,6 @@
             android:background="@color/colorPrimary"
             android:foreground="?attr/selectableItemBackground"
             android:hint="@string/signupp"
-            android:layout_gravity="bottom"
             android:textColor="@color/white"
             android:textColorHint="@color/white" />
 

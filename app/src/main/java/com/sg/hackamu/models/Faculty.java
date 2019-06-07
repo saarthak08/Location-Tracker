@@ -4,45 +4,32 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Faculty implements Parcelable {
-
     private String name;
+
     private String department;
-    private String college;
+
     private String password;
-    private String email;
-    private String uuid;
-    private String employeeid;
-    private boolean login;
-    private String phoneno;
+
     private long id;
 
-    public Faculty(String name, String department, String college, String password, String email, String uuid, String employeeid, boolean login, String phoneno, long id) {
+    private String email;
+
+
+    private boolean login;
+
+    private String uuid;
+
+    private String employeeid;
+
+    public Faculty(String name, String department, String password, String email, long id, boolean login, String uuid, String employeeid) {
         this.name = name;
-        this.department = department;
-        this.college = college;
+        this.department=department;
         this.password = password;
-        this.email = email;
-        this.uuid = uuid;
-        this.employeeid = employeeid;
-        this.login = login;
-        this.phoneno = phoneno;
         this.id = id;
-    }
-
-    public String getCollege() {
-        return college;
-    }
-
-    public void setCollege(String college) {
-        this.college = college;
-    }
-
-    public String getPhoneno() {
-        return phoneno;
-    }
-
-    public void setPhoneno(String phoneno) {
-        this.phoneno = phoneno;
+        this.email = email;
+        this.login=login;
+        this.uuid=uuid;
+        this.employeeid=employeeid;
     }
 
     public Faculty() {
@@ -113,6 +100,16 @@ public class Faculty implements Parcelable {
         this.login = login;
     }
 
+    protected Faculty(Parcel in) {
+        name = in.readString();
+        department=in.readString();
+        password = in.readString();
+        id = in.readLong();
+        employeeid=in.readString();
+        email = in.readString();
+        login = in.readByte() != 0x00;
+        uuid = in.readString();
+    }
 
     @Override
     public int describeContents() {
@@ -121,35 +118,21 @@ public class Faculty implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.department);
-        dest.writeString(this.college);
-        dest.writeString(this.password);
-        dest.writeString(this.email);
-        dest.writeString(this.uuid);
-        dest.writeString(this.employeeid);
-        dest.writeByte(this.login ? (byte) 1 : (byte) 0);
-        dest.writeString(this.phoneno);
-        dest.writeLong(this.id);
+        dest.writeString(name);
+        dest.writeString(department);
+        dest.writeString(password);
+        dest.writeLong(id);
+        dest.writeString(employeeid);
+        dest.writeString(email);
+        dest.writeByte((byte) (login ? 0x01 : 0x00));
+        dest.writeString(uuid);
     }
 
-    protected Faculty(Parcel in) {
-        this.name = in.readString();
-        this.department = in.readString();
-        this.college = in.readString();
-        this.password = in.readString();
-        this.email = in.readString();
-        this.uuid = in.readString();
-        this.employeeid = in.readString();
-        this.login = in.readByte() != 0;
-        this.phoneno = in.readString();
-        this.id = in.readLong();
-    }
-
-    public static final Creator<Faculty> CREATOR = new Creator<Faculty>() {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Faculty> CREATOR = new Parcelable.Creator<Faculty>() {
         @Override
-        public Faculty createFromParcel(Parcel source) {
-            return new Faculty(source);
+        public Faculty createFromParcel(Parcel in) {
+            return new Faculty(in);
         }
 
         @Override

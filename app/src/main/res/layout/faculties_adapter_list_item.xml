@@ -21,11 +21,11 @@
 
             <ImageView
                 android:id="@+id/imageView3"
-                android:layout_width="88dp"
-                android:layout_height="88dp"
-                android:padding="@dimen/dimen_16x"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dimen_8x"
                 android:layout_gravity="start"
-                app:srcCompat="@drawable/user" />
+                app:srcCompat="@android:drawable/sym_def_app_icon" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -54,9 +54,8 @@
                     android:paddingLeft="@dimen/dimen_8x"
                     android:textSize="14sp"
                     android:layout_below="@+id/textView2"
-                    android:text="@{faculty.department}"
+                    android:text="@{faculty.email}"
                     tools:ignore="RtlSymmetry" />
-
                 <TextView
                     android:id="@+id/textView4"
                     android:layout_width="match_parent"
@@ -66,7 +65,7 @@
                     android:paddingLeft="@dimen/dimen_8x"
                     android:textSize="14sp"
                     android:layout_below="@+id/textView3"
-                    android:text="@{faculty.college}"
+                    android:text="@{faculty.department}"
                     tools:ignore="RtlSymmetry" />
             </RelativeLayout>
 

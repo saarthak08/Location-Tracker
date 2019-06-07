@@ -16,7 +16,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
 import com.sg.hackamu.faculties.FacultyMainActivity;
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Connected Faculties");
+        getSupportActionBar().setTitle("All Faculties");
         progressBar=findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.VISIBLE);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
@@ -82,17 +81,16 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         allConnectionsAdapter=new FacultiesAdapter(MainActivity.this,faculties);
         recyclerView.setAdapter(allConnectionsAdapter);
-        firebaseAuth=FirebaseAuth.getInstance();
-        firebaseUser=firebaseAuth.getCurrentUser();
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 firebaseUser=firebaseAuth.getCurrentUser();
                 Log.d("Auth State","Auth State Changed");
+
             }
         };
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
         swipeRefreshLayout=findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -100,8 +98,10 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseUser=firebaseAuth.getCurrentUser();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -117,52 +117,11 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-        myRef.child("students").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                try {
-                    if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
-                        user = dataSnapshot.getValue(User.class);
-                        View headerView = navigationView.getHeaderView(0);
-                        TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-                        if (user.getEmail()==null) {
-                            email.setText(user.getPhoneno());
-                        } else {
-                            email.setText(user.getEmail());
-                        }
-                        TextView name = headerView.findViewById(R.id.namenav);
-                        name.setText(user.getName());
-                    }
-                }
-                    catch(Exception e)
-                    {
-                        Log.d("NavMenu", e.getMessage());
-                    }
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        navigationView.getMenu().getItem(0).setChecked(true);
+        View headerView = navigationView.getHeaderView(0);
+        TextView email = (TextView) headerView.findViewById(R.id.emailnav);
+        //email.setText(firebaseUser.getEmail());
+        TextView name=headerView.findViewById(R.id.namenav);
+        name.setText(firebaseUser.getDisplayName());
         myRef.child("faculties").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -199,19 +158,11 @@ public class MainActivity extends AppCompatActivity
             Faculty u=new Faculty();
             uuid= dataSnapshot.getKey();
             if(!uuid.equals(firebaseUser.getUid())) {
-                try {
-                    u.setName((dataSnapshot.getValue(Faculty.class).getName()));
-                    u.setUuid(uuid);
-                    u.setCollege(dataSnapshot.getValue(Faculty.class).getCollege());
-                    u.setPhoneno(dataSnapshot.getValue(Faculty.class).getPhoneno());
-                    u.setEmail(dataSnapshot.getValue(Faculty.class).getEmail());
-                    u.setDepartment(dataSnapshot.getValue(Faculty.class).getDepartment());
-                    u.setEmployeeid(dataSnapshot.getValue(Faculty.class).getEmployeeid());
-                }
-                catch (Exception e)
-                {
-                    Log.d("showDataStudent",e.getMessage());
-                }
+                u.setName((dataSnapshot.getValue(Faculty.class).getName()));
+                u.setUuid(uuid);
+                u.setEmail(dataSnapshot.getValue(Faculty.class).getEmail());
+                u.setDepartment(dataSnapshot.getValue(Faculty.class).getDepartment());
+                u.setEmployeeid(dataSnapshot.getValue(Faculty.class).getEmployeeid());
                 faculties.add(u);
             }
         }
@@ -247,6 +198,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.connections) {
 
         } else if (id == R.id.signout) {
+
             if(authStateListener!=null)
             {
                 firebaseAuth.removeAuthStateListener(authStateListener);
@@ -288,6 +240,5 @@ public class MainActivity extends AppCompatActivity
             }, 2000);
         }
     }
-
 
 }

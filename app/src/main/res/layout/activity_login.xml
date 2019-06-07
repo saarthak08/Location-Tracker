@@ -9,11 +9,6 @@
             type="com.sg.hackamu.students.LoginActivity.LoginActivityClickHandlers"/>
     </data>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,11 +17,13 @@
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
-            android:layout_height="192dp"
+            android:layout_height="0dp"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:baselineAligned="true"
             android:padding="32dp"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/amulogo"
             tools:ignore="ContentDescription" />
 
@@ -98,27 +95,6 @@
             tools:targetApi="lollipop" />
 
         <TextView
-            android:id="@+id/textViewloginviaphone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_horizontal"
-            android:paddingLeft="@dimen/dimen_32x"
-            android:paddingTop="@dimen/dimen_16x"
-            android:paddingRight="@dimen/dimen_32x"
-            android:paddingBottom="@dimen/dimen_16x"
-            android:text="@string/login_via_phone_number"
-            android:stateListAnimator="@null"
-            android:elevation="4dp"
-            android:onClick="@{ClickHandlers::onLoginViaPhone}"
-            android:textColor="@color/dark_grey"
-            android:textColorHighlight="@color/dark_grey"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:visibility="visible"
-            tools:targetApi="lollipop" />
-
-        <TextView
             android:id="@+id/loginasfaculty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -171,6 +147,4 @@
             tools:targetApi="lollipop" />
 
     </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
 </layout>

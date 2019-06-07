@@ -28,53 +28,17 @@ public class User implements Parcelable {
     private boolean login;
 
     private String uuid;
-    private String college;
-    private String department;
-    private String phoneno;
+
+    private String facultyno;
+
     private String enno;
 
-
-    public User(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno) {
-        this.name = name;
-        this.password = password;
-        this.id = id;
-        this.email = email;
-        this.login = login;
-        this.uuid = uuid;
-        this.college = college;
-        this.department = department;
-        this.phoneno = phoneno;
-        this.enno = enno;
+    public String getFacultyno() {
+        return facultyno;
     }
 
-    @Ignore
-    public User() {
-
-    }
-
-
-    public String getCollege() {
-        return college;
-    }
-
-    public void setCollege(String college) {
-        this.college = college;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public String getPhoneno() {
-        return phoneno;
-    }
-
-    public void setPhoneno(String phoneno) {
-        this.phoneno = phoneno;
+    public void setFacultyno(String facultyno) {
+        this.facultyno = facultyno;
     }
 
     public String getEnno() {
@@ -83,6 +47,26 @@ public class User implements Parcelable {
 
     public void setEnno(String enno) {
         this.enno = enno;
+    }
+
+
+
+    public User(String name, String password, String email,long id,boolean login,String uuid, String facultyno, String enno) {
+        this.name = name;
+        this.password = password;
+        this.id = id;
+        this.email = email;
+        this.login=login;
+        this.uuid=uuid;
+        this.facultyno=facultyno;
+        this.enno=enno;
+    }
+
+
+
+    @Ignore
+    public User() {
+
     }
 
     public String getUuid() {
@@ -133,6 +117,17 @@ public class User implements Parcelable {
         this.login = login;
     }
 
+    @Ignore
+    protected User(Parcel in) {
+        name = in.readString();
+        facultyno=in.readString();
+        enno=in.readString();
+        password = in.readString();
+        id = in.readLong();
+        email = in.readString();
+        login = in.readByte() != 0x00;
+        uuid = in.readString();
+    }
 
     @Override
     public int describeContents() {
@@ -141,35 +136,21 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.password);
-        dest.writeLong(this.id);
-        dest.writeString(this.email);
-        dest.writeByte(this.login ? (byte) 1 : (byte) 0);
-        dest.writeString(this.uuid);
-        dest.writeString(this.college);
-        dest.writeString(this.department);
-        dest.writeString(this.phoneno);
-        dest.writeString(this.enno);
+        dest.writeString(name);
+        dest.writeString(password);
+        dest.writeString(facultyno);
+        dest.writeString(enno);
+        dest.writeLong(id);
+        dest.writeString(email);
+        dest.writeByte((byte) (login ? 0x01 : 0x00));
+        dest.writeString(uuid);
     }
 
-    protected User(Parcel in) {
-        this.name = in.readString();
-        this.password = in.readString();
-        this.id = in.readLong();
-        this.email = in.readString();
-        this.login = in.readByte() != 0;
-        this.uuid = in.readString();
-        this.college = in.readString();
-        this.department = in.readString();
-        this.phoneno = in.readString();
-        this.enno = in.readString();
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
+        public User createFromParcel(Parcel in) {
+            return new User(in);
         }
 
         @Override
@@ -177,4 +158,5 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
 }

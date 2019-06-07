@@ -59,7 +59,6 @@ public class GetLocation extends Service {
     FirebaseDatabase firebaseDatabase;
     int notificationId=2;
     public static int runservice=0;
-    private FirebaseAuth.AuthStateListener authStateListener;
     public static NotificationManagerCompat notificationManager;
     public static NotificationCompat.Builder builder;
 
@@ -76,15 +75,6 @@ public class GetLocation extends Service {
         super.onCreate();
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                firebaseUser = firebaseAuth.getCurrentUser();
-                Log.d("Auth State", "Auth State Changed");
-
-            }
-        };
-        firebaseAuth.addAuthStateListener(authStateListener);
         firebaseDatabase=FirebaseDatabase.getInstance();
         reference=firebaseDatabase.getReference();
         runservice=1;
@@ -195,13 +185,10 @@ public class GetLocation extends Service {
         FacultyMainActivity.l=0;
         runservice=0;
         notificationManager.cancel(notificationId);
-        if(authStateListener!=null)
-        {
-            firebaseAuth.removeAuthStateListener(authStateListener);
-        }
         reference.child("geocordinates").child(firebaseUser.getUid()).removeValue();
         super.onDestroy();
     }
+
 
 }
 
