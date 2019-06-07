@@ -4,13 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText email;
     private EditText password;
+    private ScrollView scrollView;
     private TextView forgotpass;
     private ActivityLoginBinding loginBinding;
     private FirebaseAuth firebaseAuth;
@@ -67,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         };
         signupButton=loginBinding.signupbutton;
         progressBar=loginBinding.progressBar1;
+        scrollView=loginBinding.scrollView;
         loginButton=loginBinding.loginButton;
         email=loginBinding.email;
         databaseReference=firebaseDatabase.getReference();
@@ -92,7 +97,12 @@ public class LoginActivity extends AppCompatActivity {
             if (email.getText().toString().trim().length() != 0 && password.getText().toString().trim().length() != 0) {
 
                 progressBar.setVisibility(View.VISIBLE);
-                firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
+                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);                firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.GONE);

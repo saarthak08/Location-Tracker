@@ -4,14 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,6 +44,7 @@ public class FacultySignUp extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private ScrollView scrollView;
     private UserProfileChangeRequest userProfileChangeRequest;
     private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference myRef;
@@ -75,6 +79,7 @@ public class FacultySignUp extends AppCompatActivity {
         progressBar=signUpBinding.progressBar1;
         email=signUpBinding.emails;
         name=signUpBinding.name;
+        scrollView=signUpBinding.scroll;
         department=signUpBinding.department;
         emplyeeid=signUpBinding.employeeid;
         password=signUpBinding.passwords;
@@ -103,6 +108,12 @@ public class FacultySignUp extends AppCompatActivity {
             if(email.getText().toString().trim().length()!=0&&name.getText().toString().trim().length()!=0&&department.getText().toString().trim().length()!=0&&password.getText().toString().trim().length()!=0&&emplyeeid.getText().toString().trim().length()!=0)
             {
                 progressBar.setVisibility(View.VISIBLE);
+                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
                 firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
