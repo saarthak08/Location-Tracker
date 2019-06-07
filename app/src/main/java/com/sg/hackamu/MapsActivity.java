@@ -57,6 +57,8 @@ import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,8 +196,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             if(mylatlng!=null)
             {
-               if(polyline1==null) {
-                   // Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
+                if(polyline1==null) {
+                    // Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
                     polyline1 = googleMap.addPolyline(new PolylineOptions()
                             .add(mylatlng,
                                     mylatlng,
@@ -203,7 +205,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else
                 {
-                 //   Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
+                    //   Toast.makeText(getApplicationContext(),"Hi",Toast.LENGTH_SHORT).show();
                     polylinelist.clear();
                     polylinelist.add(mylatlng);
                     polylinelist.add(userlatLng);
@@ -237,7 +239,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location != null) {
                             if(location.hasAccuracy())
                             {
-                                if(location.getAccuracy()<20)
+                                if(location.getAccuracy()<30)
                                 {
                                     onLocationChanged(location);
 
@@ -282,8 +284,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (locationResult != null) {
                             if(marker!=null) {
                                 currentLocation = locationResult.getLastLocation();
-                                currentLocation.distanceTo(marker);
-                                textView.setText("Distance: "+ currentLocation.distanceTo(marker)+" metres (approx)");
+                                String str=Float.toString(currentLocation.distanceTo(marker));
+                                double x=Double.parseDouble(str);
+                                DecimalFormat df = new DecimalFormat("#");
+                                df.setMaximumFractionDigits(2);
+                                textView.setText("Distance: "+ df.format(x)+" metres (approx)");
                             }
                             //Toast.makeText(MapsActivity.this,"Distance: "+currentLocation.distanceTo(marker)+"metres",Toast.LENGTH_SHORT).show();
                             if(locationResult.getLastLocation().hasAccuracy())

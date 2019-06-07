@@ -35,8 +35,9 @@
     <TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="24dp"
+        android:background="@color/gradient_3_start"
         android:layout_alignParentBottom="true"
-        android:text="TextView" />
+        android:text="@string/error_getting_distance" />
 
 </RelativeLayout>
