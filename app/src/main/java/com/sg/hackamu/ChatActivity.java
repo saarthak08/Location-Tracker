@@ -72,22 +72,21 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        running=true;
+        running = true;
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
-        x=new Intent(ChatActivity.this, MapsActivity.class);
+        x = new Intent(ChatActivity.this, MapsActivity.class);
         if (i.hasExtra("user")) {
             user = i.getParcelableExtra("user");
             getSupportActionBar().setTitle(user.getName());
-            x.putExtra("user",user);
-            isuser=true;
+            x.putExtra("user", user);
+            isuser = true;
         }
-        if(user==null)
-        {
-            faculty=i.getParcelableExtra("faculty");
+        if (user == null) {
+            faculty = i.getParcelableExtra("faculty");
             getSupportActionBar().setTitle(faculty.getName());
-            x.putExtra("faculty",faculty);
-            isuser=false;
+            x.putExtra("faculty", faculty);
+            isuser = false;
         }
         setContentView(R.layout.activity_chat);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -100,14 +99,14 @@ public class ChatActivity extends AppCompatActivity {
         editText = findViewById(R.id.chattext);
         floatingActionButton = findViewById(R.id.floatingActionButtonSend);
         recyclerView = findViewById(R.id.recyclerViewChat);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(ChatActivity.this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         chatAdapter = new ChatAdapter(chatMessages, ChatActivity.this, firebaseUser);
         recyclerView.setAdapter(chatAdapter);
-        firebaseDatabase=FirebaseUtils.getDatabase();
+        firebaseDatabase = FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
-        user=i.getParcelableExtra("user");
+        user = i.getParcelableExtra("user");
         editText.requestFocus();
         recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -118,7 +117,7 @@ public class ChatActivity extends AppCompatActivity {
                     recyclerView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(recyclerView.getAdapter().getItemCount()>0) {
+                            if (recyclerView.getAdapter().getItemCount() > 0) {
                                 recyclerView.smoothScrollToPosition(
                                         recyclerView.getAdapter().getItemCount() - 1);
                             }
@@ -127,13 +126,13 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-    final TextView readtext=findViewById(R.id.textViewread);
-        if(isuser) {
+        final TextView readtext = findViewById(R.id.textViewread);
+        if (isuser) {
             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
             reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshots, @Nullable String s) {
-                    if (dataSnapshots != null&&running) {
+                    if (dataSnapshots != null && running) {
                         final ChatMessage chatMessage = new ChatMessage();
                         chatMessage.setMessageText(dataSnapshots.getValue(ChatMessage.class).getMessageText());
                         chatMessage.setSenderuuid(dataSnapshots.getValue(ChatMessage.class).getSenderuuid());
@@ -144,33 +143,30 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);
                         progressBar.setVisibility(View.INVISIBLE);
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
+                        recyclerView.scrollToPosition(chatMessages.size() - 1);
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    try{
-                        ChatMessage chatMessage=new ChatMessage();
-                        int index=-1;
+                    try {
+                        ChatMessage chatMessage = new ChatMessage();
+                        int index = -1;
                         chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
                         chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
                         chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
                         chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
                         chatMessage.setRead(true);
-                        for(ChatMessage c:chatMessages)
-                        {
-                            if(chatMessage.getMessageTime()==c.getMessageTime())
-                            {
-                                index=chatMessages.indexOf(c);
+                        for (ChatMessage c : chatMessages) {
+                            if (chatMessage.getMessageTime() == c.getMessageTime()) {
+                                index = chatMessages.indexOf(c);
                             }
                         }
-                    chatMessages.set(index,chatMessage);
-                    chatAdapter.notifyDataSetChanged();}
-                    catch (Exception e)
-                    {
-                        Log.d("ReadStatusUpdateError",e.getMessage());
+                        chatMessages.set(index, chatMessage);
+                        chatAdapter.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        Log.d("ReadStatusUpdateError", e.getMessage());
                     }
 
                 }
@@ -191,14 +187,12 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
-        }
-        else
-        {
+        } else {
             reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).keepSynced(true);
             reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull final DataSnapshot dataSnapshots, @Nullable String s) {
-                    if (dataSnapshots != null&&running) {
+                    if (dataSnapshots != null && running) {
                         final ChatMessage chatMessage = new ChatMessage();
                         chatMessage.setMessageText(dataSnapshots.getValue(ChatMessage.class).getMessageText());
                         chatMessage.setSenderuuid(dataSnapshots.getValue(ChatMessage.class).getSenderuuid());
@@ -210,33 +204,31 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessages.add(chatMessage);
                         progressBar.setVisibility(View.INVISIBLE);
                         chatAdapter.notifyDataSetChanged();
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
+                        recyclerView.scrollToPosition(chatMessages.size() - 1);
                     }
                     progressBar.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        try {
-                            ChatMessage chatMessage = new ChatMessage();
-                            int index = -1;
-                            chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
-                            chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
-                            chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
-                            chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
-                            chatMessage.setRead(true);
-                            for (ChatMessage c : chatMessages) {
-                                if (chatMessage.getMessageTime() == c.getMessageTime()) {
-                                    index = chatMessages.indexOf(c);
-                                }
+                    try {
+                        ChatMessage chatMessage = new ChatMessage();
+                        int index = -1;
+                        chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
+                        chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
+                        chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
+                        chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
+                        chatMessage.setRead(true);
+                        for (ChatMessage c : chatMessages) {
+                            if (chatMessage.getMessageTime() == c.getMessageTime()) {
+                                index = chatMessages.indexOf(c);
                             }
-                            chatMessages.set(index, chatMessage);
-                            chatAdapter.notifyDataSetChanged();
                         }
-                        catch (Exception e)
-                        {
-                            Log.d("ReadStatusUpdateError",e.getMessage());
-                        }
+                        chatMessages.set(index, chatMessage);
+                        chatAdapter.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        Log.d("ReadStatusUpdateError", e.getMessage());
+                    }
                 }
 
                 @Override
@@ -273,24 +265,23 @@ public class ChatActivity extends AppCompatActivity {
                                 .getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.showSoftInput(recyclerView, InputMethodManager.SHOW_IMPLICIT);
                     } catch (Exception e) {
-                        Log.d("KeyboardException",e.getMessage());
+                        Log.d("KeyboardException", e.getMessage());
                     }
                     senderchatMessage = new ChatMessage();
                     senderchatMessage.setMessageText(editText.getText().toString().trim());
-                    if(isuser) {
+                    if (isuser) {
                         senderchatMessage.setRecieveruuid(user.getUuid());
                         senderchatMessage.setSenderuuid(firebaseUser.getUid());
                         reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
                         reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
+                        recyclerView.scrollToPosition(chatMessages.size() - 1);
 
-                    }else
-                    {
+                    } else {
                         senderchatMessage.setRecieveruuid(faculty.getUuid());
                         senderchatMessage.setSenderuuid(firebaseUser.getUid());
                         reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
                         reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
+                        recyclerView.scrollToPosition(chatMessages.size() - 1);
 
                     }
                     editText.setText("");
@@ -311,16 +302,14 @@ public class ChatActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.requestlocation) {
-            final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 buildAlertMessageNoGps();
-            }
-            else {
+            } else {
                 checkUserPermission();
             }
-        }
-        else if (item.getItemId() == android.R.id.home) {
+        } else if (item.getItemId() == android.R.id.home) {
             finish();
         }
 
@@ -329,17 +318,16 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(isuser==false) {
+        if (isuser == false) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.chatactivity, menu);
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -369,9 +357,7 @@ public class ChatActivity extends AppCompatActivity {
             } else {
                 startActivity(x);
             }
-        }
-        else
-        {
+        } else {
             startActivity(x);
 
         }
@@ -388,7 +374,7 @@ public class ChatActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        Toast.makeText(ChatActivity.this,"Error! Turn on GPS! ",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChatActivity.this, "Error! Turn on GPS! ", Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                     }
                 });
@@ -414,13 +400,13 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        running=false;
+        running = false;
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        running=true;
+        running = true;
         super.onResume();
     }
 

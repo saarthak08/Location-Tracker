@@ -303,7 +303,7 @@ public class FacultyMainActivity extends AppCompatActivity
 
     void buildAlertMessageNoGps() {
         final AlertDialog.Builder builders = new AlertDialog.Builder(this);
-        builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")
+        builders.setMessage("Your GPS seems to be disabled or isn't set to \'High Accuracy\'. Do you want to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
