@@ -402,6 +402,7 @@ public class SignUpActivity extends AppCompatActivity {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            verify=false;
                             if (alreadyregister) {
 
                                 if (!dialog1.isCancelled()) {
@@ -434,7 +435,6 @@ public class SignUpActivity extends AppCompatActivity {
                                     }
                                 });
                                 myRef.child("students").child(firebaseUser.getUid()).setValue(user);
-
                                 Intent i = new Intent(SignUpActivity.this, MainActivity.class);
                                 i.putExtra("student", user);
                                 verify=false;

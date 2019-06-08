@@ -411,6 +411,7 @@ public class FacultySignUp extends AppCompatActivity {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            verify=false;
                             if (alreadyregister) {
 
                                 if (!dialog1.isCancelled()) {

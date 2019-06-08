@@ -415,7 +415,6 @@ public class FacultyLogin extends AppCompatActivity {
                             {
                                 Toast.makeText(getApplicationContext(),"Phone Number not registered or wrong type of login.",Toast.LENGTH_SHORT).show();
                                 if(firebaseUser!=null) {
-                                    firebaseUser.delete();
                                     firebaseAuth.signOut();
                                     verify=false;
                                 }
@@ -438,7 +437,6 @@ public class FacultyLogin extends AppCompatActivity {
     protected void onDestroy() {
         if(verify&&firebaseAuth.getCurrentUser()!=null)
         {
-            firebaseAuth.getCurrentUser().delete();
             firebaseAuth.signOut();
         }
         super.onDestroy();
