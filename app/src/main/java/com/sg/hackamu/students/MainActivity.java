@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -132,6 +134,11 @@ public class MainActivity extends AppCompatActivity
                         }
                         TextView name = headerView.findViewById(R.id.namenav);
                         name.setText(user.getName());
+                        ImageView imageView=headerView.findViewById(R.id.imageViewMe);
+                        if(firebaseUser.getPhotoUrl()!=null)
+                        {
+                            Glide.with(MainActivity.this).load(firebaseUser.getPhotoUrl()).into(imageView);
+                        }
                     }
                 }
                     catch(Exception e)
