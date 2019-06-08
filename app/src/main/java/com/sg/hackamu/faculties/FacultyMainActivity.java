@@ -245,21 +245,21 @@ public class FacultyMainActivity extends AppCompatActivity
     private void showData(DataSnapshot dataSnapshot){
         User fc=new User();
         uuid= dataSnapshot.getKey();
-        if(!uuid.equals(firebaseUser.getUid())) {
-            try {
-                fc.setName((dataSnapshot.getValue(User.class).getName()));
-                fc.setUuid(uuid);
-                fc.setCollege(dataSnapshot.getValue(User.class).getCollege());
-                fc.setDepartment(dataSnapshot.getValue(User.class).getDepartment());
-                fc.setPhoneno(dataSnapshot.getValue(User.class).getPhoneno());
-                fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
-                fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
+        if(firebaseUser!=null) {
+            if (!uuid.equals(firebaseUser.getUid())) {
+                try {
+                    fc.setName((dataSnapshot.getValue(User.class).getName()));
+                    fc.setUuid(uuid);
+                    fc.setCollege(dataSnapshot.getValue(User.class).getCollege());
+                    fc.setDepartment(dataSnapshot.getValue(User.class).getDepartment());
+                    fc.setPhoneno(dataSnapshot.getValue(User.class).getPhoneno());
+                    fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
+                    fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
+                } catch (Exception e) {
+                    Log.d("showDataFaculty", e.getMessage());
+                }
+                users.add(fc);
             }
-            catch (Exception e)
-            {
-                Log.d("showDataFaculty",e.getMessage());
-            }
-            users.add(fc);
         }
     }
 
@@ -279,7 +279,13 @@ public class FacultyMainActivity extends AppCompatActivity
         } else if (id == R.id.connections) {
 
         } else if (id == R.id.signout) {
-
+            Intent o=new Intent(FacultyMainActivity.this, ChatNotification.class);
+            getApplicationContext().stopService(o);
+            if (GetLocation.runservice == 1) {
+                GetLocation.notificationManager.cancel(2);
+                Intent x = new Intent(getApplicationContext(), GetLocation.class);
+                getApplicationContext().stopService(x);
+            }
             firebaseAuth.signOut();
             loadLauncherActivity();
         }
@@ -367,7 +373,7 @@ public class FacultyMainActivity extends AppCompatActivity
 
     void buildAlertMessageNoGps() {
         final AlertDialog.Builder builders = new AlertDialog.Builder(this);
-        builders.setMessage("Your GPS seems to be disabled. Do you want to enable it?")
+        builders.setMessage("Your GPS seems to be disabled or isn't set to \'High Accuracy\'. Do you want to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {

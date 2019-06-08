@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +14,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -64,6 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private String userID;
     private String uuid;
+    private ScrollView scrollView;
     private EditText enNo;
     private boolean verify;
     private boolean alreadyregister=false;
@@ -101,6 +105,7 @@ public class SignUpActivity extends AppCompatActivity {
         email = signUpBinding.emails;
         name = signUpBinding.name;
         department = signUpBinding.department;
+        scrollView=signUpBinding.scrollView;
         phonenumber = signUpBinding.phoneNumber;
         college = signUpBinding.college;
         enNo = signUpBinding.enrolno;
@@ -134,7 +139,6 @@ public class SignUpActivity extends AppCompatActivity {
                     verifyphone();
 
                 } else if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() == 0) {
-                    progressBar.setVisibility(View.VISIBLE);
                     createUserwithEmail();
                 }
             }
@@ -145,6 +149,12 @@ public class SignUpActivity extends AppCompatActivity {
 
             public void verifyphone () {
                 progressBar.setVisibility(View.VISIBLE);
+                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
                 PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
                         phonenumber.getText().toString().trim(),        // Phone number to verify
                         60,                 // Timeout duration
@@ -168,8 +178,9 @@ public class SignUpActivity extends AppCompatActivity {
                                         });
                                         dialog1.getBuilder().positiveFocus(true);
                                     }
-                                    verifyVerificationCode(code);
                                 }
+                                progressBar.setVisibility(View.GONE);
+                                signInWithPhoneAuthCredential(credential);
                                 Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
 
                             }
@@ -177,7 +188,8 @@ public class SignUpActivity extends AppCompatActivity {
                             @Override
                             public void onVerificationFailed(FirebaseException e) {
                                 Log.w("PhoneVerify", "onVerificationFailed", e);
-                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -186,10 +198,11 @@ public class SignUpActivity extends AppCompatActivity {
                                 Log.d("Code Sent", "onCodeSent:" + verificationId);
                                 mVerificationId = verificationId;
                                 mResendToken = token;
+                                progressBar.setVisibility(View.GONE);
                                 // ...
                             }
                         });
-                dialog1 = new MaterialDialog.Builder(SignUpActivity.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.")
+                dialog1 = new MaterialDialog.Builder(SignUpActivity.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.\nOTP not recieved? Try Again!\nSometimes, Google Play Services can automatically verify your phone number without sending the code.")
                         .positiveText("OK")
                         .negativeText("Cancel")
                         .inputType(InputType.TYPE_CLASS_NUMBER)
@@ -333,10 +346,18 @@ public class SignUpActivity extends AppCompatActivity {
 
             public void createUserwithEmail()
             {
+                progressBar.setVisibility(View.VISIBLE);
+                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
                 firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(),password.getText().toString().trim())
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     firebaseUser = firebaseAuth.getCurrentUser();
                                     User user = new User();
@@ -356,7 +377,6 @@ public class SignUpActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    progressBar.setVisibility(View.GONE);
                                     myRef.child("students").child(firebaseUser.getUid()).setValue(user);
                                     Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
                                     i.putExtra("student", user);
@@ -364,19 +384,13 @@ public class SignUpActivity extends AppCompatActivity {
                                     startActivity(i);
                                     //verification successful we will start the profile activity
                                 } else {
-                                    //verification unsuccessful.. display an error message
-                                    String message = "Error in verification!";
-                                    if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                        message = "Invalid code entered...";
-                                    }
-                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),e.getMessage().trim(),Toast.LENGTH_SHORT).show();
                             }
                         });
             }

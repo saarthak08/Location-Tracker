@@ -5,15 +5,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
     private String verificationCode;
     private boolean alreadyregister=false;
     private String uuid;
+    private boolean verify;
+    private ScrollView scrollView;
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private String phonenumber;
@@ -89,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBar=loginBinding.progressBar1;
         loginButton=loginBinding.loginButton;
         email=loginBinding.email;
+        scrollView=loginBinding.scrollView;
         databaseReference=firebaseDatabase.getReference();
         password=loginBinding.password;
         forgotpass=loginBinding.textViewforgotstu;
@@ -112,11 +118,17 @@ public class LoginActivity extends AppCompatActivity {
             if (email.getText().toString().trim().length() != 0 && password.getText().toString().trim().length() != 0) {
 
                 progressBar.setVisibility(View.VISIBLE);
+                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
                 firebaseAuth.signInWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                     }
                 }).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -210,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
                                    createdialog2(phonenumber);
 
                                 } catch (Exception e) {
-                                    Log.d("verification", e.getMessage());
+                                    Log.d("verification", e.getMessage().trim());
                                 }
                             }
                         })
@@ -235,10 +247,10 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onVerificationCompleted(PhoneAuthCredential credential) {
                                 final String code = credential.getSmsCode();
-                                if (code != null) {
-                                    //verifying the code
-                                    if(!dialog2.isCancelled())
-                                    {
+
+                                //verifying the code
+                                if(code!=null) {
+                                    if (!dialog2.isCancelled()) {
                                         dialog2.getInputEditText().setText(code);
                                         dialog2.getBuilder().onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
@@ -248,16 +260,17 @@ public class LoginActivity extends AppCompatActivity {
                                         });
                                         dialog2.getBuilder().positiveFocus(true);
                                     }
-                                    verifyVerificationCode(code);
                                 }
-                                Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
+                                progressBar.setVisibility(View.GONE);
+                                signInWithPhoneAuthCredential(credential);
+                                Log.d("PhoneVerify","onVerificationCompleted:"+credential);
 
-                            }
+                        }
 
                             @Override
                             public void onVerificationFailed(FirebaseException e) {
                                 Log.w("PhoneVerify", "onVerificationFailed", e);
-                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -269,7 +282,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // ...
                             }
                         });
-                dialog2=new MaterialDialog.Builder(LoginActivity.this).title("Enter the verification code you recieved!")
+                dialog2=new MaterialDialog.Builder(LoginActivity.this).title("Enter the verification code you recieved!\nOTP not recieved? Try Again!\nSometimes, Google Play Services automatically verify your phone number without sending the code.")
                         .positiveText("OK")
                         .negativeText("Cancel")
                         .inputType(InputType.TYPE_CLASS_NUMBER)
@@ -322,43 +335,8 @@ public class LoginActivity extends AppCompatActivity {
                                 firebaseAuth=FirebaseAuth.getInstance();
                                 firebaseUser=firebaseAuth.getCurrentUser();
                                 uuid=firebaseUser.getUid();
+                                verify=true;
                                 databaseReference.child("students").addChildEventListener(new ChildEventListener() {
-                                    @Override
-                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                        try {
-
-                                            if (dataSnapshot.getKey().equals(uuid)) {
-                                                alreadyregister=true;
-                                            }
-                                        }
-                                        catch(Exception e)
-                                        {
-                                            Log.d("LoginPN", e.getMessage());
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                                databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
                                     @Override
                                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                         try {
@@ -397,12 +375,6 @@ public class LoginActivity extends AppCompatActivity {
                                createdialog3();
 
                             } else {
-                                //verification unsuccessful.. display an error message
-                                String message = "Error in verification!";
-                                if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    message = "Invalid code entered...";
-                                }
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -431,15 +403,17 @@ public class LoginActivity extends AppCompatActivity {
                                     dialog.dismiss();
                                     dialog.cancel();
                                 }
+                                verify=false;
                                 startActivity(new Intent(LoginActivity.this,MainActivity.class));
                                 LoginActivity.this.finish();
                             }
                             else
                             {
-                                Toast.makeText(getApplicationContext(),"Phone Number not registered.",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"Phone Number not registered or wrong type of login.",Toast.LENGTH_SHORT).show();
                                 if(firebaseUser!=null) {
                                     firebaseUser.delete();
                                     firebaseAuth.signOut();
+                                    verify=false;
                                 }
                             }
                         }
@@ -455,6 +429,15 @@ public class LoginActivity extends AppCompatActivity {
                     .autoDismiss(false)
                     .show();
         }
+    }
+    @Override
+    protected void onDestroy() {
+        if(verify&&firebaseAuth.getCurrentUser()!=null)
+        {
+            firebaseAuth.getCurrentUser().delete();
+            firebaseAuth.signOut();
+        }
+        super.onDestroy();
     }
 
 }

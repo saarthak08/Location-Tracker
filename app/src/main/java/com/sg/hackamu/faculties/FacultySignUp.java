@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -12,10 +13,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -76,6 +79,7 @@ public class FacultySignUp extends AppCompatActivity {
     private MaterialDialog dialog1;
     private String verificationCode;
     private String mVerificationId;
+    private ScrollView scrollView;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private static final String TAG = "SignUpActivity";
 
@@ -106,6 +110,7 @@ public class FacultySignUp extends AppCompatActivity {
         progressBar=signUpBinding.progressBar1;
         email=signUpBinding.emails;
         name=signUpBinding.name;
+        scrollView=signUpBinding.scrollView;
         phonenumber=signUpBinding.phoneNumber;
         college=signUpBinding.college;
         department=signUpBinding.department;
@@ -140,7 +145,6 @@ public class FacultySignUp extends AppCompatActivity {
                     verifyphone();
 
                 } else if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() == 0) {
-                    progressBar.setVisibility(View.VISIBLE);
                     createUserwithEmail();
                 }
             }
@@ -151,6 +155,12 @@ public class FacultySignUp extends AppCompatActivity {
 
         public void verifyphone () {
             progressBar.setVisibility(View.VISIBLE);
+            scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
             PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
                     phonenumber.getText().toString().trim(),        // Phone number to verify
                     60,                 // Timeout duration
@@ -174,8 +184,10 @@ public class FacultySignUp extends AppCompatActivity {
                                     });
                                     dialog1.getBuilder().positiveFocus(true);
                                 }
-                                verifyVerificationCode(code);
+
                             }
+                            progressBar.setVisibility(View.GONE);
+                            signInWithPhoneAuthCredential(credential);
                             Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
 
                         }
@@ -183,7 +195,8 @@ public class FacultySignUp extends AppCompatActivity {
                         @Override
                         public void onVerificationFailed(FirebaseException e) {
                             Log.w("PhoneVerify", "onVerificationFailed", e);
-                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
@@ -192,10 +205,11 @@ public class FacultySignUp extends AppCompatActivity {
                             Log.d("Code Sent", "onCodeSent:" + verificationId);
                             mVerificationId = verificationId;
                             mResendToken = token;
+                            progressBar.setVisibility(View.GONE);
                             // ...
                         }
                     });
-            dialog1 = new MaterialDialog.Builder(FacultySignUp.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.")
+            dialog1 = new MaterialDialog.Builder(FacultySignUp.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.\nOTP not recieved? Try Again!\nSometimes, Google Play Services can automatically verify your phone number without sending the code.")
                     .positiveText("OK")
                     .negativeText("Cancel")
                     .inputType(InputType.TYPE_CLASS_NUMBER)
@@ -211,7 +225,7 @@ public class FacultySignUp extends AppCompatActivity {
                             try {
                                 verificationCode = dialog.getInputEditText().getText().toString().trim();
                             } catch (Exception e) {
-                                Log.d("verification", e.getMessage());
+                                Log.d("verification", e.getMessage().trim());
                             }
                             verifyVerificationCode(verificationCode);
                         }
@@ -339,10 +353,18 @@ public class FacultySignUp extends AppCompatActivity {
 
         public void createUserwithEmail()
         {
+            progressBar.setVisibility(View.VISIBLE);
+            scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+            InputMethodManager inputManager = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
             firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(),password.getText().toString().trim())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressBar.setVisibility(View.GONE);
                             if (task.isSuccessful()) {
                                 firebaseUser = firebaseAuth.getCurrentUser();
                                 Faculty user = new Faculty();
@@ -370,19 +392,14 @@ public class FacultySignUp extends AppCompatActivity {
                                 startActivity(i);
                                 //verification successful we will start the profile activity
                             } else {
-                                //verification unsuccessful.. display an error message
-                                String message = "Error in verification!";
-                                if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    message = "Invalid code entered...";
-                                }
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),e.getMessage().trim(),Toast.LENGTH_SHORT).show();
                         }
                     });
         }

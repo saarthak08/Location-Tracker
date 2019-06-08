@@ -8,26 +8,28 @@
             name="ClickHandlers"
             type="com.sg.hackamu.faculties.FacultyLogin.FacultyLoginActivityClickHandlers"/>
     </data>
-
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imageView2"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="192dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:baselineAligned="true"
-            android:padding="32dp"
-            app:srcCompat="@drawable/amulogo"
-            tools:ignore="ContentDescription" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:baselineAligned="true"
+                android:layout_weight="1"
+                android:padding="@dimen/dimen_64x"
+                app:srcCompat="@drawable/amulogo"
+                tools:ignore="ContentDescription" />
 
         <ProgressBar
             android:id="@+id/progressBar1"
@@ -169,5 +171,5 @@
             tools:targetApi="lollipop" />
 
     </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 </layout>

@@ -195,10 +195,11 @@ public class MainActivity extends AppCompatActivity
         startService(l);
         startService(o);
     }
-    private void showData(DataSnapshot dataSnapshot){
-            Faculty u=new Faculty();
-            uuid= dataSnapshot.getKey();
-            if(!uuid.equals(firebaseUser.getUid())) {
+    private void showData(DataSnapshot dataSnapshot) {
+        Faculty u = new Faculty();
+        uuid = dataSnapshot.getKey();
+        if (firebaseUser != null) {
+            if (!uuid.equals(firebaseUser.getUid())) {
                 try {
                     u.setName((dataSnapshot.getValue(Faculty.class).getName()));
                     u.setUuid(uuid);
@@ -207,14 +208,13 @@ public class MainActivity extends AppCompatActivity
                     u.setEmail(dataSnapshot.getValue(Faculty.class).getEmail());
                     u.setDepartment(dataSnapshot.getValue(Faculty.class).getDepartment());
                     u.setEmployeeid(dataSnapshot.getValue(Faculty.class).getEmployeeid());
-                }
-                catch (Exception e)
-                {
-                    Log.d("showDataStudent",e.getMessage());
+                } catch (Exception e) {
+                    Log.d("showDataStudent", e.getMessage());
                 }
                 faculties.add(u);
             }
         }
+    }
 
     @Override
     protected void onStart() {
@@ -251,6 +251,10 @@ public class MainActivity extends AppCompatActivity
             {
                 firebaseAuth.removeAuthStateListener(authStateListener);
             }
+            Intent l=new Intent(MainActivity.this,LocationNotification.class);
+            Intent o=new Intent(MainActivity.this, ChatNotification.class);
+            getApplicationContext().stopService(l);
+            getApplicationContext().stopService(o);
             firebaseAuth.signOut();
             loadLauncherActivity();
         }
