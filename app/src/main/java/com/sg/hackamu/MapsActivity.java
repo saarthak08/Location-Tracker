@@ -90,14 +90,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     List<LatLng> polylinelist;
     Location currentLocation;
     private TextView textView;
-    private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
+    private long UPDATE_INTERVAL = 5 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        marker = new Location("");
+        marker=new Location("");
         markerOptions=new MarkerOptions();
         floatingActionButton=findViewById(R.id.floatingActionButtonMaps);
         polylinelist=new ArrayList<LatLng>(2);
@@ -277,12 +277,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         settingsClient.checkLocationSettings(locationSettingsRequest);
 
         // new Google API SDK v11 uses getFusedLocationProviderClient(this)
-        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
                         // do work here
                         if (locationResult != null) {
-                            if(marker!=null) {
+                            if(marker.hasAccuracy()) {
                                 currentLocation = locationResult.getLastLocation();
                                 String str=Float.toString(currentLocation.distanceTo(marker));
                                 double x=Double.parseDouble(str);

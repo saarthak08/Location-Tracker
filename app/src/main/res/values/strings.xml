@@ -38,7 +38,7 @@
     <string name="choose_profile_picture">Choose Profile Picture</string>
     <string name="id_number">College/School Unique ID Number*</string>
     <string name="college_school">College/School</string>
-    <string name="phone_number">Phone Number</string>
+    <string name="phone_number">Phone Number with ISD code</string>
     <string name="you_can_sign_up_via_email_or_phone_number_or_both">You can sign up via Email or Phone Number.</string>
     <string name="login_via_phone_number">Login via Phone Number</string>
 </resources>

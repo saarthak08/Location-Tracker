@@ -207,7 +207,7 @@ public class FacultyLogin extends AppCompatActivity {
 
         public void onLoginViaPhone(View view)
         {
-            dialog1 = new MaterialDialog.Builder(FacultyLogin.this).title("Enter your Phone Number!")
+            dialog1 = new MaterialDialog.Builder(FacultyLogin.this).title("Enter your Phone Number with ISD code!")
                     .positiveText("OK")
                     .negativeText("Cancel")
                     .inputType(InputType.TYPE_CLASS_PHONE)
