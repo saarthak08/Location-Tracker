@@ -239,7 +239,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location != null) {
                             if(location.hasAccuracy())
                             {
-                                if(location.getAccuracy()<30)
+                                if(location.getAccuracy()<10)
                                 {
                                     onLocationChanged(location);
 
@@ -293,7 +293,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //Toast.makeText(MapsActivity.this,"Distance: "+currentLocation.distanceTo(marker)+"metres",Toast.LENGTH_SHORT).show();
                             if(locationResult.getLastLocation().hasAccuracy())
                             {
-                                if(locationResult.getLastLocation().getAccuracy()<30)
+                                if(locationResult.getLastLocation().getAccuracy()<10)
                                 {
                                     onLocationChanged(locationResult.getLastLocation());
 
