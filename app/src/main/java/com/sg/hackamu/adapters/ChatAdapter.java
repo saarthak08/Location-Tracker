@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.sg.hackamu.R;
+import com.sg.hackamu.di.App;
 import com.sg.hackamu.models.ChatMessage;
 
 import java.text.SimpleDateFormat;
@@ -18,17 +19,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<ChatMessage> chatMessages;
-    private Context context;
+
     public static int VIEW_TYPE_MYCHAT= 0;
     public static int VIEW_TYPE_OTHERSCHAT = 1;
     FirebaseUser firebaseUser;
 
 
-    public ChatAdapter(ArrayList<ChatMessage> chatMessages, Context context, FirebaseUser firebaseUser) {
+    public ChatAdapter(ArrayList<ChatMessage> chatMessages, FirebaseUser firebaseUser) {
         this.chatMessages = chatMessages;
-        this.context = context;
         this.firebaseUser=firebaseUser;
 
     }

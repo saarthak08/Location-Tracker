@@ -103,7 +103,7 @@ public class ChatActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(ChatActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        chatAdapter = new ChatAdapter(chatMessages, ChatActivity.this, firebaseUser);
+        chatAdapter = new ChatAdapter(chatMessages, firebaseUser);
         recyclerView.setAdapter(chatAdapter);
         firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();

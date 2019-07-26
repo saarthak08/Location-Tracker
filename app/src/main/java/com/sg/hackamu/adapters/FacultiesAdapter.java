@@ -17,8 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import javax.inject.Inject;
+
 public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.AllConnectionsViewHolder> {
-    private Context context;
+    public Context context;
     private ArrayList<com.sg.hackamu.models.Faculty> Faculty;
 
     public FacultiesAdapter(Context context, ArrayList<com.sg.hackamu.models.Faculty> Faculty) {

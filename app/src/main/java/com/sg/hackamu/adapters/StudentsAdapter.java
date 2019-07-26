@@ -17,8 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import javax.inject.Inject;
+
 public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllConnectionsViewHolder> {
-    private Context context;
+    public Context context;
     private ArrayList<User> users;
 
     public StudentsAdapter(Context context, ArrayList<User> users) {

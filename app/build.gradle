@@ -59,5 +59,11 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha07'
     implementation 'com.google.firebase:firebase-messaging:19.0.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha01'
+    implementation 'com.google.dagger:dagger:2.15'
+    implementation "io.reactivex.rxjava2:rxjava:2.2.8"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "androidx.room:room-rxjava2:$room_version"
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
+
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }
