@@ -1,7 +1,5 @@
 package com.sg.hackamu.repository;
 
-import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -13,16 +11,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.sg.hackamu.models.User;
+import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.reactivex.disposables.CompositeDisposable;
 
 public class StudentRepository {
 
@@ -39,7 +34,7 @@ public class StudentRepository {
         users=new ArrayList<>();
     }
 
-    public LiveData<List<DataSnapshot>> getAllUsers(){
+    public LiveData<List<DataSnapshot>> getAllStudents(){
         databaseReference.child("students").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -72,11 +67,11 @@ public class StudentRepository {
         return mutableLiveData;
     }
 
-    public void removeUser(String key){
+    public void deleteStudent(String key){
         databaseReference.child("students").child(key).removeValue();
     }
 
-    public void addUser(User user, String key){
-        databaseReference.child("students").child(key).setValue(user);
+    public void addStudent(Student student, String key){
+        databaseReference.child("students").child(key).setValue(student);
     }
 }

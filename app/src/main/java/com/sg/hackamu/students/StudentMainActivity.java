@@ -17,12 +17,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
-import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
-import com.sg.hackamu.models.User;
+import com.sg.hackamu.models.Student;
 import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.LocationNotification;
 import com.sg.hackamu.utils.FirebaseUtils;
@@ -48,7 +46,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
+public class StudentMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     TextView emailnav;
     TextView namenav;
@@ -56,11 +54,11 @@ public class MainActivity extends AppCompatActivity
     FirebaseAuth firebaseAuth;
     ProgressBar progressBar;
     FirebaseUser firebaseUser;
-    User user;
+    Student student;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     FirebaseAuth.AuthStateListener authStateListener;
-    private String TAG="MainActivity";
+    private String TAG="StudentMainActivity";
     private ArrayList<Faculty> faculties=new ArrayList<>();
     String uuid;
 
@@ -81,8 +79,8 @@ public class MainActivity extends AppCompatActivity
         myRef = mFirebaseDatabase.getReference();
         myRef.child("faculties").keepSynced(true);
         recyclerView=findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        allConnectionsAdapter=new FacultiesAdapter(MainActivity.this,faculties);
+        recyclerView.setLayoutManager(new LinearLayoutManager(StudentMainActivity.this));
+        allConnectionsAdapter=new FacultiesAdapter(StudentMainActivity.this,faculties);
         recyclerView.setAdapter(allConnectionsAdapter);
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
@@ -94,7 +92,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(StudentMainActivity.this,DividerItemDecoration.VERTICAL));
         swipeRefreshLayout=findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.DKGRAY, Color.RED,Color.GREEN,Color.MAGENTA,Color.BLACK,Color.CYAN);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -124,20 +122,20 @@ public class MainActivity extends AppCompatActivity
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
                     if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
-                        user = dataSnapshot.getValue(User.class);
+                        student = dataSnapshot.getValue(Student.class);
                         View headerView = navigationView.getHeaderView(0);
                         TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-                        if (user.getEmail()==null) {
-                            email.setText(user.getPhoneno());
+                        if (student.getEmail()==null) {
+                            email.setText(student.getPhoneno());
                         } else {
-                            email.setText(user.getEmail());
+                            email.setText(student.getEmail());
                         }
                         TextView name = headerView.findViewById(R.id.namenav);
-                        name.setText(user.getName());
+                        name.setText(student.getName());
                         ImageView imageView=headerView.findViewById(R.id.imageViewMe);
                         if(firebaseUser.getPhotoUrl()!=null)
                         {
-                            Glide.with(MainActivity.this).load(firebaseUser.getPhotoUrl()).into(imageView);
+                            Glide.with(StudentMainActivity.this).load(firebaseUser.getPhotoUrl()).into(imageView);
                         }
                     }
                 }
@@ -194,11 +192,11 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-              //  Toast.makeText(MainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(StudentMainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
-        Intent l=new Intent(MainActivity.this,LocationNotification.class);
-        Intent o=new Intent(MainActivity.this, ChatNotification.class);
+        Intent l=new Intent(StudentMainActivity.this,LocationNotification.class);
+        Intent o=new Intent(StudentMainActivity.this, ChatNotification.class);
         startService(l);
         startService(o);
     }
@@ -258,8 +256,8 @@ public class MainActivity extends AppCompatActivity
             {
                 firebaseAuth.removeAuthStateListener(authStateListener);
             }
-            Intent l=new Intent(MainActivity.this,LocationNotification.class);
-            Intent o=new Intent(MainActivity.this, ChatNotification.class);
+            Intent l=new Intent(StudentMainActivity.this,LocationNotification.class);
+            Intent o=new Intent(StudentMainActivity.this, ChatNotification.class);
             getApplicationContext().stopService(l);
             getApplicationContext().stopService(o);
             firebaseAuth.signOut();
@@ -273,8 +271,8 @@ public class MainActivity extends AppCompatActivity
 
     public void loadLauncherActivity()
     {
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        MainActivity.this.finish();
+        startActivity(new Intent(StudentMainActivity.this, StudentLogin.class));
+        StudentMainActivity.this.finish();
     }
 
     @Override

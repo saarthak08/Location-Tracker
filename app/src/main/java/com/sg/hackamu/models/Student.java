@@ -1,6 +1,5 @@
 package com.sg.hackamu.models;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,7 +9,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "user")
-public class User implements Parcelable {
+public class Student implements Parcelable {
     @ColumnInfo(name = "name")
     private String name;
 
@@ -35,7 +34,7 @@ public class User implements Parcelable {
     private String enno;
 
 
-    public User(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno) {
+    public Student(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno) {
         this.name = name;
         this.password = password;
         this.id = id;
@@ -49,7 +48,7 @@ public class User implements Parcelable {
     }
 
     @Ignore
-    public User() {
+    public Student() {
 
     }
 
@@ -154,7 +153,7 @@ public class User implements Parcelable {
         dest.writeString(this.enno);
     }
 
-    protected User(Parcel in) {
+    protected Student(Parcel in) {
         this.name = in.readString();
         this.password = in.readString();
         this.id = in.readLong();
@@ -167,15 +166,15 @@ public class User implements Parcelable {
         this.enno = in.readString();
     }
 
-    public static final Creator<User> CREATOR = new Creator<User>() {
+    public static final Creator<Student> CREATOR = new Creator<Student>() {
         @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
+        public Student createFromParcel(Parcel source) {
+            return new Student(source);
         }
 
         @Override
-        public User[] newArray(int size) {
-            return new User[size];
+        public Student[] newArray(int size) {
+            return new Student[size];
         }
     };
 }

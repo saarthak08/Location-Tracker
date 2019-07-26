@@ -20,8 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
 import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.faculties.FacultyMainActivity;
-import com.sg.hackamu.students.LoginActivity;
-import com.sg.hackamu.students.MainActivity;
+import com.sg.hackamu.students.StudentLogin;
+import com.sg.hackamu.students.StudentMainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
 
@@ -83,7 +83,7 @@ public class LauncherActivity extends AppCompatActivity {
                         {
                             if(firebaseUser.getUid().equals(s.getKey()))
                             {
-                                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
+                                startActivity(new Intent(LauncherActivity.this, StudentMainActivity.class));
                                 LauncherActivity.this.finish();
                             }
                         }
@@ -131,7 +131,7 @@ public class LauncherActivity extends AppCompatActivity {
 
         public void onStudentButtonClicked(View view)
         {
-            startActivity(new Intent(LauncherActivity.this, LoginActivity.class));
+            startActivity(new Intent(LauncherActivity.this, StudentLogin.class));
             LauncherActivity.this.finish();
         }
     }

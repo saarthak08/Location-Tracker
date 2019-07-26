@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,12 +36,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.adapters.ChatAdapter;
-import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.models.Faculty;
-import com.sg.hackamu.models.User;
+import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
 import java.util.ArrayList;
 
@@ -50,7 +47,7 @@ import java.util.ArrayList;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class ChatActivity extends AppCompatActivity {
-    User user;
+    Student student;
     FirebaseAuth.AuthStateListener authStateListener;
     FirebaseDatabase firebaseDatabase;
     FirebaseAuth firebaseAuth;
@@ -76,13 +73,13 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
         x=new Intent(ChatActivity.this, MapsActivity.class);
-        if (i.hasExtra("user")) {
-            user = i.getParcelableExtra("user");
-            getSupportActionBar().setTitle(user.getName());
-            x.putExtra("user",user);
+        if (i.hasExtra("student")) {
+            student = i.getParcelableExtra("student");
+            getSupportActionBar().setTitle(student.getName());
+            x.putExtra("student", student);
             isuser=true;
         }
-        if(user==null)
+        if(student ==null)
         {
             faculty=i.getParcelableExtra("faculty");
             getSupportActionBar().setTitle(faculty.getName());
@@ -107,7 +104,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(chatAdapter);
         firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
-        user=i.getParcelableExtra("user");
+        student =i.getParcelableExtra("student");
         editText.requestFocus();
         recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -129,8 +126,8 @@ public class ChatActivity extends AppCompatActivity {
         });
     final TextView readtext=findViewById(R.id.textViewread);
         if(isuser) {
-            reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).keepSynced(true);
-            reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).addChildEventListener(new ChildEventListener() {
+            reference.child("chats").child(firebaseUser.getUid()).child(student.getUuid()).keepSynced(true);
+            reference.child("chats").child(firebaseUser.getUid()).child(student.getUuid()).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshots, @Nullable String s) {
                     if (dataSnapshots != null&&running) {
@@ -140,7 +137,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
                         chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
                         chatMessage.setRead(true);
-                        reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
+                        reference.child("chats").child(student.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
                         chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
                         chatMessages.add(chatMessage);
                         progressBar.setVisibility(View.INVISIBLE);
@@ -278,10 +275,10 @@ public class ChatActivity extends AppCompatActivity {
                     senderchatMessage = new ChatMessage();
                     senderchatMessage.setMessageText(editText.getText().toString().trim());
                     if(isuser) {
-                        senderchatMessage.setRecieveruuid(user.getUuid());
+                        senderchatMessage.setRecieveruuid(student.getUuid());
                         senderchatMessage.setSenderuuid(firebaseUser.getUid());
-                        reference.child("chats").child(firebaseUser.getUid()).child(user.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        reference.child("chats").child(user.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                        reference.child("chats").child(firebaseUser.getUid()).child(student.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
+                        reference.child("chats").child(student.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
                         recyclerView.scrollToPosition(chatMessages.size()-1);
 
                     }else

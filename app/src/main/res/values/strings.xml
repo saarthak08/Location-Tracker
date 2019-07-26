@@ -25,7 +25,7 @@
     <string name="requests">Requests</string>
     <string name="enter_message">Enter Message</string>
     <string name="title_activity_maps">Map</string>
-    <string name="location">Show User\'s Location</string>
+    <string name="location">Show Student\'s Location</string>
     <string name="tools">Tools</string>
     <string name="error_getting_distance">Error! Getting Distance!</string>
     <string name="connected_students">Connected Students</string>

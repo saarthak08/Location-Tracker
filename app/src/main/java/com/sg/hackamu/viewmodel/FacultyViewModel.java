@@ -29,6 +29,6 @@ public class FacultyViewModel extends AndroidViewModel {
     }
 
     public void deleteFaculty(String key){
-        facultyRepository.removeFaculty(key);
+        facultyRepository.deleteFaculty(key);
     }
 }

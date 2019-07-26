@@ -63,13 +63,13 @@
             android:name=".ChatActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".students.SignUpActivity"
+            android:name=".students.StudentSignUp"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".students.LoginActivity"
+            android:name=".students.StudentLogin"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".students.MainActivity"
+            android:name=".students.StudentMainActivity"
             android:label="@string/title_activity_main"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />

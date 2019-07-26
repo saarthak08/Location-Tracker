@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -36,7 +35,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,15 +54,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivitySignUpBinding;
-import com.sg.hackamu.faculties.FacultyMainActivity;
-import com.sg.hackamu.models.User;
+import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-public class SignUpActivity extends AppCompatActivity {
+public class StudentSignUp extends AppCompatActivity {
     private Button signUpButton;
     private EditText email;
     private EditText name;
@@ -96,14 +92,14 @@ public class SignUpActivity extends AppCompatActivity {
     private String verificationCode;
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private static final String TAG = "SignUpActivity";
+    private static final String TAG = "StudentSignUp";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        signUpBinding = DataBindingUtil.setContentView(SignUpActivity.this, R.layout.activity_sign_up);
+        signUpBinding = DataBindingUtil.setContentView(StudentSignUp.this, R.layout.activity_sign_up);
         signUpBinding.setClickHandlers(new SignupactivityClickHandlers());
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseUtils.getDatabase();
@@ -166,7 +162,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
             else {
-                Toast.makeText(SignUpActivity.this, "Error! Empty Inputs", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StudentSignUp.this, "Error! Empty Inputs", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -182,7 +178,7 @@ public class SignUpActivity extends AppCompatActivity {
                         phonenumber.getText().toString().trim(),        // Phone number to verify
                         60,                 // Timeout duration
                         TimeUnit.SECONDS,   // Unit of timeout
-                        SignUpActivity.this,               // Activity (for callback binding)
+                        StudentSignUp.this,               // Activity (for callback binding)
                         new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
                             @Override
@@ -225,7 +221,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 // ...
                             }
                         });
-                dialog1 = new MaterialDialog.Builder(SignUpActivity.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.\nOTP not recieved? Try Again!\nSometimes, Google Play Services can automatically verify your phone number without sending the code.")
+                dialog1 = new MaterialDialog.Builder(StudentSignUp.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.\nOTP not recieved? Try Again!\nSometimes, Google Play Services can automatically verify your phone number without sending the code.")
                         .positiveText("OK")
                         .negativeText("Cancel")
                         .inputType(InputType.TYPE_CLASS_NUMBER)
@@ -264,7 +260,7 @@ public class SignUpActivity extends AppCompatActivity {
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
                     signInWithPhoneAuthCredential(credential);
                 } catch (Exception e) {
-                    Toast toast = Toast.makeText(SignUpActivity.this, "Verification Code is wrong", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(StudentSignUp.this, "Verification Code is wrong", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
@@ -272,7 +268,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             private void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
                 firebaseAuth.signInWithCredential(credential)
-                        .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(StudentSignUp.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
@@ -383,10 +379,10 @@ public class SignUpActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     firebaseUser = firebaseAuth.getCurrentUser();
-                                    User user = new User();
-                                    user.setEmail(email.getText().toString().trim());
+                                    Student student = new Student();
+                                    student.setEmail(email.getText().toString().trim());
                                     userID = firebaseUser.getUid();
-                                    user.setUuid(userID);
+                                    student.setUuid(userID);
                                     if(selectedImageUri!=null) {
                                         StorageReference filepath = mStorage.child("user_profile").child(selectedImageUri.getLastPathSegment());
                                         filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -409,22 +405,22 @@ public class SignUpActivity extends AppCompatActivity {
                                         userProfileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(imageURI).build();
                                         firebaseUser.updateProfile(userProfileChangeRequest);
                                     }
-                                    user.setDepartment(department.getText().toString().trim());
-                                    user.setCollege(college.getText().toString().trim());
-                                    user.setEnno(enNo.getText().toString().trim());
-                                    user.setName(name.getText().toString().trim());
+                                    student.setDepartment(department.getText().toString().trim());
+                                    student.setCollege(college.getText().toString().trim());
+                                    student.setEnno(enNo.getText().toString().trim());
+                                    student.setName(name.getText().toString().trim());
                                     userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
                                     firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Log.d("Hello", "User profile updated.");
+                                                Log.d("Hello", "Student profile updated.");
                                             }
                                         }
                                     });
-                                    myRef.child("students").child(firebaseUser.getUid()).setValue(user);
-                                    Intent i = new Intent(SignUpActivity.this, VerifyActivity.class);
-                                    i.putExtra("student", user);
+                                    myRef.child("students").child(firebaseUser.getUid()).setValue(student);
+                                    Intent i = new Intent(StudentSignUp.this, VerifyActivity.class);
+                                    i.putExtra("student", student);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(i);
                                     //verification successful we will start the profile activity
@@ -440,7 +436,7 @@ public class SignUpActivity extends AppCompatActivity {
                         });
             }
         public void createdialog3() {
-            new MaterialDialog.Builder(SignUpActivity.this)
+            new MaterialDialog.Builder(StudentSignUp.this)
                     .title("Checking Status....")
                     .positiveText("Proceed")
                     .negativeText("Cancel")
@@ -462,24 +458,24 @@ public class SignUpActivity extends AppCompatActivity {
                                 alreadyregister=false;
                                 firebaseAuth.signOut();
                             } else {
-                                final User user = new User();
+                                final Student student = new Student();
                                 userID = firebaseUser.getUid();
-                                user.setUuid(userID);
-                                user.setPhoneno(phonenumber.getText().toString().trim());
-                                user.setDepartment(department.getText().toString().trim());
-                                user.setCollege(college.getText().toString().trim());
-                                user.setEnno(enNo.getText().toString().trim());
-                                user.setName(name.getText().toString().trim());
+                                student.setUuid(userID);
+                                student.setPhoneno(phonenumber.getText().toString().trim());
+                                student.setDepartment(department.getText().toString().trim());
+                                student.setCollege(college.getText().toString().trim());
+                                student.setEnno(enNo.getText().toString().trim());
+                                student.setName(name.getText().toString().trim());
                                 userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
                                 firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Log.d("Hello", "User profile updated."+firebaseUser.getDisplayName());
+                                            Log.d("Hello", "Student profile updated."+firebaseUser.getDisplayName());
                                         }
                                     }
                                 });
-                                myRef.child("students").child(firebaseUser.getUid()).setValue(user);
+                                myRef.child("students").child(firebaseUser.getUid()).setValue(student);
                                 if(selectedImageUri!=null) {
                                     StorageReference filepath = mStorage.child("user_profile").child(selectedImageUri.getLastPathSegment());
                                     filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -499,8 +495,8 @@ public class SignUpActivity extends AppCompatActivity {
                                                 firebaseUser.updateProfile(userProfileChangeRequest);
                                             }
 
-                                            Intent i = new Intent(SignUpActivity.this, MainActivity.class);
-                                            i.putExtra("student", user);
+                                            Intent i = new Intent(StudentSignUp.this, StudentMainActivity.class);
+                                            i.putExtra("student", student);
                                             verify=false;
                                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(i);
@@ -509,8 +505,8 @@ public class SignUpActivity extends AppCompatActivity {
                                     });
                                 }
                                 else {
-                                    Intent i = new Intent(SignUpActivity.this, MainActivity.class);
-                                    i.putExtra("student", user);
+                                    Intent i = new Intent(StudentSignUp.this, StudentMainActivity.class);
+                                    i.putExtra("student", student);
                                     verify = false;
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(i);
@@ -533,7 +529,7 @@ public class SignUpActivity extends AppCompatActivity {
         public void onImageClicked(View v)
         {
             requestStoragePermissions();
-            if(ContextCompat.checkSelfPermission(SignUpActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
+            if(ContextCompat.checkSelfPermission(StudentSignUp.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
             {
                 return;
             }
@@ -571,18 +567,18 @@ public class SignUpActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
             selectedImageUri = data.getData();
             imageView.setPadding(4,4,4,4);
-            Glide.with(SignUpActivity.this).load(selectedImageUri).into(imageView);
+            Glide.with(StudentSignUp.this).load(selectedImageUri).into(imageView);
 
         }
     }
 
     public void requestStoragePermissions()
     {
-        if(ContextCompat.checkSelfPermission(SignUpActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED)
+        if(ContextCompat.checkSelfPermission(StudentSignUp.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED)
         {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(SignUpActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            if(ActivityCompat.shouldShowRequestPermissionRationale(StudentSignUp.this,Manifest.permission.WRITE_EXTERNAL_STORAGE))
             {
-                new MaterialDialog.Builder(SignUpActivity.this).title("Permission Required")
+                new MaterialDialog.Builder(StudentSignUp.this).title("Permission Required")
                         .content("You need to give permission to select a profile picture")
                         .negativeText("Cancel")
                         .neutralText("Allow")
@@ -599,14 +595,14 @@ public class SignUpActivity extends AppCompatActivity {
                         .onNeutral(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                ActivityCompat.requestPermissions(SignUpActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
+                                ActivityCompat.requestPermissions(StudentSignUp.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
                             }
                         })
                         .show();
             }
             else
             {
-                ActivityCompat.requestPermissions(SignUpActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
+                ActivityCompat.requestPermissions(StudentSignUp.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
             }
             return;
         }

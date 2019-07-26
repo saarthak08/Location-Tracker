@@ -4,7 +4,7 @@ import com.sg.hackamu.authentication.LoginHandler;
 import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.repository.FacultyRepository;
 import com.sg.hackamu.repository.StudentRepository;
-import com.sg.hackamu.students.MainActivity;
+import com.sg.hackamu.students.StudentMainActivity;
 
 import javax.inject.Singleton;
 
@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 @dagger.Component(modules = {ApplicationContextModule.class,FirebaseAuthModule.class})
 public interface Component {
 
-    void inject(MainActivity mainActivity);
+    void inject(StudentMainActivity studentMainActivity);
 
     void inject(LoginHandler loginHandler);
 

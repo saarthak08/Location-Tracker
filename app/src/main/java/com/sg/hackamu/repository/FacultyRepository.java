@@ -67,7 +67,7 @@ public class FacultyRepository {
         return mutableLiveData;
     }
 
-    public void removeFaculty(String key){
+    public void deleteFaculty(String key){
         databaseReference.child("faculties").child(key).removeValue();
     }
 

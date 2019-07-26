@@ -43,13 +43,9 @@ import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityFacultySignUpBinding;
 //import com.sg.hackamu.model.Faculty;
 import com.sg.hackamu.models.Faculty;
-import com.sg.hackamu.models.User;
-import com.sg.hackamu.students.MainActivity;
-import com.sg.hackamu.students.SignUpActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 public class FacultySignUp extends AppCompatActivity {
@@ -81,7 +77,7 @@ public class FacultySignUp extends AppCompatActivity {
     private String mVerificationId;
     private ScrollView scrollView;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private static final String TAG = "SignUpActivity";
+    private static final String TAG = "StudentSignUp";
 
 
     @Override
@@ -380,7 +376,7 @@ public class FacultySignUp extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Log.d("Hello", "User profile updated.");
+                                            Log.d("Hello", "Student profile updated.");
                                         }
                                     }
                                 });
@@ -439,7 +435,7 @@ public class FacultySignUp extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Log.d("Hello", "User profile updated."+firebaseUser.getDisplayName());
+                                            Log.d("Hello", "Student profile updated."+firebaseUser.getDisplayName());
                                         }
                                     }
                                 });

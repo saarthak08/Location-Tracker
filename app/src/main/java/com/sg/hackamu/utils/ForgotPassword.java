@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -23,11 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
 import com.sg.hackamu.faculties.FacultyLogin;
-import com.sg.hackamu.faculties.FacultyMainActivity;
-import com.sg.hackamu.models.Faculty;
-import com.sg.hackamu.models.User;
-import com.sg.hackamu.students.LoginActivity;
-import com.sg.hackamu.students.MainActivity;
+import com.sg.hackamu.students.StudentLogin;
 
 public class ForgotPassword extends AppCompatActivity {
     Button ok;
@@ -76,7 +71,7 @@ public class ForgotPassword extends AppCompatActivity {
                                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                     if(isuser)
                                                     {
-                                                        startActivity(new Intent(ForgotPassword.this, LoginActivity.class));
+                                                        startActivity(new Intent(ForgotPassword.this, StudentLogin.class));
                                                         ForgotPassword.this.finish();
                                                     }
                                                     else {
@@ -111,7 +106,7 @@ public class ForgotPassword extends AppCompatActivity {
             public void onClick(View v) {
                 if(isuser)
                 {
-                    startActivity(new Intent(ForgotPassword.this, LoginActivity.class));
+                    startActivity(new Intent(ForgotPassword.this, StudentLogin.class));
                     ForgotPassword.this.finish();
                 }
                 else {

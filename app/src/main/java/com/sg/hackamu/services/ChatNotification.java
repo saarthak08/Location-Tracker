@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,13 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.ChatActivity;
-import com.sg.hackamu.MapsActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.models.Faculty;
-import com.sg.hackamu.models.User;
-import com.sg.hackamu.students.MainActivity;
+import com.sg.hackamu.models.Student;
+import com.sg.hackamu.students.StudentMainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import java.util.List;
@@ -47,7 +45,7 @@ public class ChatNotification extends Service {
     private DatabaseReference databaseReference;
     NotificationManagerCompat notificationManager;
     int notificationId=3;
-    User user;
+    Student student;
     Faculty faculty;
     boolean isuser;
 
@@ -89,9 +87,9 @@ public class ChatNotification extends Service {
                                     @Override
                                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                         if (uuid.equals(dataSnapshot.getKey())) {
-                                            user = dataSnapshot.getValue(User.class);
+                                            student = dataSnapshot.getValue(Student.class);
                                             isuser = true;
-                                            showNotification(user,faculty,message,isuser);
+                                            showNotification(student,faculty,message,isuser);
                                         }
                                             }
 
@@ -123,7 +121,7 @@ public class ChatNotification extends Service {
                                             if (faculty == null) {
                                                 faculty = dataSnapshot.getValue(Faculty.class);
                                                 isuser = false;
-                                                showNotification(user,faculty,message,isuser);
+                                                showNotification(student,faculty,message,isuser);
                                             }
                                         }
                                     }
@@ -188,14 +186,14 @@ public class ChatNotification extends Service {
         });
     }
 
-    public int showNotification(User user,Faculty faculty,ChatMessage message,boolean isuser)
+    public int showNotification(Student student, Faculty faculty, ChatMessage message, boolean isuser)
     {
         int requestID = (int) System.currentTimeMillis();
         if(isuser)
         {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence names ="New Message";
-            String description = user.getName();
+            String description = student.getName();
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("CHANNEL", names, importance);
             channel.setDescription(description+message.getMessageText());
@@ -204,14 +202,14 @@ public class ChatNotification extends Service {
             notificationManager.createNotificationChannel(channel);
         }
         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-        intent.putExtra("user",user);
+        intent.putExtra("student", student);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), requestID,new Intent[]{new Intent(getApplicationContext(), FacultyMainActivity.class),intent}, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                 .setSmallIcon(R.drawable.ic_nav_message)
-                .setContentTitle(user.getName())
+                .setContentTitle(student.getName())
                 .setVibrate(new long[]{1000, 1000})
                 .setColorized(true)
                 .setContentIntent(pendingIntent)
@@ -220,7 +218,7 @@ public class ChatNotification extends Service {
                 .setPriority(NotificationCompat.PRIORITY_HIGH).setVisibility(NotificationCompat.VISIBILITY_PRIVATE);
         notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(notificationId, builder.build());
-        this.user=null;
+        this.student =null;
         return notificationId;
         }
         else
@@ -240,7 +238,7 @@ public class ChatNotification extends Service {
             intent.setAction(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), requestID,new Intent[]{new Intent(getApplicationContext(), MainActivity.class),intent}, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivities(getApplicationContext(), requestID,new Intent[]{new Intent(getApplicationContext(), StudentMainActivity.class),intent}, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "CHANNEL")
                     .setSmallIcon(R.drawable.ic_nav_message)
                     .setContentTitle(faculty.getName())

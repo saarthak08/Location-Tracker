@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.sg.hackamu.ChatActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.StudentsAdapterListItemBinding;
-import com.sg.hackamu.models.User;
+import com.sg.hackamu.models.Student;
 
 import java.util.ArrayList;
 
@@ -17,15 +17,13 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import javax.inject.Inject;
-
 public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllConnectionsViewHolder> {
     public Context context;
-    private ArrayList<User> users;
+    private ArrayList<Student> students;
 
-    public StudentsAdapter(Context context, ArrayList<User> users) {
+    public StudentsAdapter(Context context, ArrayList<Student> students) {
         this.context = context;
-        this.users = users;
+        this.students = students;
     }
 
     @NonNull
@@ -37,13 +35,13 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllCon
 
     @Override
     public void onBindViewHolder(@NonNull AllConnectionsViewHolder holder, int position) {
-        holder.StudentsAdapterListItemBinding.setUser(users.get(position));
+        holder.StudentsAdapterListItemBinding.setStudent(students.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return users==null?0:users.size();
+        return students ==null?0: students.size();
     }
 
     public class AllConnectionsViewHolder extends RecyclerView.ViewHolder
@@ -57,7 +55,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllCon
                 public void onClick(View v) {
                     int pos=getAdapterPosition();
                     Intent i=new Intent(context, ChatActivity.class);
-                    i.putExtra("user",users.get(pos));
+                    i.putExtra("student", students.get(pos));
                     context.startActivity(i);
                 }
             });

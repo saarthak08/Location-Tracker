@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="user"
-            type="com.sg.hackamu.models.User"/>
+            name="student"
+            type="com.sg.hackamu.models.Student"/>
     </data>
 <androidx.cardview.widget.CardView
     android:orientation="vertical" android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                 android:paddingTop="@dimen/dimen_8x"
                 android:paddingStart="@dimen/dimen_8x"
                 android:paddingLeft="@dimen/dimen_8x"
-                android:text="@{user.name}"
+                android:text="@{student.name}"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:ignore="RtlSymmetry" />
@@ -53,7 +53,7 @@
                 android:paddingLeft="@dimen/dimen_8x"
                 android:textSize="14sp"
                 android:layout_below="@+id/textView2"
-                android:text="@{user.department}"
+                android:text="@{student.department}"
                 tools:ignore="RtlSymmetry" />
             <TextView
                 android:id="@+id/textView4"
@@ -64,7 +64,7 @@
                 android:paddingLeft="@dimen/dimen_8x"
                 android:textSize="14sp"
                 android:layout_below="@+id/textView3"
-                android:text="@{user.college}"
+                android:text="@{student.college}"
                 tools:ignore="RtlSymmetry" />
             <TextView
                 android:id="@+id/textView5"
@@ -75,7 +75,7 @@
                 android:paddingLeft="@dimen/dimen_8x"
                 android:textSize="14sp"
                 android:layout_below="@+id/textView4"
-                android:text="@{`ID No: ` +user.enno}"
+                android:text="@{`ID No: ` +student.enno}"
                 tools:ignore="RtlSymmetry" />
 
         </RelativeLayout>

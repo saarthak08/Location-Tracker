@@ -7,8 +7,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -18,17 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,10 +45,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.StudentsAdapter;
 import com.sg.hackamu.models.Faculty;
-import com.sg.hackamu.models.User;
+import com.sg.hackamu.models.Student;
 import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.GetLocation;
-import com.sg.hackamu.students.MainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import java.util.ArrayList;
@@ -70,7 +62,7 @@ public class FacultyMainActivity extends AppCompatActivity
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     private String TAG="MainActivityFaculty";
-    private ArrayList<User> users=new ArrayList<>();
+    private ArrayList<Student> students =new ArrayList<>();
     String uuid;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     View parent;
@@ -101,7 +93,7 @@ public class FacultyMainActivity extends AppCompatActivity
         floatingActionButton.setVisibility(View.VISIBLE);
         recyclerView=findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(FacultyMainActivity.this));
-        studentsAdapter =new StudentsAdapter(FacultyMainActivity.this,users);
+        studentsAdapter =new StudentsAdapter(FacultyMainActivity.this, students);
         recyclerView.setAdapter(studentsAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(FacultyMainActivity.this,DividerItemDecoration.VERTICAL));
@@ -243,22 +235,22 @@ public class FacultyMainActivity extends AppCompatActivity
         startService(o);
     }
     private void showData(DataSnapshot dataSnapshot){
-        User fc=new User();
+        Student fc=new Student();
         uuid= dataSnapshot.getKey();
         if(firebaseUser!=null) {
             if (!uuid.equals(firebaseUser.getUid())) {
                 try {
-                    fc.setName((dataSnapshot.getValue(User.class).getName()));
+                    fc.setName((dataSnapshot.getValue(Student.class).getName()));
                     fc.setUuid(uuid);
-                    fc.setCollege(dataSnapshot.getValue(User.class).getCollege());
-                    fc.setDepartment(dataSnapshot.getValue(User.class).getDepartment());
-                    fc.setPhoneno(dataSnapshot.getValue(User.class).getPhoneno());
-                    fc.setEnno(dataSnapshot.getValue(User.class).getEnno());
-                    fc.setEmail(dataSnapshot.getValue(User.class).getEmail());
+                    fc.setCollege(dataSnapshot.getValue(Student.class).getCollege());
+                    fc.setDepartment(dataSnapshot.getValue(Student.class).getDepartment());
+                    fc.setPhoneno(dataSnapshot.getValue(Student.class).getPhoneno());
+                    fc.setEnno(dataSnapshot.getValue(Student.class).getEnno());
+                    fc.setEmail(dataSnapshot.getValue(Student.class).getEmail());
                 } catch (Exception e) {
                     Log.d("showDataFaculty", e.getMessage());
                 }
-                users.add(fc);
+                students.add(fc);
             }
         }
     }
