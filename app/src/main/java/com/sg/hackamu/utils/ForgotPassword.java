@@ -21,8 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
-import com.sg.hackamu.faculties.FacultyLogin;
-import com.sg.hackamu.students.StudentLogin;
+import com.sg.hackamu.view.faculties.FacultyLogin;
+import com.sg.hackamu.view.students.StudentLogin;
 
 public class ForgotPassword extends AppCompatActivity {
     Button ok;

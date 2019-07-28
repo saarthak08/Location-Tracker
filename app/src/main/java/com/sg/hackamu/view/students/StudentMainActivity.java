@@ -1,4 +1,4 @@
-package com.sg.hackamu.students;
+package com.sg.hackamu.view.students;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,14 +12,11 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
-import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
 import com.sg.hackamu.services.ChatNotification;
@@ -29,7 +26,6 @@ import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -171,6 +167,7 @@ public class StudentMainActivity extends AppCompatActivity
                             name.setText(student.getName());
                             ImageView imageView = headerView.findViewById(R.id.imageViewMe);
                             if (firebaseUser.getPhotoUrl() != null) {
+                                Toast.makeText(StudentMainActivity.this,firebaseUser.getPhotoUrl()+"",Toast.LENGTH_LONG).show();
                                 Glide.with(StudentMainActivity.this).load(firebaseUser.getPhotoUrl()).into(imageView);
                             }
                         }
@@ -190,6 +187,7 @@ public class StudentMainActivity extends AppCompatActivity
                 try {
                     u.setName((dataSnapshot.getValue(Faculty.class).getName()));
                     u.setUuid(uuid);
+                    u.setImageURI(dataSnapshot.getValue(Faculty.class).getImageURI());
                     u.setCollege(dataSnapshot.getValue(Faculty.class).getCollege());
                     u.setPhoneno(dataSnapshot.getValue(Faculty.class).getPhoneno());
                     u.setEmail(dataSnapshot.getValue(Faculty.class).getEmail());

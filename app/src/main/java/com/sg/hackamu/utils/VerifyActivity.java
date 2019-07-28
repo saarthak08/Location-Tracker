@@ -19,12 +19,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
-import com.sg.hackamu.faculties.FacultyLogin;
-import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.view.faculties.FacultyLogin;
+import com.sg.hackamu.view.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
-import com.sg.hackamu.students.StudentLogin;
-import com.sg.hackamu.students.StudentMainActivity;
+import com.sg.hackamu.view.students.StudentLogin;
+import com.sg.hackamu.view.students.StudentMainActivity;
 
 public class VerifyActivity extends AppCompatActivity {
     TextView verifytext;

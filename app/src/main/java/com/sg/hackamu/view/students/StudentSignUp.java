@@ -1,7 +1,6 @@
-package com.sg.hackamu.students;
+package com.sg.hackamu.view.students;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -18,10 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -39,7 +35,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -47,9 +42,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -57,9 +50,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sg.hackamu.R;
-import com.sg.hackamu.authentication.SignupHandler;
+import com.sg.hackamu.utils.authentication.SignupHandler;
 import com.sg.hackamu.databinding.ActivitySignUpBinding;
-import com.sg.hackamu.faculties.FacultySignUp;
 import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
@@ -67,7 +59,6 @@ import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class StudentSignUp extends AppCompatActivity {
     private Button signUpButton;
@@ -264,20 +255,12 @@ public class StudentSignUp extends AppCompatActivity {
                                     userID = firebaseUser.getUid();
                                     student.setUuid(userID);
                                     if(selectedImageUri!=null) {
-                                        StorageReference filepath = mStorage.child("user_profile").child(selectedImageUri.getLastPathSegment());
-                                        filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                                if (progress == 100) {
-
-                                                    //upload();
-                                                }
-                                            }
-                                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid()).child(selectedImageUri.getLastPathSegment());
+                                        filepath.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                             @Override
                                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                                 imageURI = taskSnapshot.getUploadSessionUri();
+
                                             }
                                         });
                                     }
@@ -300,6 +283,7 @@ public class StudentSignUp extends AppCompatActivity {
                                     });
                                     studentViewModel.addStudent(student,firebaseUser.getUid());
                                     Intent i = new Intent(StudentSignUp.this, VerifyActivity.class);
+                                    student.setImageURI(imageURI);
                                     i.putExtra("student", student);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(i);

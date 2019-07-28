@@ -1,8 +1,7 @@
-package com.sg.hackamu.authentication;
+package com.sg.hackamu.utils.authentication;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,7 +21,6 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.sg.hackamu.R;
 import com.sg.hackamu.di.App;
-import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.utils.FirebaseUtils;
 
 import java.util.concurrent.TimeUnit;

@@ -1,5 +1,6 @@
 package com.sg.hackamu.models;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -32,14 +33,16 @@ public class Student implements Parcelable {
     private String department;
     private String phoneno;
     private String enno;
+    private Uri imageURI;
 
 
-    public Student(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno) {
+    public Student(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno, Uri imageURI) {
         this.name = name;
         this.password = password;
         this.id = id;
         this.email = email;
         this.login = login;
+        this.imageURI=imageURI;
         this.uuid = uuid;
         this.college = college;
         this.department = department;
@@ -133,6 +136,14 @@ public class Student implements Parcelable {
         this.login = login;
     }
 
+    public Uri getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(Uri imageURI) {
+        this.imageURI = imageURI;
+    }
+
 
     @Override
     public int describeContents() {
@@ -151,6 +162,7 @@ public class Student implements Parcelable {
         dest.writeString(this.department);
         dest.writeString(this.phoneno);
         dest.writeString(this.enno);
+        dest.writeParcelable(this.imageURI, flags);
     }
 
     protected Student(Parcel in) {
@@ -164,6 +176,7 @@ public class Student implements Parcelable {
         this.department = in.readString();
         this.phoneno = in.readString();
         this.enno = in.readString();
+        this.imageURI = in.readParcelable(Uri.class.getClassLoader());
     }
 
     public static final Creator<Student> CREATOR = new Creator<Student>() {

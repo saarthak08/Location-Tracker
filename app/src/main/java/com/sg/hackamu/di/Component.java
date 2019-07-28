@@ -1,11 +1,11 @@
 package com.sg.hackamu.di;
 
-import com.sg.hackamu.authentication.LoginHandler;
-import com.sg.hackamu.authentication.SignupHandler;
-import com.sg.hackamu.faculties.FacultyLogin;
-import com.sg.hackamu.repository.FacultyRepository;
-import com.sg.hackamu.repository.StudentRepository;
-import com.sg.hackamu.students.StudentMainActivity;
+import com.sg.hackamu.utils.authentication.LoginHandler;
+import com.sg.hackamu.utils.authentication.SignupHandler;
+import com.sg.hackamu.view.faculties.FacultyLogin;
+import com.sg.hackamu.viewmodel.repository.FacultyRepository;
+import com.sg.hackamu.viewmodel.repository.StudentRepository;
+import com.sg.hackamu.view.students.StudentMainActivity;
 
 import javax.inject.Singleton;
 

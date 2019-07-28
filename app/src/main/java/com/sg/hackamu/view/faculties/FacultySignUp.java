@@ -1,21 +1,17 @@
-package com.sg.hackamu.faculties;
+package com.sg.hackamu.view.faculties;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -31,7 +27,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -39,13 +34,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
-import com.sg.hackamu.authentication.SignupHandler;
+import com.sg.hackamu.utils.authentication.SignupHandler;
 import com.sg.hackamu.databinding.ActivityFacultySignUpBinding;
 //import com.sg.hackamu.model.Faculty;
 import com.sg.hackamu.models.Faculty;
@@ -55,7 +48,6 @@ import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class FacultySignUp extends AppCompatActivity {
 
@@ -67,6 +59,7 @@ public class FacultySignUp extends AppCompatActivity {
     private EditText department;
     private EditText college;
     private EditText phonenumber;
+    private Uri imageURI;
     private ActivityFacultySignUpBinding signUpBinding;
     private ProgressBar progressBar;
     private FirebaseAuth firebaseAuth;
@@ -260,6 +253,7 @@ public class FacultySignUp extends AppCompatActivity {
                                         }
                                     }
                                 });
+                                faculty.setImageURI(imageURI);
                                 progressBar.setVisibility(View.GONE);
                                 facultyViewModel.addFaculty(faculty,firebaseUser.getUid());
                                 Intent i = new Intent(FacultySignUp.this, VerifyActivity.class);
@@ -326,6 +320,7 @@ public class FacultySignUp extends AppCompatActivity {
                                 });
                                 facultyViewModel.addFaculty(faculty,firebaseUser.getUid());
                                 Intent i = new Intent(FacultySignUp.this, FacultyMainActivity.class);
+                                faculty.setImageURI(imageURI);
                                 i.putExtra("faculty", faculty);
                                 verify=false;
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

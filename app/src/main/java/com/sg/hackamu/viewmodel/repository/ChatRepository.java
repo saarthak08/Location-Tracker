@@ -1,4 +1,4 @@
-package com.sg.hackamu.repository;
+package com.sg.hackamu.viewmodel.repository;
 
 import android.util.Log;
 import android.view.View;
@@ -17,7 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sg.hackamu.ChatActivity;
+import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.adapters.ChatAdapter;
 import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.utils.FirebaseUtils;

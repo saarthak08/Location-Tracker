@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sg.hackamu.ChatActivity;
+import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.StudentsAdapterListItemBinding;
 import com.sg.hackamu.models.Student;

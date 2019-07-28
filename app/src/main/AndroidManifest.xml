@@ -27,14 +27,14 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".utils.VerifyActivity" />
         <activity
-            android:name=".faculties.FacultyMainActivity"
+            android:name=".view.faculties.FacultyMainActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".faculties.FacultySignUp"
+            android:name=".view.faculties.FacultySignUp"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".faculties.FacultyLogin"
+            android:name=".view.faculties.FacultyLogin"
             android:windowSoftInputMode="adjustResize" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -52,29 +52,29 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".view.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:parentActivityName=".ChatActivity">
+            android:parentActivityName=".view.ChatActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sg.hackamu.ChatActivity" />
+                android:value="com.sg.hackamu.view.ChatActivity" />
         </activity>
         <activity
-            android:name=".ChatActivity"
+            android:name=".view.ChatActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".students.StudentSignUp"
+            android:name=".view.students.StudentSignUp"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".students.StudentLogin"
+            android:name=".view.students.StudentLogin"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".students.StudentMainActivity"
+            android:name=".view.students.StudentMainActivity"
             android:label="@string/title_activity_main"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LauncherActivity"
+            android:name=".view.LauncherActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import com.google.firebase.database.DataSnapshot;
 import com.sg.hackamu.models.Student;
-import com.sg.hackamu.repository.StudentRepository;
+import com.sg.hackamu.viewmodel.repository.StudentRepository;
 
 import java.util.List;
 

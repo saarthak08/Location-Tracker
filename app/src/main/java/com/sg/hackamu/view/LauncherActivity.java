@@ -1,4 +1,4 @@
-package com.sg.hackamu;
+package com.sg.hackamu.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,28 +11,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
-import com.sg.hackamu.faculties.FacultyLogin;
-import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.view.faculties.FacultyLogin;
+import com.sg.hackamu.view.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
-import com.sg.hackamu.students.StudentLogin;
-import com.sg.hackamu.students.StudentMainActivity;
+import com.sg.hackamu.view.students.StudentLogin;
+import com.sg.hackamu.view.students.StudentMainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
 import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

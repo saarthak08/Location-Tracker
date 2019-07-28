@@ -8,7 +8,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/chatbg"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ChatActivity">
+    tools:context=".view.ChatActivity">
 
 
     <androidx.recyclerview.widget.RecyclerView

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg.hackamu.adapters.ChatAdapter;
 import com.sg.hackamu.models.ChatMessage;
-import com.sg.hackamu.repository.ChatRepository;
+import com.sg.hackamu.viewmodel.repository.ChatRepository;
 
 import java.util.List;
 

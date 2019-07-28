@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sg.hackamu.ChatActivity;
+import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.R;
 
 import com.sg.hackamu.databinding.FacultiesAdapterListItemBinding;
@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
-import javax.inject.Inject;
 
 public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.AllConnectionsViewHolder> {
     public Context context;

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="ClickHandlers"
-            type="com.sg.hackamu.LauncherActivity.LauncherActivityClickHandlers"/>
+            type="com.sg.hackamu.view.LauncherActivity.LauncherActivityClickHandlers"/>
     </data>
 
     <android.widget.LinearLayout
