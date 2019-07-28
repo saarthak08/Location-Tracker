@@ -25,11 +25,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sg.hackamu.di.App;
 import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.viewmodel.FacultyViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.ViewModelProviders;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -43,6 +46,7 @@ public class GetLocation extends Service {
     DatabaseReference reference;
     FirebaseDatabase firebaseDatabase;
     int notificationId=2;
+    FacultyViewModel facultyViewModel;
     public static int runservice=0;
     private FirebaseAuth.AuthStateListener authStateListener;
     public static NotificationManagerCompat notificationManager;

@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +43,10 @@ import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.viewmodel.ChatViewModel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -54,13 +59,14 @@ public class ChatActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     DatabaseReference reference;
     ProgressBar progressBar;
-    private ArrayList<ChatMessage> chatMessages = new ArrayList<>();
+    private ArrayList<ChatMessage> chatMessagesForAdapter = new ArrayList<>();
     EditText editText;
     FloatingActionButton floatingActionButton;
     ChatMessage senderchatMessage, recieverchatmessage;
     RecyclerView recyclerView;
     ChatAdapter chatAdapter;
     Faculty faculty;
+    ChatViewModel chatViewModel;
     public static boolean running;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     Intent x;
@@ -97,159 +103,32 @@ public class ChatActivity extends AppCompatActivity {
         editText = findViewById(R.id.chattext);
         floatingActionButton = findViewById(R.id.floatingActionButtonSend);
         recyclerView = findViewById(R.id.recyclerViewChat);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(ChatActivity.this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        chatAdapter = new ChatAdapter(chatMessages, firebaseUser);
-        recyclerView.setAdapter(chatAdapter);
         firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
+        chatViewModel= ViewModelProviders.of(ChatActivity.this).get(ChatViewModel.class);
         student =i.getParcelableExtra("student");
         editText.requestFocus();
-        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v,
-                                       int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (bottom < oldBottom) {
-                    recyclerView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(recyclerView.getAdapter().getItemCount()>0) {
-                                recyclerView.smoothScrollToPosition(
-                                        recyclerView.getAdapter().getItemCount() - 1);
-                            }
-                        }
-                    }, 100);
-                }
-            }
-        });
-    final TextView readtext=findViewById(R.id.textViewread);
+        loadView();
+        final TextView readtext=findViewById(R.id.textViewread);
         if(isuser) {
-            reference.child("chats").child(firebaseUser.getUid()).child(student.getUuid()).keepSynced(true);
-            reference.child("chats").child(firebaseUser.getUid()).child(student.getUuid()).addChildEventListener(new ChildEventListener() {
+            chatViewModel.getAllChatMessages(student.getUuid()).observe(this, new Observer<List<ChatMessage>>() {
                 @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshots, @Nullable String s) {
-                    if (dataSnapshots != null&&running) {
-                        final ChatMessage chatMessage = new ChatMessage();
-                        chatMessage.setMessageText(dataSnapshots.getValue(ChatMessage.class).getMessageText());
-                        chatMessage.setSenderuuid(dataSnapshots.getValue(ChatMessage.class).getSenderuuid());
-                        chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
-                        chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
-                        chatMessage.setRead(true);
-                        reference.child("chats").child(student.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
-                        chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
-                        chatMessages.add(chatMessage);
-                        progressBar.setVisibility(View.INVISIBLE);
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
-                    }
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    try{
-                        ChatMessage chatMessage=new ChatMessage();
-                        int index=-1;
-                        chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
-                        chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
-                        chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
-                        chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
-                        chatMessage.setRead(true);
-                        for(ChatMessage c:chatMessages)
-                        {
-                            if(chatMessage.getMessageTime()==c.getMessageTime())
-                            {
-                                index=chatMessages.indexOf(c);
-                            }
-                        }
-                    chatMessages.set(index,chatMessage);
-                    chatAdapter.notifyDataSetChanged();}
-                    catch (Exception e)
-                    {
-                        Log.d("ReadStatusUpdateError",e.getMessage());
-                    }
-
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    progressBar.setVisibility(View.INVISIBLE);
+                public void onChanged(List<ChatMessage> chatMessages) {
+                    chatMessagesForAdapter = (ArrayList<ChatMessage>) chatMessages;
+                    loadView();
+                    recyclerView.scrollToPosition(chatMessagesForAdapter.size()-1);
 
                 }
             });
         }
         else
         {
-            reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).keepSynced(true);
-            reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).addChildEventListener(new ChildEventListener() {
+            chatViewModel.getAllChatMessages(faculty.getUuid()).observe(this, new Observer<List<ChatMessage>>() {
                 @Override
-                public void onChildAdded(@NonNull final DataSnapshot dataSnapshots, @Nullable String s) {
-                    if (dataSnapshots != null&&running) {
-                        final ChatMessage chatMessage = new ChatMessage();
-                        chatMessage.setMessageText(dataSnapshots.getValue(ChatMessage.class).getMessageText());
-                        chatMessage.setSenderuuid(dataSnapshots.getValue(ChatMessage.class).getSenderuuid());
-                        chatMessage.setRecieveruuid(dataSnapshots.getValue(ChatMessage.class).getRecieveruuid());
-                        chatMessage.setMessageTime(dataSnapshots.getValue(ChatMessage.class).getMessageTime());
-                        chatMessage.setRead(true);
-                        reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(chatMessage.getMessageTime())).setValue(chatMessage);
-                        chatMessage.setRead(dataSnapshots.getValue(ChatMessage.class).isRead());
-                        chatMessages.add(chatMessage);
-                        progressBar.setVisibility(View.INVISIBLE);
-                        chatAdapter.notifyDataSetChanged();
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
-                    }
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        try {
-                            ChatMessage chatMessage = new ChatMessage();
-                            int index = -1;
-                            chatMessage.setMessageText(dataSnapshot.getValue(ChatMessage.class).getMessageText());
-                            chatMessage.setSenderuuid(dataSnapshot.getValue(ChatMessage.class).getSenderuuid());
-                            chatMessage.setRecieveruuid(dataSnapshot.getValue(ChatMessage.class).getRecieveruuid());
-                            chatMessage.setMessageTime(dataSnapshot.getValue(ChatMessage.class).getMessageTime());
-                            chatMessage.setRead(true);
-                            for (ChatMessage c : chatMessages) {
-                                if (chatMessage.getMessageTime() == c.getMessageTime()) {
-                                    index = chatMessages.indexOf(c);
-                                }
-                            }
-                            chatMessages.set(index, chatMessage);
-                            chatAdapter.notifyDataSetChanged();
-                        }
-                        catch (Exception e)
-                        {
-                            Log.d("ReadStatusUpdateError",e.getMessage());
-                        }
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    progressBar.setVisibility(View.INVISIBLE);
-
+                public void onChanged(List<ChatMessage> chatMessages) {
+                    chatMessagesForAdapter=(ArrayList<ChatMessage>) chatMessages;
+                    loadView();
+                    recyclerView.scrollToPosition(chatMessagesForAdapter.size()-1);
                 }
             });
         }
@@ -277,26 +156,53 @@ public class ChatActivity extends AppCompatActivity {
                     if(isuser) {
                         senderchatMessage.setRecieveruuid(student.getUuid());
                         senderchatMessage.setSenderuuid(firebaseUser.getUid());
-                        reference.child("chats").child(firebaseUser.getUid()).child(student.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        reference.child("chats").child(student.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
+                        chatViewModel.addChatMessage(senderchatMessage,student.getUuid());
+                        recyclerView.scrollToPosition(chatMessagesForAdapter.size()-1);
 
                     }else
                     {
                         senderchatMessage.setRecieveruuid(faculty.getUuid());
                         senderchatMessage.setSenderuuid(firebaseUser.getUid());
-                        reference.child("chats").child(firebaseUser.getUid()).child(faculty.getUuid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        reference.child("chats").child(faculty.getUuid()).child(firebaseUser.getUid()).child(Long.toString(senderchatMessage.getMessageTime())).setValue(senderchatMessage);
-                        recyclerView.scrollToPosition(chatMessages.size()-1);
+                        chatViewModel.addChatMessage(senderchatMessage,faculty.getUuid());
+                        recyclerView.scrollToPosition(chatMessagesForAdapter.size()-1);
 
                     }
                     editText.setText("");
                 }
             }
         });
-        if (chatMessages.size() == 0) {
+        if (chatMessagesForAdapter.size() == 0) {
             progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+
+    private void loadView(){
+        chatAdapter = new ChatAdapter(chatMessagesForAdapter, firebaseUser);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(ChatActivity.this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(chatAdapter);
+        chatViewModel.setExtras(chatAdapter,recyclerView,progressBar);
+        recyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v,
+                                       int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    recyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(recyclerView.getAdapter().getItemCount()>0) {
+                                recyclerView.smoothScrollToPosition(
+                                        recyclerView.getAdapter().getItemCount() - 1);
+                            }
+                        }
+                    }, 100);
+                }
+            }
+        });
+        recyclerView.scrollToPosition(chatMessagesForAdapter.size()-1);
     }
 
     @Override
