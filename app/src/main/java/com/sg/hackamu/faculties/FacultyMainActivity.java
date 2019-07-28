@@ -82,7 +82,6 @@ public class FacultyMainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Connected Students");
         progressBar=findViewById(R.id.progressBarHome);
-        progressBar.setVisibility(View.VISIBLE);
         parent=findViewById(android.R.id.content);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();

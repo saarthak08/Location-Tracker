@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.Intent;
@@ -40,12 +42,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
+import com.sg.hackamu.authentication.SignupHandler;
 import com.sg.hackamu.databinding.ActivityFacultySignUpBinding;
 //import com.sg.hackamu.model.Faculty;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
+import com.sg.hackamu.viewmodel.FacultyViewModel;
+import com.sg.hackamu.viewmodel.StudentViewModel;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class FacultySignUp extends AppCompatActivity {
@@ -70,12 +76,14 @@ public class FacultySignUp extends AppCompatActivity {
     private boolean verification=false;
     private String uuid;
     private ImageView profilePicture;
-    private boolean verify;
+    public static boolean verify;
     private boolean alreadyregister=false;
     private MaterialDialog dialog1;
     private String verificationCode;
     private String mVerificationId;
     private ScrollView scrollView;
+    private StudentViewModel studentViewModel;
+    private FacultyViewModel facultyViewModel;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private static final String TAG = "StudentSignUp";
 
@@ -85,7 +93,6 @@ public class FacultySignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faculty_sign_up);
         signUpBinding= DataBindingUtil.setContentView(FacultySignUp.this,R.layout.activity_faculty_sign_up);
-        signUpBinding.setClickHandlers(new SignupactivityClickHandlers());
         firebaseAuth= FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
         emplyeeid=findViewById(R.id.employeeid);
@@ -113,7 +120,9 @@ public class FacultySignUp extends AppCompatActivity {
         emplyeeid=signUpBinding.employeeid;
         password=signUpBinding.passwords;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
+        facultyViewModel= ViewModelProviders.of(FacultySignUp.this).get(FacultyViewModel.class);
+        studentViewModel=ViewModelProviders.of(FacultySignUp.this).get(StudentViewModel.class);
+        signUpBinding.setClickHandlers(new SignupactivityClickHandlers(name.getText().toString().trim(),email.getText().toString().trim(),password.getText().toString().trim(),emplyeeid.getText().toString().trim(),phonenumber.getText().toString().trim(),FacultySignUp.this));
     }
     @Override
     protected void onStart() {
@@ -131,25 +140,28 @@ public class FacultySignUp extends AppCompatActivity {
     }
 
 
-    public class SignupactivityClickHandlers{
-        public void onSignUpButtonClicked(View v) {
-            if (name.getText().toString().trim().length() != 0 && password.getText().toString().trim().length() != 0 && emplyeeid.getText().toString().length() != 0) {
-                if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() != 0) {
-                    Toast.makeText(getApplicationContext(),"Enter either Email or Phone Number.",Toast.LENGTH_SHORT).show();
-                } else if (email.getText().toString().trim().length() == 0 && phonenumber.getText().toString().trim().length() != 0) {
-                    verify=true;
-                    verifyphone();
-
-                } else if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() == 0) {
-                    createUserwithEmail();
-                }
-            }
-            else {
-                Toast.makeText(FacultySignUp.this, "Error! Empty Inputs", Toast.LENGTH_SHORT).show();
-            }
+    public class SignupactivityClickHandlers extends SignupHandler {
+        FirebaseAuth firebaseAuth;
+        FirebaseUser firebaseUser;
+        public SignupactivityClickHandlers(String name, String email, String password, String emplyeeid, String phonenumber, Context context) {
+            super(name, email, password, emplyeeid,phonenumber, context);
+            firebaseAuth=FirebaseAuth.getInstance();
+            firebaseUser=firebaseAuth.getCurrentUser();
         }
 
-        public void verifyphone () {
+        public void onSignUpButtonClicked(View v) {
+            firebaseAuth=FirebaseAuth.getInstance();
+            firebaseUser=firebaseAuth.getCurrentUser();
+            setContext(FacultySignUp.this);
+            setEmail(email.getText().toString().trim());
+            setPassword(password.getText().toString().trim());
+            setName(name.getText().toString().trim());
+            setNo(emplyeeid.getText().toString().trim());
+            setPhonenumber(phonenumber.getText().toString().trim());
+            checkInputs();
+        }
+
+        protected void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
             progressBar.setVisibility(View.VISIBLE);
             scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
             InputMethodManager inputManager = (InputMethodManager)
@@ -157,100 +169,8 @@ public class FacultySignUp extends AppCompatActivity {
 
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-            PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
-                    phonenumber.getText().toString().trim(),        // Phone number to verify
-                    60,                 // Timeout duration
-                    TimeUnit.SECONDS,   // Unit of timeout
-                    FacultySignUp.this,               // Activity (for callback binding)
-                    new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-                        @Override
-                        public void onVerificationCompleted(PhoneAuthCredential credential) {
-                            final String code = credential.getSmsCode();
-                            if (code != null) {
-                                //verifying the code
-                                if(!dialog1.isCancelled())
-                                {
-                                    dialog1.getInputEditText().setText(code);
-                                    dialog1.getBuilder().onPositive(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            verifyVerificationCode(code);
-                                        }
-                                    });
-                                    dialog1.getBuilder().positiveFocus(true);
-                                }
-
-                            }
-                            progressBar.setVisibility(View.GONE);
-                            signInWithPhoneAuthCredential(credential);
-                            Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
-
-                        }
-
-                        @Override
-                        public void onVerificationFailed(FirebaseException e) {
-                            Log.w("PhoneVerify", "onVerificationFailed", e);
-                            Toast.makeText(getApplicationContext(), e.getMessage().trim(), Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onCodeSent(final String verificationId,
-                                               PhoneAuthProvider.ForceResendingToken token) {
-                            Log.d("Code Sent", "onCodeSent:" + verificationId);
-                            mVerificationId = verificationId;
-                            mResendToken = token;
-                            progressBar.setVisibility(View.GONE);
-                            // ...
-                        }
-                    });
-            dialog1 = new MaterialDialog.Builder(FacultySignUp.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.\nOTP not recieved? Try Again!\nSometimes, Google Play Services can automatically verify your phone number without sending the code.")
-                    .positiveText("OK")
-                    .negativeText("Cancel")
-                    .inputType(InputType.TYPE_CLASS_NUMBER)
-                    .input("", "", false, new MaterialDialog.InputCallback() {
-                        @Override
-                        public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            verificationCode = input.toString().trim();
-                        }
-                    })
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            try {
-                                verificationCode = dialog.getInputEditText().getText().toString().trim();
-                            } catch (Exception e) {
-                                Log.d("verification", e.getMessage().trim());
-                            }
-                            verifyVerificationCode(verificationCode);
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            dialog.dismiss();
-                            dialog.cancel();
-                        }
-                    }).cancelable(false)
-                    .canceledOnTouchOutside(false).autoDismiss(false).show();
-
-        }
-
-        private void verifyVerificationCode(String otp){
-            //creating the credential
-            progressBar.setVisibility(View.GONE);
-            try {
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
-                signInWithPhoneAuthCredential(credential);
-            } catch (Exception e) {
-                Toast toast = Toast.makeText(FacultySignUp.this, "Verification Code is wrong", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            }
-        }
-
-        private void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
+            firebaseAuth=FirebaseAuth.getInstance();
+            firebaseUser=firebaseAuth.getCurrentUser();
             firebaseAuth.signInWithCredential(credential)
                     .addOnCompleteListener(FacultySignUp.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -260,80 +180,27 @@ public class FacultySignUp extends AppCompatActivity {
                                 firebaseAuth=FirebaseAuth.getInstance();
                                 firebaseUser=firebaseAuth.getCurrentUser();
                                 uuid=firebaseUser.getUid();
-                                myRef.child("students").addChildEventListener(new ChildEventListener() {
+                                studentViewModel.getAllStudents().observe(FacultySignUp.this, new Observer<List<DataSnapshot>>() {
                                     @Override
-                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                        try {
-
+                                    public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                        for(DataSnapshot dataSnapshot:dataSnapshots){
                                             if (dataSnapshot.getKey().equals(uuid)) {
                                                 alreadyregister=true;
                                             }
                                         }
-                                        catch(Exception e)
-                                        {
-                                            Log.d("LoginPN", e.getMessage());
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
                                     }
                                 });
-                                myRef.child("faculties").addChildEventListener(new ChildEventListener() {
-                                    @Override
-                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                        try {
-
-                                            if (dataSnapshot.getKey().equals(uuid)) {
-                                                alreadyregister=true;
-                                            }
-                                        }
-                                        catch(Exception e)
-                                        {
-                                            Log.d("LoginPN", e.getMessage());
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                                createdialog3();
-
+                               facultyViewModel.getAllFaculties().observe(FacultySignUp.this, new Observer<List<DataSnapshot>>() {
+                                   @Override
+                                   public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                       for(DataSnapshot dataSnapshot:dataSnapshots){
+                                           if (dataSnapshot.getKey().equals(uuid)) {
+                                               alreadyregister=true;
+                                           }
+                                       }
+                                   }
+                               });
+                                createDialog3();
                                 //verification successful we will start the profile activity
                             } else {
                                 //verification unsuccessful.. display an error message
@@ -347,8 +214,10 @@ public class FacultySignUp extends AppCompatActivity {
                     });
         }
 
-        public void createUserwithEmail()
+        protected void createUserwithEmail()
         {
+            firebaseAuth=FirebaseAuth.getInstance();
+            firebaseUser=firebaseAuth.getCurrentUser();
             progressBar.setVisibility(View.VISIBLE);
             scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
             InputMethodManager inputManager = (InputMethodManager)
@@ -363,14 +232,14 @@ public class FacultySignUp extends AppCompatActivity {
                             progressBar.setVisibility(View.GONE);
                             if (task.isSuccessful()) {
                                 firebaseUser = firebaseAuth.getCurrentUser();
-                                Faculty user = new Faculty();
-                                user.setEmail(email.getText().toString().trim());
+                                Faculty faculty = new Faculty();
+                                faculty.setEmail(email.getText().toString().trim());
                                 userID = firebaseUser.getUid();
-                                user.setUuid(userID);
-                                user.setDepartment(department.getText().toString().trim());
-                                user.setCollege(college.getText().toString().trim());
-                                user.setEmployeeid(emplyeeid.getText().toString().trim());
-                                user.setName(name.getText().toString().trim());
+                                faculty.setUuid(userID);
+                                faculty.setDepartment(department.getText().toString().trim());
+                                faculty.setCollege(college.getText().toString().trim());
+                                faculty.setEmployeeid(emplyeeid.getText().toString().trim());
+                                faculty.setName(name.getText().toString().trim());
                                 userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
                                 firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -381,9 +250,9 @@ public class FacultySignUp extends AppCompatActivity {
                                     }
                                 });
                                 progressBar.setVisibility(View.GONE);
-                                myRef.child("faculties").child(firebaseUser.getUid()).setValue(user);
+                                myRef.child("faculties").child(firebaseUser.getUid()).setValue(faculty);
                                 Intent i = new Intent(FacultySignUp.this, VerifyActivity.class);
-                                i.putExtra("faculty", user);
+                                i.putExtra("faculty", faculty);
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);
                                 //verification successful we will start the profile activity
@@ -399,7 +268,11 @@ public class FacultySignUp extends AppCompatActivity {
                         }
                     });
         }
-        public void createdialog3() {
+
+
+        protected void createDialog3() {
+            firebaseAuth=FirebaseAuth.getInstance();
+            firebaseUser=firebaseAuth.getCurrentUser();
             new MaterialDialog.Builder(FacultySignUp.this)
                     .title("Checking Status....")
                     .positiveText("Proceed")
@@ -422,14 +295,14 @@ public class FacultySignUp extends AppCompatActivity {
                                 alreadyregister=false;
                                 firebaseAuth.signOut();
                             } else {
-                                Faculty user = new Faculty();
+                                Faculty faculty = new Faculty();
                                 userID = firebaseUser.getUid();
-                                user.setUuid(userID);
-                                user.setPhoneno(phonenumber.getText().toString().trim());
-                                user.setDepartment(department.getText().toString().trim());
-                                user.setCollege(college.getText().toString().trim());
-                                user.setEmployeeid(emplyeeid.getText().toString().trim());
-                                user.setName(name.getText().toString().trim());
+                                faculty.setUuid(userID);
+                                faculty.setPhoneno(phonenumber.getText().toString().trim());
+                                faculty.setDepartment(department.getText().toString().trim());
+                                faculty.setCollege(college.getText().toString().trim());
+                                faculty.setEmployeeid(emplyeeid.getText().toString().trim());
+                                faculty.setName(name.getText().toString().trim());
                                 userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
                                 firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -439,10 +312,10 @@ public class FacultySignUp extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                myRef.child("faculties").child(firebaseUser.getUid()).setValue(user);
+                                myRef.child("faculties").child(firebaseUser.getUid()).setValue(faculty);
 
                                 Intent i = new Intent(FacultySignUp.this, FacultyMainActivity.class);
-                                i.putExtra("faculty", user);
+                                i.putExtra("faculty", faculty);
                                 verify=false;
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);

@@ -1,6 +1,7 @@
 package com.sg.hackamu.di;
 
 import com.sg.hackamu.authentication.LoginHandler;
+import com.sg.hackamu.authentication.SignupHandler;
 import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.repository.FacultyRepository;
 import com.sg.hackamu.repository.StudentRepository;
@@ -21,4 +22,6 @@ public interface Component {
     void inject(FacultyRepository facultyRepository);
 
     void inject(FacultyLogin facultyLogin);
+
+    void inject(SignupHandler signupHandler);
 }

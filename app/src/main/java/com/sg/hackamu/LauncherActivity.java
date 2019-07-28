@@ -3,12 +3,15 @@ package com.sg.hackamu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,10 +23,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.databinding.ActivityLauncherBinding;
 import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.models.Faculty;
+import com.sg.hackamu.models.Student;
 import com.sg.hackamu.students.StudentLogin;
 import com.sg.hackamu.students.StudentMainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
+import com.sg.hackamu.viewmodel.FacultyViewModel;
+import com.sg.hackamu.viewmodel.StudentViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LauncherActivity extends AppCompatActivity {
@@ -31,6 +41,11 @@ public class LauncherActivity extends AppCompatActivity {
     private Button fcbutton;
     private Button stbutton;
     FirebaseUser firebaseUser;
+    StudentViewModel studentViewModel;
+    boolean isuser;
+    Faculty faculty;
+    Student student;
+    FacultyViewModel facultyViewModel;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -42,6 +57,8 @@ public class LauncherActivity extends AppCompatActivity {
         firebaseUser=firebaseAuth.getCurrentUser();
         firebaseDatabase= FirebaseUtils.getDatabase();
         databaseReference=firebaseDatabase.getReference();
+        facultyViewModel= ViewModelProviders.of(this).get(FacultyViewModel.class);
+        studentViewModel=ViewModelProviders.of(this).get(StudentViewModel.class);
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -52,54 +69,50 @@ public class LauncherActivity extends AppCompatActivity {
         };
         if (firebaseUser!= null) {
             try{
-            if(!firebaseUser.isEmailVerified()&&firebaseUser.getEmail().length()!=0)
-            {
-                startActivity(new Intent(LauncherActivity.this, VerifyActivity.class));
-                LauncherActivity.this.finish();
+               studentViewModel.getAllStudents().observe(this, new Observer<List<DataSnapshot>>() {
+                    @Override
+                    public void onChanged(List<DataSnapshot> dataSnapshots) {
+                        for (DataSnapshot dataSnapshot : dataSnapshots) {
+                            if (firebaseUser.getUid().equals(dataSnapshot.getKey())) {
+                                student = dataSnapshot.getValue(Student.class);
+                                if (!firebaseUser.isEmailVerified() && firebaseUser.getEmail().length() != 0) {
+                                    Intent intent = new Intent(LauncherActivity.this, VerifyActivity.class);
+                                    intent.putExtra("student", student);
+                                    startActivity(intent);
+                                    LauncherActivity.this.finish();
+                                } else {
+                                    startActivity(new Intent(LauncherActivity.this, StudentMainActivity.class));
+                                    LauncherActivity.this.finish();
+                                }
+                            }
+                        }
+                    }
+               });
+               facultyViewModel.getAllFaculties().observe(this, new Observer<List<DataSnapshot>>() {
+                   @Override
+                   public void onChanged(List<DataSnapshot> dataSnapshots) {
+                       for (DataSnapshot dataSnapshot : dataSnapshots) {
+                           if (firebaseUser.getUid().equals(dataSnapshot.getKey())) {
+                               faculty = dataSnapshot.getValue(Faculty.class);
+                               if (!firebaseUser.isEmailVerified() && firebaseUser.getEmail().length() != 0) {
+                                   Intent intent = new Intent(LauncherActivity.this, VerifyActivity.class);
+                                   intent.putExtra("faculty", faculty);
+                                   startActivity(intent);
+                                   LauncherActivity.this.finish();
+                               } else {
+                                   startActivity(new Intent(LauncherActivity.this, FacultyMainActivity.class));
+                                   LauncherActivity.this.finish();
+                               }
+                           }
+                       }
+                   }
+               });
             }
-            else{
-                databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot s: dataSnapshot.getChildren())
-                        {
-                            if(firebaseUser.getUid().equals(s.getKey()))
-                            {
-                                startActivity(new Intent(LauncherActivity.this, FacultyMainActivity.class));
-                                LauncherActivity.this.finish();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-                databaseReference.child("students").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot s: dataSnapshot.getChildren())
-                        {
-                            if(firebaseUser.getUid().equals(s.getKey()))
-                            {
-                                startActivity(new Intent(LauncherActivity.this, StudentMainActivity.class));
-                                LauncherActivity.this.finish();
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }}
           catch (Exception e)
             {
                 Log.d("LauncherException",e.getMessage());
-            }}else {
+            }
+            }else {
             setContentView(R.layout.activity_launcher);
             launcherBinding = DataBindingUtil.setContentView(LauncherActivity.this, R.layout.activity_launcher);
             launcherBinding.setClickHandlers(new LauncherActivityClickHandlers());

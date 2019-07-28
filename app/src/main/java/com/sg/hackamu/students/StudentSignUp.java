@@ -150,121 +150,8 @@ public class StudentSignUp extends AppCompatActivity {
 
     public class SignupactivityClickHandlers {
         public void onSignUpButtonClicked(View v) {
-            if (name.getText().toString().trim().length() != 0 && password.getText().toString().trim().length() != 0 && enNo.getText().toString().length() != 0) {
-                if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() != 0) {
-                    Toast.makeText(getApplicationContext(),"Enter either Email or Phone Number.",Toast.LENGTH_SHORT).show();
-                } else if (email.getText().toString().trim().length() == 0 && phonenumber.getText().toString().trim().length() != 0) {
-                    verify=true;
-                    verifyphone();
-
-                } else if (email.getText().toString().trim().length() != 0 && phonenumber.getText().toString().trim().length() == 0) {
-                    createUserwithEmail();
-                }
-            }
-            else {
-                Toast.makeText(StudentSignUp.this, "Error! Empty Inputs", Toast.LENGTH_SHORT).show();
-            }
         }
 
-            public void verifyphone () {
-                progressBar.setVisibility(View.VISIBLE);
-                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
-                InputMethodManager inputManager = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                        InputMethodManager.HIDE_NOT_ALWAYS);
-                PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
-                        phonenumber.getText().toString().trim(),        // Phone number to verify
-                        60,                 // Timeout duration
-                        TimeUnit.SECONDS,   // Unit of timeout
-                        StudentSignUp.this,               // Activity (for callback binding)
-                        new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
-                            @Override
-                            public void onVerificationCompleted(PhoneAuthCredential credential) {
-                                final String code = credential.getSmsCode();
-                                if (code != null) {
-                                    //verifying the code
-                                    if(!dialog1.isCancelled())
-                                    {
-                                        dialog1.getInputEditText().setText(code);
-                                        dialog1.getBuilder().onPositive(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                verifyVerificationCode(code);
-                                            }
-                                        });
-                                        dialog1.getBuilder().positiveFocus(true);
-                                    }
-                                }
-                                progressBar.setVisibility(View.GONE);
-                                signInWithPhoneAuthCredential(credential);
-                                Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
-
-                            }
-
-                            @Override
-                            public void onVerificationFailed(FirebaseException e) {
-                                Log.w("PhoneVerify", "onVerificationFailed", e);
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(getApplicationContext(), e.getMessage().trim(), Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onCodeSent(final String verificationId,
-                                                   PhoneAuthProvider.ForceResendingToken token) {
-                                Log.d("Code Sent", "onCodeSent:" + verificationId);
-                                mVerificationId = verificationId;
-                                mResendToken = token;
-                                progressBar.setVisibility(View.GONE);
-                                // ...
-                            }
-                        });
-                dialog1 = new MaterialDialog.Builder(StudentSignUp.this).title("Verify your Phone Number. A one time password (O.T.P.) is sent to " + phonenumber.getText() + ".\nEnter the OTP & Tap on \'OK\' button in 120 seconds.\nOTP not recieved? Try Again!\nSometimes, Google Play Services can automatically verify your phone number without sending the code.")
-                        .positiveText("OK")
-                        .negativeText("Cancel")
-                        .inputType(InputType.TYPE_CLASS_NUMBER)
-                        .input("", "", false, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                verificationCode = input.toString().trim();
-                            }
-                        })
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                try {
-                                    verificationCode = dialog.getInputEditText().getText().toString().trim();
-                                } catch (Exception e) {
-                                    Log.d("verification", e.getMessage());
-                                }
-                                verifyVerificationCode(verificationCode);
-                            }
-                        })
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                dialog.dismiss();
-                                dialog.cancel();
-                            }
-                        }).cancelable(false)
-                        .canceledOnTouchOutside(false).autoDismiss(false).show();
-
-            }
-
-            private void verifyVerificationCode(String otp){
-                //creating the credential
-                progressBar.setVisibility(View.GONE);
-                try {
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
-                    signInWithPhoneAuthCredential(credential);
-                } catch (Exception e) {
-                    Toast toast = Toast.makeText(StudentSignUp.this, "Verification Code is wrong", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                }
-            }
 
             private void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
                 firebaseAuth.signInWithCredential(credential)
@@ -435,6 +322,8 @@ public class StudentSignUp extends AppCompatActivity {
                             }
                         });
             }
+
+
         public void createdialog3() {
             new MaterialDialog.Builder(StudentSignUp.this)
                     .title("Checking Status....")
@@ -525,6 +414,7 @@ public class StudentSignUp extends AppCompatActivity {
                     .autoDismiss(false)
                     .show();
         }
+
 
         public void onImageClicked(View v)
         {

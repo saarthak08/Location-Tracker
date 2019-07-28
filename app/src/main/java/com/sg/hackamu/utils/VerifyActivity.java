@@ -32,9 +32,9 @@ public class VerifyActivity extends AppCompatActivity {
     Button resend;
     Button Cancel;
     Student student;
-    String uuid;
     boolean isuser;
     Faculty faculty;
+    String email;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     FirebaseDatabase firebaseDatabase=FirebaseUtils.getDatabase();
@@ -60,14 +60,18 @@ public class VerifyActivity extends AppCompatActivity {
         final Intent i=getIntent();
         firebaseUser.sendEmailVerification();
         student =i.getParcelableExtra("student");
-        isuser=true;
-        if(student ==null)
+        if(student!=null) {
+            isuser = true;
+            email=student.getEmail();
+        }
+        else
         {
             faculty=i.getParcelableExtra("faculty");
             isuser=false;
+            email=faculty.getEmail();
         }
         verifytext=findViewById(R.id.textverify);
-        verifytext.setText("A verification link is sent to \'"+ student.getEmail()+"\'. Please click on the link to verify it.\nAfter verifying, tap on \'OK\' button to continue.\nTap on \'Cancel\' button to register again if you entered your credentials wrong.");
+        verifytext.setText("A verification link is sent to \'"+email+"\'. Please click on the link to verify it.\nAfter verifying, tap on \'OK\' button to continue.\nTap on \'Cancel\' button to register again if you entered your credentials wrong.");
         resend=findViewById(R.id.buttonresendverify);
         Cancel=findViewById(R.id.buttoncancel);
         ok.setOnClickListener(new View.OnClickListener() {

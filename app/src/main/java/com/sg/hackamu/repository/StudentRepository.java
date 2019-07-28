@@ -39,7 +39,7 @@ public class StudentRepository {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 users.add(dataSnapshot);
-                mutableLiveData.postValue(users);
+                mutableLiveData.setValue(users);
             }
 
             @Override
@@ -50,7 +50,7 @@ public class StudentRepository {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 users.remove(dataSnapshot);
-                mutableLiveData.postValue(users);
+                mutableLiveData.setValue(users);
             }
 
             @Override
