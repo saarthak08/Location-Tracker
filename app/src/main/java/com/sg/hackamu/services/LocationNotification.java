@@ -21,16 +21,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.MapsActivity;
+import com.sg.hackamu.di.App;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.students.StudentMainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.viewmodel.FacultyViewModel;
+import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.LifecycleService;
+import androidx.lifecycle.Observer;
 
-public class LocationNotification extends Service {
+import java.util.List;
+
+public class LocationNotification extends LifecycleService {
     private FirebaseAuth firebaseAuth;
     Faculty faculty;
     private FirebaseUser firebaseUser;
@@ -38,12 +45,14 @@ public class LocationNotification extends Service {
     private FirebaseAuth.AuthStateListener authStateListener;
     private DatabaseReference databaseReference;
     String uuid;
+    private FacultyViewModel facultyViewModel;
     NotificationManagerCompat notificationManager;
     int notificationId=2;
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        super.onBind(intent);
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -60,44 +69,28 @@ public class LocationNotification extends Service {
 
             }
         };
+        facultyViewModel=new FacultyViewModel(App.getApp());
         firebaseAuth.addAuthStateListener(authStateListener);
         firebaseDatabase = FirebaseUtils.getDatabase();
         databaseReference = firebaseDatabase.getReference();
+        databaseReference.child("geocordinates").keepSynced(true);
             databaseReference.child("geocordinates").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() != 0) {
                         uuid = dataSnapshot.getKey();
-                        databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
+                        facultyViewModel.getAllFaculties().observe(LocationNotification.this, new Observer<List<DataSnapshot>>() {
                             @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                if (uuid.equals(dataSnapshot.getKey())) {
-                                    if (isNetworkConnected()) {
-                                        faculty = dataSnapshot.getValue(Faculty.class);
-                                        String name = (String) dataSnapshot.child("name").getValue();
-                                        showNotification(name, faculty);
+                            public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                for(DataSnapshot dataSnapshot1:dataSnapshots){
+                                    if (uuid.equals(dataSnapshot1.getKey())) {
+                                        if (isNetworkConnected()) {
+                                            faculty = dataSnapshot1.getValue(Faculty.class);
+                                            String name = (String) dataSnapshot1.child("name").getValue();
+                                            showNotification(name, faculty);
+                                        }
                                     }
                                 }
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
                             }
                         });
                     }

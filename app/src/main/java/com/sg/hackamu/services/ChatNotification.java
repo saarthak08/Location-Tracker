@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,12 +24,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.ChatActivity;
 import com.sg.hackamu.R;
+import com.sg.hackamu.di.App;
 import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
 import com.sg.hackamu.students.StudentMainActivity;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.viewmodel.ChatViewModel;
+import com.sg.hackamu.viewmodel.FacultyViewModel;
+import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import java.util.List;
 
@@ -36,8 +41,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.LifecycleService;
+import androidx.lifecycle.Observer;
 
-public class ChatNotification extends Service {
+public class ChatNotification extends LifecycleService {
     private FirebaseUser firebaseUser;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -52,6 +59,7 @@ public class ChatNotification extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        super.onBind(intent);
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -68,6 +76,7 @@ public class ChatNotification extends Service {
 
             }
         };
+
         firebaseAuth.addAuthStateListener(authStateListener);
         firebaseDatabase= FirebaseUtils.getDatabase();
         databaseReference=firebaseDatabase.getReference();
