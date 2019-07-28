@@ -24,6 +24,8 @@
 - [Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/data-binding)
 - [Firebase & its Services](https://firebase.google.com/docs/android/setup)
 - [Google Play Services](https://developers.google.com/android/guides/setup)
+- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture)
+- [Dagger-2](https://github.com/google/dagger)
 
 
 ## *Note:*
