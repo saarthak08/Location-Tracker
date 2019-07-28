@@ -19,11 +19,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
 import com.sg.hackamu.adapters.FacultiesAdapter;
+import com.sg.hackamu.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
 import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.LocationNotification;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.viewmodel.FacultyViewModel;
+import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StudentMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,15 +63,19 @@ public class StudentMainActivity extends AppCompatActivity
     Student student;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
+    private FacultyViewModel facultyViewModel;
+    private StudentViewModel studentViewModel;
     FirebaseAuth.AuthStateListener authStateListener;
     private String TAG="StudentMainActivity";
     private ArrayList<Faculty> faculties=new ArrayList<>();
     String uuid;
-
-
+    private NavigationView navigationView;
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     FacultiesAdapter allConnectionsAdapter;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +85,8 @@ public class StudentMainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("Connected Faculties");
         progressBar=findViewById(R.id.progressBarHome);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
+        studentViewModel= ViewModelProviders.of(StudentMainActivity.this).get(StudentViewModel.class);
+        facultyViewModel=ViewModelProviders.of(StudentMainActivity.this).get(FacultyViewModel.class);
         myRef = mFirebaseDatabase.getReference();
         myRef.child("faculties").keepSynced(true);
         recyclerView=findViewById(R.id.recycler_view);
@@ -99,8 +111,6 @@ public class StudentMainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -110,95 +120,68 @@ public class StudentMainActivity extends AppCompatActivity
                         firebaseUser.reload();
                         mFirebaseDatabase.goOffline();
                         mFirebaseDatabase.goOnline();
+                        myRef.child("students").keepSynced(true);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 },4000);
 
             }
         });
-        myRef.child("students").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                try {
-                    if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
-                        student = dataSnapshot.getValue(Student.class);
-                        View headerView = navigationView.getHeaderView(0);
-                        TextView email = (TextView) headerView.findViewById(R.id.emailnav);
-                        if (student.getEmail()==null) {
-                            email.setText(student.getPhoneno());
-                        } else {
-                            email.setText(student.getEmail());
-                        }
-                        TextView name = headerView.findViewById(R.id.namenav);
-                        name.setText(student.getName());
-                        ImageView imageView=headerView.findViewById(R.id.imageViewMe);
-                        if(firebaseUser.getPhotoUrl()!=null)
-                        {
-                            Glide.with(StudentMainActivity.this).load(firebaseUser.getPhotoUrl()).into(imageView);
-                        }
-                    }
-                }
-                    catch(Exception e)
-                    {
-                        Log.d("NavMenu", e.getMessage());
-                    }
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        navigationView.getMenu().getItem(0).setChecked(true);
-        myRef.child("faculties").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                showData(dataSnapshot);
-                progressBar.setVisibility(View.INVISIBLE);
-                allConnectionsAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-              //  Toast.makeText(StudentMainActivity.this,databaseError.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
+        loadDataFromDatabase();
+        loadNavigationMenu();
         Intent l=new Intent(StudentMainActivity.this,LocationNotification.class);
         Intent o=new Intent(StudentMainActivity.this, ChatNotification.class);
         startService(l);
         startService(o);
     }
+
+    private void loadDataFromDatabase(){
+        facultyViewModel.getAllFaculties().observe(StudentMainActivity.this, new Observer<List<DataSnapshot>>() {
+            @Override
+            public void onChanged(List<DataSnapshot> dataSnapshots) {
+                faculties.clear();
+                for(DataSnapshot dataSnapshot:dataSnapshots){
+                    showData(dataSnapshot);
+                    progressBar.setVisibility(View.INVISIBLE);
+                    allConnectionsAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    private void loadNavigationMenu(){
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
+        studentViewModel.getAllStudents().observe(StudentMainActivity.this, new Observer<List<DataSnapshot>>() {
+            @Override
+            public void onChanged(List<DataSnapshot> dataSnapshots) {
+                for (DataSnapshot dataSnapshot : dataSnapshots) {
+                    try {
+                        if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
+                            student = dataSnapshot.getValue(Student.class);
+                            View headerView = navigationView.getHeaderView(0);
+                            TextView email = (TextView) headerView.findViewById(R.id.emailnav);
+                            if (student.getEmail() == null) {
+                                email.setText(student.getPhoneno());
+                            } else {
+                                email.setText(student.getEmail());
+                            }
+                            TextView name = headerView.findViewById(R.id.namenav);
+                            name.setText(student.getName());
+                            ImageView imageView = headerView.findViewById(R.id.imageViewMe);
+                            if (firebaseUser.getPhotoUrl() != null) {
+                                Glide.with(StudentMainActivity.this).load(firebaseUser.getPhotoUrl()).into(imageView);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.d("NavMenu", e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
     private void showData(DataSnapshot dataSnapshot) {
         Faculty u = new Faculty();
         uuid = dataSnapshot.getKey();

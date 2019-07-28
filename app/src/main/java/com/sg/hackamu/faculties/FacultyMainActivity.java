@@ -128,6 +128,7 @@ public class FacultyMainActivity extends AppCompatActivity
                         firebaseUser.reload();
                         mFirebaseDatabase.goOffline();
                         mFirebaseDatabase.goOnline();
+                        myRef.child("faculties").keepSynced(true);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 },4000);
@@ -205,7 +206,6 @@ public class FacultyMainActivity extends AppCompatActivity
         studentViewModel.getAllStudents().observe(FacultyMainActivity.this, new Observer<List<DataSnapshot>>() {
             @Override
             public void onChanged(List<DataSnapshot> dataSnapshots) {
-                Toast.makeText(FacultyMainActivity.this,"Early: "+students.size(),Toast.LENGTH_SHORT).show();
                 students.clear();
                 for(DataSnapshot dataSnapshot:dataSnapshots){
                     showData(dataSnapshot);
@@ -233,7 +233,6 @@ public class FacultyMainActivity extends AppCompatActivity
                     Log.d("showDataFaculty", e.getMessage());
                 }
                 students.add(fc);
-                Toast.makeText(FacultyMainActivity.this,"Later: "+students.size(),Toast.LENGTH_SHORT).show();
             }
         }
     }
