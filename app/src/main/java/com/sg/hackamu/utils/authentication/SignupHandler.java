@@ -182,6 +182,8 @@ public abstract class SignupHandler {
                         verificationCode = input.toString().trim();
                     }
                 })
+                .positiveColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                .negativeColor(context.getResources().getColor(R.color.colorPrimaryDark))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

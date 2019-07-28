@@ -48,6 +48,8 @@ import com.sg.hackamu.models.Student;
 import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.GetLocation;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.view.EditProfileActivity;
+import com.sg.hackamu.view.ToolsActivity;
 import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
@@ -234,6 +236,13 @@ public class FacultyMainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onResume() {
+        for (int i = 0; i < navigationView.getMenu().size(); i++) {
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
+        super.onResume();
+    }
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -246,6 +255,9 @@ public class FacultyMainActivity extends AppCompatActivity
         } else if (id == R.id.requests) {
 
         } else if (id == R.id.tools) {
+            Intent intent=new Intent(FacultyMainActivity.this, ToolsActivity.class);
+            intent.putExtra("faculty",faculty);
+            startActivity(intent);
 
         } else if (id == R.id.connections) {
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollViewEP"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    tools:context=".view.ToolsActivity">
+
+        <ImageView
+            android:id="@+id/imageViewTools"
+            android:layout_width="match_parent"
+            android:layout_height="267dp"
+            android:background="@color/light_grey"
+            android:padding="@dimen/dimen_8x"
+            app:srcCompat="@drawable/ic_nav_settings"
+            tools:ignore="VectorDrawableCompat" />
+
+    <TextView
+        android:id="@+id/textViewEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_8x"
+        android:elevation="4dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_margin="@dimen/dimen_8x"
+        android:textSize="20sp"
+        android:text="@string/edit_profile"
+        tools:targetApi="lollipop" />
+
+    <TextView
+        android:id="@+id/textViewDeleteAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:padding="@dimen/dimen_8x"
+        android:layout_margin="@dimen/dimen_8x"
+        android:textSize="20sp"
+        android:text="@string/delete_account"
+        tools:targetApi="lollipop" />
+
+
+</LinearLayout>
+</ScrollView>

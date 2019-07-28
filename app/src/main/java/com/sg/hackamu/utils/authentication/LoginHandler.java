@@ -102,6 +102,8 @@ public abstract class LoginHandler {
                         }
                     }
                 })
+                .positiveColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                .negativeColor(context.getResources().getColor(R.color.colorPrimaryDark))
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -168,8 +170,11 @@ public abstract class LoginHandler {
                     @Override
                     public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                         verificationCode=input.toString().trim();
+
                     }
-                }).onPositive(new MaterialDialog.SingleButtonCallback() {
+                })
+                .positiveColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                .negativeColor(context.getResources().getColor(R.color.colorPrimaryDark)).onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         try {

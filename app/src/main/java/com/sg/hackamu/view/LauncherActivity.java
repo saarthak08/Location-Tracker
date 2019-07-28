@@ -72,7 +72,7 @@ public class LauncherActivity extends AppCompatActivity {
                         for (DataSnapshot dataSnapshot : dataSnapshots) {
                             if (firebaseUser.getUid().equals(dataSnapshot.getKey())) {
                                 student = dataSnapshot.getValue(Student.class);
-                                if (!firebaseUser.isEmailVerified() && firebaseUser.getEmail().length() != 0) {
+                                if (!firebaseUser.isEmailVerified() && student.getEmail()!=null) {
                                     Intent intent = new Intent(LauncherActivity.this, VerifyActivity.class);
                                     intent.putExtra("student", student);
                                     startActivity(intent);
@@ -91,7 +91,7 @@ public class LauncherActivity extends AppCompatActivity {
                        for (DataSnapshot dataSnapshot : dataSnapshots) {
                            if (firebaseUser.getUid().equals(dataSnapshot.getKey())) {
                                faculty = dataSnapshot.getValue(Faculty.class);
-                               if (!firebaseUser.isEmailVerified() && firebaseUser.getEmail().length() != 0) {
+                               if (!firebaseUser.isEmailVerified() && faculty.getEmail()!=null) {
                                    Intent intent = new Intent(LauncherActivity.this, VerifyActivity.class);
                                    intent.putExtra("faculty", faculty);
                                    startActivity(intent);

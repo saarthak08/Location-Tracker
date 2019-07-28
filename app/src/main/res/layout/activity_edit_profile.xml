@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollViewEP"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.EditProfileActivity">
+
+
+    <ImageView
+        android:id="@+id/imageViewEP"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimen_8x"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/dimen_64x"
+        app:srcCompat="@drawable/user" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="@dimen/text_16x"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/trade_winds"
+        android:text="@string/choose_profile_picture" />
+
+    <ProgressBar
+        android:id="@+id/progressBarTools"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="49dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/emailTv"
+        android:layout_marginTop="@dimen/dimen_16x"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_4x"
+        android:textSize="20sp"
+        android:text="Email: " />
+
+    <TextView
+        android:id="@+id/nameTV"
+        android:layout_marginTop="@dimen/dimen_16x"
+        android:padding="@dimen/dimen_4x"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name: " />
+
+    <EditText
+        android:id="@+id/nameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textSize="@dimen/text_24x"
+        android:padding="@dimen/dimen_8x"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
+
+    <TextView
+        android:id="@+id/collegeTV"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dimen_16x"
+        android:padding="@dimen/dimen_4x"
+        android:textSize="20sp"
+        android:layout_height="wrap_content"
+        android:text="College: " />
+
+    <EditText
+        android:id="@+id/collegeET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textSize="@dimen/text_24x"
+        android:padding="@dimen/dimen_8x"
+        android:inputType="textPersonName"
+        android:text="College" />
+
+    <TextView
+        android:id="@+id/departmentTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_16x"
+        android:padding="@dimen/dimen_4x"
+        android:textSize="20sp"
+        android:text="Department: " />
+
+    <EditText
+        android:id="@+id/departmentET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textSize="@dimen/text_24x"
+        android:padding="@dimen/dimen_8x"
+        android:inputType="textPersonName"
+        android:text="Department" />
+
+    <TextView
+        android:id="@+id/idTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_16x"
+        android:padding="@dimen/dimen_4x"
+        android:textSize="20sp"
+        android:text="Unique ID:" />
+
+    <EditText
+        android:id="@+id/idET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textSize="@dimen/text_24x"
+        android:padding="@dimen/dimen_8x"
+        android:inputType="textPersonName"
+        android:text="ID" />
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/text_16x"
+        android:layout_marginBottom="@dimen/text_16x"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:fontFamily="@font/amita"
+            android:text="Cancel"
+            android:layout_margin="@dimen/dimen_4x"
+            android:textColor="@color/design_default_color_background" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:fontFamily="@font/amita"
+            android:textColor="@color/design_default_color_background"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dimen_4x"
+            android:text="Save" />
+    </LinearLayout>
+
+
+</LinearLayout>
+</ScrollView>
