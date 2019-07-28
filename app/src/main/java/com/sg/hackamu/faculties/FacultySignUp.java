@@ -8,11 +8,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -60,6 +63,7 @@ public class FacultySignUp extends AppCompatActivity {
     private EditText email;
     public static EditText name;
     private EditText password;
+    private MaterialDialog materialDialog;
     private EditText department;
     private EditText college;
     private EditText phonenumber;
@@ -200,7 +204,14 @@ public class FacultySignUp extends AppCompatActivity {
                                        }
                                    }
                                });
-                                createDialog3();
+                               showLoadingDialogue();
+                               new Handler().postDelayed(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       hideLoadingMaterialDialogInstant();
+                                       createDialog3();
+                                   }
+                               },4000);
                                 //verification successful we will start the profile activity
                             } else {
                                 //verification unsuccessful.. display an error message
@@ -273,7 +284,7 @@ public class FacultySignUp extends AppCompatActivity {
         protected void createDialog3() {
             firebaseAuth=FirebaseAuth.getInstance();
             firebaseUser=firebaseAuth.getCurrentUser();
-            new MaterialDialog.Builder(FacultySignUp.this)
+            materialDialog=new MaterialDialog.Builder(FacultySignUp.this)
                     .title("Checking Status....")
                     .positiveText("Proceed")
                     .negativeText("Cancel")
@@ -295,6 +306,7 @@ public class FacultySignUp extends AppCompatActivity {
                                 alreadyregister=false;
                                 firebaseAuth.signOut();
                             } else {
+                                showLoadingDialogue();
                                 Faculty faculty = new Faculty();
                                 userID = firebaseUser.getUid();
                                 faculty.setUuid(userID);
@@ -317,6 +329,7 @@ public class FacultySignUp extends AppCompatActivity {
                                 i.putExtra("faculty", faculty);
                                 verify=false;
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                hideLoadingMaterialDialogInstant();
                                 startActivity(i);
                             }
                         }
@@ -324,6 +337,10 @@ public class FacultySignUp extends AppCompatActivity {
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            if(firebaseAuth.getCurrentUser()!=null){
+                                firebaseUser.delete();
+                            }
+                            progressBar.setVisibility(View.GONE);
                             dialog.cancel();
                         }
                     })
@@ -334,8 +351,15 @@ public class FacultySignUp extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     protected void onDestroy() {
+        if(materialDialog!=null&&!materialDialog.isCancelled()){
+            materialDialog.dismiss();
+            materialDialog.cancel();
+        }
+
         if(verify&&firebaseAuth.getCurrentUser()!=null)
         {
             firebaseAuth.getCurrentUser().delete();

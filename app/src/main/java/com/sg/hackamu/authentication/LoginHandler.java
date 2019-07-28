@@ -2,9 +2,11 @@ package com.sg.hackamu.authentication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
+import com.sg.hackamu.R;
 import com.sg.hackamu.di.App;
 import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.utils.FirebaseUtils;
@@ -33,6 +36,7 @@ public abstract class LoginHandler {
     protected MaterialDialog dialog2;
     private String verificationCode;
     private String mVerificationId;
+    private MaterialDialog loadingMaterialDialog;
     private DatabaseReference databaseReference;
     private String phonenumber;
     private FirebaseUser firebaseUser;
@@ -204,7 +208,23 @@ public abstract class LoginHandler {
         }
     }
 
+    protected void showLoadingDialogue(){
+        LayoutInflater li = LayoutInflater.from(context);
+        final View promptsView = li.inflate(R.layout.loading_dialogue, null);
+        loadingMaterialDialog=new MaterialDialog.Builder(context).customView(promptsView,true)
+                .autoDismiss(false)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
 
+
+    protected void hideLoadingMaterialDialogInstant(){
+        if(loadingMaterialDialog!=null&&!loadingMaterialDialog.isCancelled()) {
+            loadingMaterialDialog.dismiss();
+            loadingMaterialDialog.cancel();
+        }
+    }
     protected abstract void createDialogThirdForPhone();
 
     protected abstract void signInWithPhoneAuthCredential(PhoneAuthCredential credential);

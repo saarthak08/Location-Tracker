@@ -2,9 +2,11 @@ package com.sg.hackamu.authentication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
+import com.sg.hackamu.R;
 import com.sg.hackamu.di.App;
 import com.sg.hackamu.faculties.FacultySignUp;
 import com.sg.hackamu.students.StudentSignUp;
@@ -43,6 +46,7 @@ public abstract class SignupHandler {
     private FirebaseUser firebaseUser;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private boolean login=false;
+    private MaterialDialog loadingMaterialDialog;
     private Context context;
     @Inject
     public FirebaseAuth firebaseAuth;
@@ -203,6 +207,16 @@ public abstract class SignupHandler {
 
     }
 
+    protected void showLoadingDialogue(){
+        LayoutInflater li = LayoutInflater.from(context);
+        final View promptsView = li.inflate(R.layout.loading_dialogue, null);
+        loadingMaterialDialog=new MaterialDialog.Builder(context).customView(promptsView,true)
+                .autoDismiss(false)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
     protected void verifyVerificationCode(String otp){
         //creating the credential
         try {
@@ -212,6 +226,14 @@ public abstract class SignupHandler {
             Toast toast = Toast.makeText(context, "Verification Code is wrong", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
+        }
+    }
+
+
+    protected void hideLoadingMaterialDialogInstant(){
+        if(loadingMaterialDialog!=null&&!loadingMaterialDialog.isCancelled()) {
+            loadingMaterialDialog.dismiss();
+            loadingMaterialDialog.cancel();
         }
     }
 

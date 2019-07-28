@@ -61,6 +61,7 @@ public class FacultyLogin extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText email;
     private EditText password;
+    private MaterialDialog materialDialog;
     private TextView forgotpass;
     private boolean login;
     private ScrollView scrollView;
@@ -209,7 +210,14 @@ public class FacultyLogin extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                createDialogThirdForPhone();
+                                showLoadingDialogue();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        hideLoadingMaterialDialogInstant();
+                                        createDialogThirdForPhone();
+                                    }
+                                },4000);
 
                             } else {
                                 //verification unsuccessful.. display an error message
@@ -225,7 +233,7 @@ public class FacultyLogin extends AppCompatActivity {
             login=true;
             firebaseAuth=FirebaseAuth.getInstance();
             firebaseUser=firebaseAuth.getCurrentUser();
-            new MaterialDialog.Builder(FacultyLogin.this)
+            materialDialog=new MaterialDialog.Builder(FacultyLogin.this)
                     .title("Checking Status....")
                     .positiveText("Proceed")
                     .negativeText("Cancel")
@@ -364,6 +372,10 @@ public class FacultyLogin extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if(materialDialog!=null&&!materialDialog.isCancelled()){
+            materialDialog.dismiss();
+            materialDialog.cancel();
+        }
         if(verify&&firebaseAuth.getCurrentUser()!=null)
         {
             firebaseAuth.signOut();

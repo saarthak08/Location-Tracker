@@ -16,10 +16,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -76,6 +78,7 @@ public class StudentSignUp extends AppCompatActivity {
     private EditText college;
     Uri selectedImageUri;
     private EditText phonenumber;
+    private MaterialDialog materialDialog;
     private ImageView imageView;
     final static int PICK_IMAGE=2;
     final static int MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS=3;
@@ -218,8 +221,14 @@ public class StudentSignUp extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    createDialog3();
-
+                                    showLoadingDialogue();
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            hideLoadingMaterialDialogInstant();
+                                            createDialog3();
+                                        }
+                                    },4000);
                                     //verification successful we will start the profile activity
                                 } else {
                                     //verification unsuccessful.. display an error message
@@ -309,7 +318,7 @@ public class StudentSignUp extends AppCompatActivity {
 
 
         protected void createDialog3() {
-            new MaterialDialog.Builder(StudentSignUp.this)
+            materialDialog=new MaterialDialog.Builder(StudentSignUp.this)
                     .title("Checking Status....")
                     .positiveText("Proceed")
                     .negativeText("Cancel")
@@ -331,6 +340,7 @@ public class StudentSignUp extends AppCompatActivity {
                                 alreadyregister=false;
                                 firebaseAuth.signOut();
                             } else {
+                                showLoadingDialogue();
                                 final Student student = new Student();
                                 userID = firebaseUser.getUid();
                                 student.setUuid(userID);
@@ -372,6 +382,7 @@ public class StudentSignUp extends AppCompatActivity {
                                             i.putExtra("student", student);
                                             verify=false;
                                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            hideLoadingMaterialDialogInstant();
                                             startActivity(i);
 
                                         }
@@ -382,6 +393,7 @@ public class StudentSignUp extends AppCompatActivity {
                                     i.putExtra("student", student);
                                     verify = false;
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    hideLoadingMaterialDialogInstant();
                                     startActivity(i);
                                 }
                             }
@@ -390,6 +402,10 @@ public class StudentSignUp extends AppCompatActivity {
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            if(firebaseAuth.getCurrentUser()!=null){
+                                firebaseUser.delete();
+                            }
+                            progressBar.setVisibility(View.GONE);
                             dialog.cancel();
                         }
                     })
@@ -398,7 +414,6 @@ public class StudentSignUp extends AppCompatActivity {
                     .autoDismiss(false)
                     .show();
         }
-
 
         public void onImageClicked(View v)
         {
@@ -416,6 +431,10 @@ public class StudentSignUp extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if(materialDialog!=null&&!materialDialog.isCancelled()){
+            materialDialog.dismiss();
+            materialDialog.cancel();
+        }
         if(verify&&firebaseAuth.getCurrentUser()!=null)
         {
                 firebaseAuth.getCurrentUser().delete();

@@ -41,4 +41,5 @@
     <string name="phone_number">Phone Number with ISD code</string>
     <string name="you_can_sign_up_via_email_or_phone_number_or_both">You can sign up via Email or Phone Number.</string>
     <string name="login_via_phone_number">Login via Phone Number</string>
+    <string name="loading_please_wait">Loading.. Please Wait!</string>
 </resources>

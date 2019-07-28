@@ -62,6 +62,7 @@ public class StudentLogin extends AppCompatActivity {
     private boolean alreadyregister=false;
     private String uuid;
     private boolean verify;
+    private MaterialDialog materialDialog;
     private ScrollView scrollView;
     private boolean login;
     private StudentViewModel studentViewModel;
@@ -200,7 +201,14 @@ public class StudentLogin extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                createDialogThirdForPhone();
+                                showLoadingDialogue();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        hideLoadingMaterialDialogInstant();
+                                        createDialogThirdForPhone();
+                                    }
+                                },4000);
                             } else {
                                 //verification unsuccessful.. display an error message
                             }
@@ -215,7 +223,7 @@ public class StudentLogin extends AppCompatActivity {
             login=true;
             firebaseAuth=FirebaseAuth.getInstance();
             firebaseUser=firebaseAuth.getCurrentUser();
-            new MaterialDialog.Builder(StudentLogin.this)
+            materialDialog= new MaterialDialog.Builder(StudentLogin.this)
                     .title("Checking Status....")
                     .positiveText("Proceed")
                     .negativeText("Cancel")
@@ -353,6 +361,10 @@ public class StudentLogin extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if(materialDialog!=null&&!materialDialog.isCancelled()){
+            materialDialog.dismiss();
+            materialDialog.cancel();
+        }
         if(verify&&firebaseAuth.getCurrentUser()!=null)
         {
             firebaseAuth.signOut();
