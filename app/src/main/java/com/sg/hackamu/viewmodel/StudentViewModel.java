@@ -24,11 +24,11 @@ public class StudentViewModel extends AndroidViewModel {
         return studentRepository.getAllStudents();
     }
 
-    public void deleteUser(String key){
+    public void deleteStudent(String key){
         studentRepository.deleteStudent(key);
     }
 
-    public void addUser(Student student, String key){
+    public void addStudent(Student student, String key){
         studentRepository.addStudent(student,key);
     }
 

@@ -250,7 +250,7 @@ public class FacultySignUp extends AppCompatActivity {
                                     }
                                 });
                                 progressBar.setVisibility(View.GONE);
-                                myRef.child("faculties").child(firebaseUser.getUid()).setValue(faculty);
+                                facultyViewModel.addFaculty(faculty,firebaseUser.getUid());
                                 Intent i = new Intent(FacultySignUp.this, VerifyActivity.class);
                                 i.putExtra("faculty", faculty);
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -312,8 +312,7 @@ public class FacultySignUp extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                myRef.child("faculties").child(firebaseUser.getUid()).setValue(faculty);
-
+                                facultyViewModel.addFaculty(faculty,firebaseUser.getUid());
                                 Intent i = new Intent(FacultySignUp.this, FacultyMainActivity.class);
                                 i.putExtra("faculty", faculty);
                                 verify=false;

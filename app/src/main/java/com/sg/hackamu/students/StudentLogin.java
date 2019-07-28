@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -38,6 +39,7 @@ import com.sg.hackamu.authentication.LoginHandler;
 import com.sg.hackamu.databinding.ActivityLoginBinding;
 import com.sg.hackamu.faculties.FacultyLogin;
 import com.sg.hackamu.faculties.FacultyMainActivity;
+import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.ForgotPassword;
 import com.sg.hackamu.viewmodel.FacultyViewModel;
@@ -61,9 +63,11 @@ public class StudentLogin extends AppCompatActivity {
     private String uuid;
     private boolean verify;
     private ScrollView scrollView;
+    private boolean login;
     private StudentViewModel studentViewModel;
     private FacultyViewModel facultyViewModel;
     private  FirebaseAuth.AuthStateListener authStateListener;
+    private boolean isfaculty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +164,9 @@ public class StudentLogin extends AppCompatActivity {
         }
 
         protected void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
+            alreadyregister=false;
+            isfaculty=false;
+            verify=false;
             firebaseAuth=FirebaseAuth.getInstance();
             firebaseUser=firebaseAuth.getCurrentUser();
             firebaseAuth.signInWithCredential(credential)
@@ -182,6 +189,17 @@ public class StudentLogin extends AppCompatActivity {
                                         }
                                     }
                                 });
+                                facultyViewModel.getAllFaculties().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
+                                    @Override
+                                    public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                        for(DataSnapshot snapshot:dataSnapshots){
+                                            if(snapshot.getKey().equals(uuid))
+                                            {
+                                                isfaculty = true;
+                                            }
+                                        }
+                                    }
+                                });
                                 createDialogThirdForPhone();
                             } else {
                                 //verification unsuccessful.. display an error message
@@ -194,6 +212,7 @@ public class StudentLogin extends AppCompatActivity {
         @Override
         protected void createDialogThirdForPhone()
         {
+            login=true;
             firebaseAuth=FirebaseAuth.getInstance();
             firebaseUser=firebaseAuth.getCurrentUser();
             new MaterialDialog.Builder(StudentLogin.this)
@@ -219,22 +238,23 @@ public class StudentLogin extends AppCompatActivity {
                                 }
                                 progressBar.setVisibility(View.GONE);
                                 verify=false;
+                                login=false;
                                 startActivity(new Intent(StudentLogin.this, StudentMainActivity.class));
                                 StudentLogin.this.finish();
                             }
                             else
                             {
+                                login=false;
                                 Toast.makeText(getApplicationContext(),"Phone Number not registered or wrong type of login.",Toast.LENGTH_SHORT).show();
-                                if(firebaseUser!=null) {
-                                    firebaseAuth.signOut();
-                                    verify=false;
-                                }
+                                checkFirebaseAuthenticationForLoginViaPhone();
                             }
                         }
                     })
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            login=false;
+                            checkFirebaseAuthenticationForLoginViaPhone();
                             dialog.cancel();
                         }
                     })
@@ -242,6 +262,31 @@ public class StudentLogin extends AppCompatActivity {
                     .canceledOnTouchOutside(false)
                     .autoDismiss(false)
                     .show();
+        }
+
+
+        private void checkFirebaseAuthenticationForLoginViaPhone(){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(firebaseAuth.getCurrentUser()!=null) {
+                        if(!isfaculty){
+                            firebaseUser=firebaseAuth.getCurrentUser();
+                            try {
+                                firebaseUser.delete();
+                            }
+                            catch (Exception e){
+                                Log.d("LoginViaPhone",e.getMessage());
+                            }
+                        }
+                        else {
+                            firebaseAuth.signOut();
+                        }
+                        verify=false;
+                    }
+                }
+            },5000);
+
         }
 
         @Override
@@ -311,6 +356,21 @@ public class StudentLogin extends AppCompatActivity {
         if(verify&&firebaseAuth.getCurrentUser()!=null)
         {
             firebaseAuth.signOut();
+        }
+        if(firebaseAuth.getCurrentUser()!=null&&login) {
+            if(!isfaculty){
+                firebaseUser=firebaseAuth.getCurrentUser();
+                try {
+                    firebaseUser.delete();
+                }
+                catch (Exception e){
+                    Log.d("LoginViaPhone",e.getMessage());
+                }
+            }
+            else {
+                firebaseAuth.signOut();
+            }
+            verify=false;
         }
         super.onDestroy();
     }

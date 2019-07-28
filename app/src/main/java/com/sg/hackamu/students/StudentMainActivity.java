@@ -74,7 +74,6 @@ public class StudentMainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Connected Faculties");
         progressBar=findViewById(R.id.progressBarHome);
-        progressBar.setVisibility(View.VISIBLE);
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
         myRef.child("faculties").keepSynced(true);

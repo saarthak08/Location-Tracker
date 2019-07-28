@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.app.Activity;
@@ -53,11 +55,16 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sg.hackamu.R;
+import com.sg.hackamu.authentication.SignupHandler;
 import com.sg.hackamu.databinding.ActivitySignUpBinding;
+import com.sg.hackamu.faculties.FacultySignUp;
 import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
+import com.sg.hackamu.viewmodel.FacultyViewModel;
+import com.sg.hackamu.viewmodel.StudentViewModel;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class StudentSignUp extends AppCompatActivity {
@@ -91,6 +98,8 @@ public class StudentSignUp extends AppCompatActivity {
     private MaterialDialog dialog1;
     private String verificationCode;
     private String mVerificationId;
+    private FacultyViewModel facultyViewModel;
+    private StudentViewModel studentViewModel;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
     private static final String TAG = "StudentSignUp";
 
@@ -100,7 +109,6 @@ public class StudentSignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         signUpBinding = DataBindingUtil.setContentView(StudentSignUp.this, R.layout.activity_sign_up);
-        signUpBinding.setClickHandlers(new SignupactivityClickHandlers());
         firebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
@@ -130,6 +138,9 @@ public class StudentSignUp extends AppCompatActivity {
         enNo = signUpBinding.enrolno;
         password = signUpBinding.passwords;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        facultyViewModel= ViewModelProviders.of(StudentSignUp.this).get(FacultyViewModel.class);
+        studentViewModel=ViewModelProviders.of(StudentSignUp.this).get(StudentViewModel.class);
+        signUpBinding.setClickHandlers(new StudentSignUp.SignupactivityClickHandlers(name.getText().toString().trim(),email.getText().toString().trim(),password.getText().toString().trim(),enNo.getText().toString().trim(),phonenumber.getText().toString().trim(),StudentSignUp.this));
 
     }
 
@@ -148,12 +159,36 @@ public class StudentSignUp extends AppCompatActivity {
     }
 
 
-    public class SignupactivityClickHandlers {
+    public class SignupactivityClickHandlers extends SignupHandler {
+        FirebaseAuth firebaseAuth;
+        FirebaseUser firebaseUser;
+        public SignupactivityClickHandlers(String name, String email, String password, String no, String phonenumber, Context context) {
+            super(name, email, password, no, phonenumber, context);
+        }
+
         public void onSignUpButtonClicked(View v) {
+            firebaseAuth=FirebaseAuth.getInstance();
+            firebaseUser=firebaseAuth.getCurrentUser();
+            setContext(StudentSignUp.this);
+            setEmail(email.getText().toString().trim());
+            setPassword(password.getText().toString().trim());
+            setName(name.getText().toString().trim());
+            setNo(enNo.getText().toString().trim());
+            setPhonenumber(phonenumber.getText().toString().trim());
+            checkInputs();
         }
 
 
-            private void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
+            protected void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
+                progressBar.setVisibility(View.VISIBLE);
+                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                firebaseAuth=FirebaseAuth.getInstance();
+                firebaseUser=firebaseAuth.getCurrentUser();
                 firebaseAuth.signInWithCredential(credential)
                         .addOnCompleteListener(StudentSignUp.this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -163,79 +198,27 @@ public class StudentSignUp extends AppCompatActivity {
                                     firebaseAuth=FirebaseAuth.getInstance();
                                     firebaseUser=firebaseAuth.getCurrentUser();
                                     uuid=firebaseUser.getUid();
-                                    myRef.child("students").addChildEventListener(new ChildEventListener() {
+                                    studentViewModel.getAllStudents().observe(StudentSignUp.this, new Observer<List<DataSnapshot>>() {
                                         @Override
-                                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                            try {
-
+                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                            for(DataSnapshot dataSnapshot:dataSnapshots){
                                                 if (dataSnapshot.getKey().equals(uuid)) {
                                                     alreadyregister=true;
                                                 }
                                             }
-                                            catch(Exception e)
-                                            {
-                                                Log.d("LoginPN", e.getMessage());
-                                            }
-
-                                        }
-
-                                        @Override
-                                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
                                         }
                                     });
-                                    myRef.child("faculties").addChildEventListener(new ChildEventListener() {
+                                    facultyViewModel.getAllFaculties().observe(StudentSignUp.this, new Observer<List<DataSnapshot>>() {
                                         @Override
-                                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                            try {
-
+                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                            for(DataSnapshot dataSnapshot:dataSnapshots){
                                                 if (dataSnapshot.getKey().equals(uuid)) {
                                                     alreadyregister=true;
                                                 }
                                             }
-                                            catch(Exception e)
-                                            {
-                                                Log.d("LoginPN", e.getMessage());
-                                            }
-
-                                        }
-
-                                        @Override
-                                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
                                         }
                                     });
-                                    createdialog3();
+                                    createDialog3();
 
                                     //verification successful we will start the profile activity
                                 } else {
@@ -250,7 +233,8 @@ public class StudentSignUp extends AppCompatActivity {
                         });
             }
 
-            public void createUserwithEmail()
+
+            protected void createUserwithEmail()
             {
                 progressBar.setVisibility(View.VISIBLE);
                 scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
@@ -305,7 +289,7 @@ public class StudentSignUp extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    myRef.child("students").child(firebaseUser.getUid()).setValue(student);
+                                    studentViewModel.addStudent(student,firebaseUser.getUid());
                                     Intent i = new Intent(StudentSignUp.this, VerifyActivity.class);
                                     i.putExtra("student", student);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -324,7 +308,7 @@ public class StudentSignUp extends AppCompatActivity {
             }
 
 
-        public void createdialog3() {
+        protected void createDialog3() {
             new MaterialDialog.Builder(StudentSignUp.this)
                     .title("Checking Status....")
                     .positiveText("Proceed")
@@ -364,7 +348,7 @@ public class StudentSignUp extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                myRef.child("students").child(firebaseUser.getUid()).setValue(student);
+                                studentViewModel.addStudent(student,firebaseUser.getUid());
                                 if(selectedImageUri!=null) {
                                     StorageReference filepath = mStorage.child("user_profile").child(selectedImageUri.getLastPathSegment());
                                     filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -451,6 +435,7 @@ public class StudentSignUp extends AppCompatActivity {
 
         }
     }
+
     @Override
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

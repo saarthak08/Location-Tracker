@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 
@@ -31,31 +32,17 @@ public class FacultyRepository {
     public FacultyRepository(){
         firebaseDatabase= FirebaseUtils.getDatabase();
         databaseReference=firebaseDatabase.getReference();
-        users=new ArrayList<>();
     }
 
     public LiveData<List<DataSnapshot>> getAllFaculties(){
-        databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
+        databaseReference.child("faculties").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                users.add(dataSnapshot);
-                mutableLiveData.setValue(users);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                users.remove(dataSnapshot);
-                mutableLiveData.setValue(users);
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                users=new ArrayList<>();
+                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()) {
+                    users.add(dataSnapshot1);
+                }
+                mutableLiveData.postValue(users);
             }
 
             @Override
@@ -63,7 +50,6 @@ public class FacultyRepository {
 
             }
         });
-
         return mutableLiveData;
     }
 
