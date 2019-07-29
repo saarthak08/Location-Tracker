@@ -21,14 +21,13 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="304dp"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:baselineAligned="true"
-                android:layout_weight="1"
-                android:padding="@dimen/dimen_64x"
-                app:srcCompat="@drawable/amulogo"
+                android:padding="24dp"
+                app:srcCompat="@drawable/maps1"
                 tools:ignore="ContentDescription" />
 
         <ProgressBar

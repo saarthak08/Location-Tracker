@@ -11,24 +11,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,6 +47,7 @@ import com.sg.hackamu.models.ChatMessage;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
+import com.sg.hackamu.view.students.StudentMainActivity;
 import com.sg.hackamu.viewmodel.ChatViewModel;
 
 import java.util.ArrayList;
@@ -103,7 +111,6 @@ public class ChatActivity extends AppCompatActivity {
         firebaseDatabase=FirebaseUtils.getDatabase();
         reference = firebaseDatabase.getReference();
         chatViewModel= ViewModelProviders.of(ChatActivity.this).get(ChatViewModel.class);
-        student =i.getParcelableExtra("student");
         editText.requestFocus();
         loadView();
         final TextView readtext=findViewById(R.id.textViewread);
@@ -173,6 +180,26 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+
+    private void profilePictureClickListener(View imageView){
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isuser){
+                    if(student.getImageURI()!=null) {
+                        Intent i=new Intent(ChatActivity.this, ImagePreviewActivity.class);
+                        i.putExtra("imageURI",student.getImageURI());
+                        startActivity(i);                    }
+                }
+                else{
+                    if(faculty.getImageURI()!=null){
+                        Intent i=new Intent(ChatActivity.this, ImagePreviewActivity.class);
+                        i.putExtra("imageURI",faculty.getImageURI());
+                        startActivity(i);                      }
+                }
+            }
+        });
+    }
 
     private void loadView(){
         chatAdapter = new ChatAdapter(chatMessagesForAdapter, firebaseUser);

@@ -13,14 +13,14 @@
     tools:context=".utils.VerifyActivity">
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageViewImageVerify"
         android:layout_width="match_parent"
-        android:layout_height="292dp"
-        android:padding="@dimen/dimen_64x"
+        android:layout_height="312dp"
         android:layout_gravity="center"
+        android:padding="@dimen/dimen_8x"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/amulogo" />
+        app:srcCompat="@drawable/location" />
 
     <TextView
         android:id="@+id/textView6"

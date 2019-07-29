@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -69,6 +71,7 @@ public class FacultyLogin extends AppCompatActivity {
     private boolean isuser;
     private FacultyViewModel facultyViewModel;
     private StudentViewModel studentViewModel;
+    private ImageView imageView;
     private  FirebaseAuth.AuthStateListener authStateListener;
 
 
@@ -89,6 +92,8 @@ public class FacultyLogin extends AppCompatActivity {
             }
         };
         signupButton=loginBinding.signupbutton;
+        imageView=loginBinding.imageView2;
+        Glide.with(FacultyLogin.this).load(R.drawable.maps1).into(imageView);
         progressBar=loginBinding.progressBar1;
         loginButton=loginBinding.loginButton;
         scrollView=loginBinding.scrollView;

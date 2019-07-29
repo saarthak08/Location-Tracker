@@ -8,7 +8,7 @@
             type="com.sg.hackamu.view.LauncherActivity.LauncherActivityClickHandlers"/>
     </data>
 
-    <android.widget.LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/launcher"
@@ -16,30 +16,32 @@
 
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="312dp"
-            android:layout_height="100dp"
+            android:id="@+id/imageView3"
+            android:layout_width="78dp"
+            android:layout_height="8dp"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/hackamu"
+            app:srcCompat="@mipmap/icon"
             tools:ignore="contentDescription" />
+
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="111dp"
+            android:layout_height="174dp"
             android:layout_gravity="center"
             android:fontFamily="cursive"
+            android:padding="@dimen/dimen_4x"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textColor="@color/gradient_4_start"
-            android:textSize="@dimen/text_64x"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="48sp"
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="209dp"
-            android:layout_height="0dp"
+            android:id="@+id/imageView4"
+            android:layout_width="78dp"
+            android:layout_height="8dp"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
@@ -51,13 +53,15 @@
             android:layout_height="0dp"
             android:layout_weight="2"
             android:orientation="horizontal"
-            android:padding="25dp">
+            android:paddingTop="@dimen/dimen_16x"
+            android:paddingStart="@dimen/text_24x"
+            android:paddingEnd="@dimen/text_24x">
 
             <Button
                 android:id="@+id/loginfaculy"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/circle"
@@ -77,13 +81,15 @@
             android:layout_height="0dp"
             android:layout_weight="2"
             android:orientation="horizontal"
-            android:padding="25dp">
+            android:paddingBottom="@dimen/dimen_16x"
+            android:paddingStart="@dimen/text_24x"
+            android:paddingEnd="@dimen/text_24x">
 
             <Button
                 android:id="@+id/loginstudent"
                 style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="100dp"
-                android:layout_height="120dp"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/circle"
@@ -98,5 +104,42 @@
                 tools:targetApi="m" />
 
         </LinearLayout>
-    </android.widget.LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_4x"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:text="Made with "
+                android:textColor="@color/gradient_4_start"
+                android:textSize="@dimen/text_16x" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_heart_on"
+                tools:ignore="contentDescription" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/trade_winds"
+                android:text=" By Saarthak Gupta "
+                android:textColor="@color/gradient_4_start"
+                android:textSize="@dimen/text_16x" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </layout>

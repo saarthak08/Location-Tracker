@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -35,6 +37,7 @@ public class VerifyActivity extends AppCompatActivity {
     boolean isuser;
     Faculty faculty;
     String email;
+    private ImageView imageView;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     FirebaseDatabase firebaseDatabase=FirebaseUtils.getDatabase();
@@ -55,6 +58,8 @@ public class VerifyActivity extends AppCompatActivity {
 
             }
         };
+        imageView=findViewById(R.id.imageViewImageVerify);
+        Glide.with(VerifyActivity.this).load(R.drawable.location).into(imageView);
         ok=findViewById(R.id.ok);
         databaseReference=firebaseDatabase.getReference();
         final Intent i=getIntent();

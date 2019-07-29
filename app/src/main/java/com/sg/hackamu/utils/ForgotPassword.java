@@ -9,10 +9,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,6 +35,7 @@ public class ForgotPassword extends AppCompatActivity {
     FirebaseUser firebaseUser;
     FirebaseDatabase firebaseDatabase=FirebaseUtils.getDatabase();
     DatabaseReference databaseReference;
+    ImageView imageView;
     private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
@@ -53,6 +56,8 @@ public class ForgotPassword extends AppCompatActivity {
         isuser=i.getBooleanExtra("isuser",false);
         ok=findViewById(R.id.okforgotbutton);
         email=findViewById(R.id.emailsforgotpassword);
+        imageView=findViewById(R.id.imageViewFP);
+        Glide.with(ForgotPassword.this).load(R.drawable.location).into(imageView);
         databaseReference=firebaseDatabase.getReference();
         Cancel=findViewById(R.id.buttoncancelforgotpassword);
         ok.setOnClickListener(new View.OnClickListener() {

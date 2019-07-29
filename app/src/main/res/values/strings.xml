@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LocShare</string>
+    <string name="app_name">Location-Tracker</string>
     <string name="teacher_s_login">Faculty Login</string>
     <string name="student_login">Student Login</string>
     <string name="title_activity_main">MainActivity</string>

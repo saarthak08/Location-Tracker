@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -50,6 +52,7 @@ public class StudentLogin extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private TextView forgotpass;
+    private ImageView imageView;
     private ActivityLoginBinding loginBinding;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
@@ -82,6 +85,8 @@ public class StudentLogin extends AppCompatActivity {
 
             }
         };
+        imageView=loginBinding.imageViewSL;
+        Glide.with(StudentLogin.this).load(R.drawable.maps1).into(imageView);
         signupButton=loginBinding.signupbutton;
         progressBar=loginBinding.progressBar1;
         loginButton=loginBinding.loginButton;
