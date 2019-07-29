@@ -159,7 +159,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     student.setDepartment(departmentET.getText().toString().trim());
                     student.setEnno(idET.getText().toString().trim());
                     if(selectedImageUri!=null) {
-                        final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid()).child(selectedImageUri.getLastPathSegment());
+                        final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid());
                         StorageTask<UploadTask.TaskSnapshot> uploadTask=filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
@@ -205,7 +205,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     faculty.setDepartment(departmentET.getText().toString().trim());
                     faculty.setEmployeeid(idET.getText().toString().trim());
                     if(selectedImageUri!=null) {
-                        final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid()).child(selectedImageUri.getLastPathSegment());
+                        final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid());
                         StorageTask<UploadTask.TaskSnapshot> uploadTask=filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {

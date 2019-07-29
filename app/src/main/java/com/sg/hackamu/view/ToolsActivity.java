@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sg.hackamu.R;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.models.Student;
@@ -33,6 +35,7 @@ public class ToolsActivity extends AppCompatActivity {
     private Student student;
     private Faculty faculty;
     private TextView editProfile;
+    private StorageReference mStorage;
     private TextView deleteAccount;
 
 
@@ -46,6 +49,7 @@ public class ToolsActivity extends AppCompatActivity {
         editProfile=findViewById(R.id.textViewEditProfile);
         deleteAccount=findViewById(R.id.textViewDeleteAccount);
         databaseReference=firebaseDatabase.getReference();
+        mStorage=FirebaseStorage.getInstance().getReference();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getSupportActionBar().setTitle("Settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,6 +95,7 @@ public class ToolsActivity extends AppCompatActivity {
                                 if(isuser){
                                     Intent i=new Intent(ToolsActivity.this, StudentLogin.class);
                                     databaseReference.child("students").child(firebaseUser.getUid()).removeValue();
+                                    mStorage.child("user_profile").child(firebaseUser.getUid()).delete();
                                     firebaseAuth=FirebaseAuth.getInstance();
                                     firebaseUser=firebaseAuth.getCurrentUser();
                                     firebaseUser.delete();
@@ -101,6 +106,7 @@ public class ToolsActivity extends AppCompatActivity {
                                 else{
                                     Intent i=new Intent(ToolsActivity.this, FacultyLogin.class);
                                     databaseReference.child("faculties").child(firebaseUser.getUid()).removeValue();
+                                    mStorage.child("user_profile").child(firebaseUser.getUid()).delete();
                                     firebaseAuth=FirebaseAuth.getInstance();
                                     firebaseUser=firebaseAuth.getCurrentUser();
                                     firebaseUser.delete();
