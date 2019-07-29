@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Build;
@@ -193,6 +194,7 @@ public class FacultyMainActivity extends AppCompatActivity
                             faculty = dataSnapshot.getValue(Faculty.class);
                             View headerView = navigationView.getHeaderView(0);
                             progressBarNavMenu=headerView.findViewById(R.id.progressBarNavMenu);
+                            progressBarNavMenu.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.gradient_4_start), PorterDuff.Mode.MULTIPLY);
                             TextView email = (TextView) headerView.findViewById(R.id.emailnav);
                             if (faculty.getEmail()==null) {
                                 email.setText(faculty.getPhoneno());

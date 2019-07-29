@@ -60,15 +60,18 @@ public class VerifyActivity extends AppCompatActivity {
         final Intent i=getIntent();
         firebaseUser.sendEmailVerification();
         student =i.getParcelableExtra("student");
-        if(student!=null) {
-            isuser = true;
-            email=student.getEmail();
+        try {
+            if (student != null) {
+                isuser = true;
+                email = student.getEmail();
+            } else {
+                faculty = i.getParcelableExtra("faculty");
+                isuser = false;
+                email = faculty.getEmail();
+            }
         }
-        else
-        {
-            faculty=i.getParcelableExtra("faculty");
-            isuser=false;
-            email=faculty.getEmail();
+        catch (Exception e){
+            Log.d("Verify",e.getMessage());
         }
         verifytext=findViewById(R.id.textverify);
         verifytext.setText("A verification link is sent to \'"+email+"\'. Please click on the link to verify it.\nAfter verifying, tap on \'OK\' button to continue.\nTap on \'Cancel\' button to register again if you entered your credentials wrong.");
@@ -77,28 +80,28 @@ public class VerifyActivity extends AppCompatActivity {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firebaseUser.reload();
-                if(firebaseUser.isEmailVerified())
-                {
-                if(isuser)
-                {
-                    startActivity(new Intent(VerifyActivity.this, StudentMainActivity.class));
-                    VerifyActivity.this.finish();
-                }
-                else
-                {
-                    startActivity(new Intent(VerifyActivity.this, FacultyMainActivity.class));
-                    VerifyActivity.this.finish();
-                }
-            }
-            else{
-                    Toast.makeText(VerifyActivity.this,"Error! Email isn't yet verified.",Toast.LENGTH_SHORT).show();
+                try {
+                    firebaseUser.reload();
+                    if (firebaseUser.isEmailVerified()) {
+                        if (isuser) {
+                            startActivity(new Intent(VerifyActivity.this, StudentMainActivity.class));
+                            VerifyActivity.this.finish();
+                        } else {
+                            startActivity(new Intent(VerifyActivity.this, FacultyMainActivity.class));
+                            VerifyActivity.this.finish();
+                        }
+                    } else {
+                        Toast.makeText(VerifyActivity.this, "Error! Email isn't yet verified.", Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e){
+                    Log.d("Verify",e.getMessage());
                 }
             }
         });
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                try{
                 if(firebaseUser.isEmailVerified()) {
                     Snackbar.make(v,"Email already Verified!",Snackbar.LENGTH_SHORT).show();
                 }
@@ -113,12 +116,16 @@ public class VerifyActivity extends AppCompatActivity {
                         }
                     });
                 }
-
+            }catch (Exception e){
+                    Log.d("Verify",e.getMessage());
+                }
             }
+
         });
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try{
                 if(isuser)
                 {
                     databaseReference.child("students").child(firebaseUser.getUid()).removeValue();
@@ -131,6 +138,9 @@ public class VerifyActivity extends AppCompatActivity {
                     firebaseUser.delete();
                     startActivity(new Intent(VerifyActivity.this, FacultyLogin.class));
                     VerifyActivity.this.finish();
+                }
+            }catch (Exception e){
+                    Log.d("Verify",e.getMessage());
                 }
             }
         });

@@ -2,6 +2,7 @@ package com.sg.hackamu.view.students;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -167,6 +168,7 @@ public class StudentMainActivity extends AppCompatActivity
                             student = dataSnapshot.getValue(Student.class);
                             View headerView = navigationView.getHeaderView(0);
                             progressBarNavMenu=headerView.findViewById(R.id.progressBarNavMenu);
+                            progressBarNavMenu.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.gradient_4_start), PorterDuff.Mode.MULTIPLY);
                             TextView email = (TextView) headerView.findViewById(R.id.emailnav);
                             if (student.getEmail() == null) {
                                 email.setText(student.getPhoneno());

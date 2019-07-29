@@ -236,6 +236,7 @@ public abstract class SignupHandler {
         }
     }
 
+    protected abstract void updateImageAndStartActivity(int a);
 
     protected abstract void signInWithPhoneAuthCredential(PhoneAuthCredential credential);
 
