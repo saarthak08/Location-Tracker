@@ -33,10 +33,10 @@ public class Student implements Parcelable {
     private String department;
     private String phoneno;
     private String enno;
-    private Uri imageURI;
+    private String imageURI;
 
 
-    public Student(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno, Uri imageURI) {
+    public Student(String name, String password, long id, String email, boolean login, String uuid, String college, String department, String phoneno, String enno, String imageURI) {
         this.name = name;
         this.password = password;
         this.id = id;
@@ -136,11 +136,11 @@ public class Student implements Parcelable {
         this.login = login;
     }
 
-    public Uri getImageURI() {
+    public String getImageURI() {
         return imageURI;
     }
 
-    public void setImageURI(Uri imageURI) {
+    public void setImageURI(String imageURI) {
         this.imageURI = imageURI;
     }
 
@@ -162,7 +162,7 @@ public class Student implements Parcelable {
         dest.writeString(this.department);
         dest.writeString(this.phoneno);
         dest.writeString(this.enno);
-        dest.writeParcelable(this.imageURI, flags);
+        dest.writeString(this.imageURI);
     }
 
     protected Student(Parcel in) {
@@ -176,7 +176,7 @@ public class Student implements Parcelable {
         this.department = in.readString();
         this.phoneno = in.readString();
         this.enno = in.readString();
-        this.imageURI = in.readParcelable(Uri.class.getClassLoader());
+        this.imageURI = in.readString();
     }
 
     public static final Creator<Student> CREATOR = new Creator<Student>() {

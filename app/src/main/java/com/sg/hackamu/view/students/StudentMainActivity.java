@@ -168,9 +168,8 @@ public class StudentMainActivity extends AppCompatActivity
                             TextView name = headerView.findViewById(R.id.namenav);
                             name.setText(student.getName());
                             ImageView imageView = headerView.findViewById(R.id.imageViewMe);
-                            if (firebaseUser.getPhotoUrl() != null) {
-                                Toast.makeText(StudentMainActivity.this,firebaseUser.getPhotoUrl()+"",Toast.LENGTH_LONG).show();
-                                Glide.with(StudentMainActivity.this).load(firebaseUser.getPhotoUrl()).into(imageView);
+                            if (student.getImageURI()!=null) {
+                                Glide.with(StudentMainActivity.this).load(student.getImageURI()).into(imageView);
                             }
                         }
                     } catch (Exception e) {
@@ -207,7 +206,9 @@ public class StudentMainActivity extends AppCompatActivity
     protected void onResume() {
         for (int i = 0; i < navigationView.getMenu().size(); i++) {
             navigationView.getMenu().getItem(i).setChecked(false);
-        }        super.onResume();
+        }
+        loadNavigationMenu();
+        super.onResume();
     }
 
     @Override

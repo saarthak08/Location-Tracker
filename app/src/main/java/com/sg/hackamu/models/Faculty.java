@@ -15,10 +15,10 @@ public class Faculty implements Parcelable {
     private String employeeid;
     private boolean login;
     private String phoneno;
-    private Uri imageURI;
+    private String imageURI;
     private long id;
 
-    public Faculty(String name, String department, String college, String password, String email, String uuid, String employeeid, boolean login, String phoneno, long id,Uri imageURI) {
+    public Faculty(String name, String department, String college, String password, String email, String uuid, String employeeid, boolean login, String phoneno, long id,String imageURI) {
         this.name = name;
         this.department = department;
         this.college = college;
@@ -50,14 +50,6 @@ public class Faculty implements Parcelable {
 
     public Faculty() {
 
-    }
-
-    public Uri getImageURI() {
-        return imageURI;
-    }
-
-    public void setImageURI(Uri imageURI) {
-        this.imageURI = imageURI;
     }
 
     public String getEmployeeid() {
@@ -125,6 +117,14 @@ public class Faculty implements Parcelable {
     }
 
 
+    public String getImageURI() {
+        return imageURI;
+    }
+
+    public void setImageURI(String imageURI) {
+        this.imageURI = imageURI;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -141,7 +141,7 @@ public class Faculty implements Parcelable {
         dest.writeString(this.employeeid);
         dest.writeByte(this.login ? (byte) 1 : (byte) 0);
         dest.writeString(this.phoneno);
-        dest.writeParcelable(this.imageURI, flags);
+        dest.writeString(this.imageURI);
         dest.writeLong(this.id);
     }
 
@@ -155,7 +155,7 @@ public class Faculty implements Parcelable {
         this.employeeid = in.readString();
         this.login = in.readByte() != 0;
         this.phoneno = in.readString();
-        this.imageURI = in.readParcelable(Uri.class.getClassLoader());
+        this.imageURI = in.readString();
         this.id = in.readLong();
     }
 

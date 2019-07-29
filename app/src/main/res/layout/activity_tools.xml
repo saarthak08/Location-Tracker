@@ -27,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dimen_8x"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:elevation="4dp"
         android:focusable="true"
         android:clickable="true"
@@ -44,6 +45,7 @@
         android:clickable="true"
         android:padding="@dimen/dimen_8x"
         android:layout_margin="@dimen/dimen_8x"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:textSize="20sp"
         android:text="@string/delete_account"
         tools:targetApi="lollipop" />

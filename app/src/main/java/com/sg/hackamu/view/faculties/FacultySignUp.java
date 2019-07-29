@@ -59,7 +59,7 @@ public class FacultySignUp extends AppCompatActivity {
     private EditText department;
     private EditText college;
     private EditText phonenumber;
-    private Uri imageURI;
+    private String imageURI;
     private ActivityFacultySignUpBinding signUpBinding;
     private ProgressBar progressBar;
     private FirebaseAuth firebaseAuth;
@@ -82,7 +82,7 @@ public class FacultySignUp extends AppCompatActivity {
     private StudentViewModel studentViewModel;
     private FacultyViewModel facultyViewModel;
     private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private static final String TAG = "StudentSignUp";
+    private static final String TAG = "FacultySignUp";
 
 
     @Override

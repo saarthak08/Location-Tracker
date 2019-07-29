@@ -67,7 +67,7 @@ public class StudentSignUp extends AppCompatActivity {
     private EditText password;
     private EditText department;
     private EditText college;
-    Uri selectedImageUri;
+    private Uri selectedImageUri;
     private EditText phonenumber;
     private MaterialDialog materialDialog;
     private ImageView imageView;
@@ -83,7 +83,7 @@ public class StudentSignUp extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private String userID;
     private String uuid;
-    private Uri imageURI;
+    private String imageURI;
     private ScrollView scrollView;
     private EditText enNo;
     private boolean verify;
@@ -250,24 +250,10 @@ public class StudentSignUp extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     firebaseUser = firebaseAuth.getCurrentUser();
-                                    Student student = new Student();
+                                    final Student student = new Student();
                                     student.setEmail(email.getText().toString().trim());
                                     userID = firebaseUser.getUid();
                                     student.setUuid(userID);
-                                    if(selectedImageUri!=null) {
-                                        StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid()).child(selectedImageUri.getLastPathSegment());
-                                        filepath.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                imageURI = taskSnapshot.getUploadSessionUri();
-
-                                            }
-                                        });
-                                    }
-                                    if(imageURI!=null) {
-                                        userProfileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(imageURI).build();
-                                        firebaseUser.updateProfile(userProfileChangeRequest);
-                                    }
                                     student.setDepartment(department.getText().toString().trim());
                                     student.setCollege(college.getText().toString().trim());
                                     student.setEnno(enNo.getText().toString().trim());
@@ -281,12 +267,30 @@ public class StudentSignUp extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    studentViewModel.addStudent(student,firebaseUser.getUid());
-                                    Intent i = new Intent(StudentSignUp.this, VerifyActivity.class);
-                                    student.setImageURI(imageURI);
-                                    i.putExtra("student", student);
+                                    final Intent i = new Intent(StudentSignUp.this, VerifyActivity.class);
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(i);
+                                    if(selectedImageUri!=null) {
+                                        final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid()).child(selectedImageUri.getLastPathSegment());
+                                        filepath.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                imageURI= filepath.getDownloadUrl().toString();
+                                                if(imageURI!=null) {
+                                                    student.setImageURI(imageURI);
+                                                    studentViewModel.addStudent(student,firebaseUser.getUid());
+                                                    i.putExtra("student", student);
+                                                    startActivity(i);
+                                                    finish();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        studentViewModel.addStudent(student,firebaseUser.getUid());
+                                        i.putExtra("student", student);
+                                        startActivity(i);
+                                        finish();
+                                    }
                                     //verification successful we will start the profile activity
                                 } else {
                                 }
@@ -328,7 +332,6 @@ public class StudentSignUp extends AppCompatActivity {
                                 final Student student = new Student();
                                 userID = firebaseUser.getUid();
                                 student.setUuid(userID);
-                                student.setPhoneno(phonenumber.getText().toString().trim());
                                 student.setDepartment(department.getText().toString().trim());
                                 student.setCollege(college.getText().toString().trim());
                                 student.setEnno(enNo.getText().toString().trim());
@@ -338,47 +341,33 @@ public class StudentSignUp extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Log.d("Hello", "Student profile updated."+firebaseUser.getDisplayName());
+                                            Log.d("Hello", "Student profile updated.");
                                         }
                                     }
                                 });
-                                studentViewModel.addStudent(student,firebaseUser.getUid());
+                                final Intent i = new Intent(StudentSignUp.this, VerifyActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 if(selectedImageUri!=null) {
-                                    StorageReference filepath = mStorage.child("user_profile").child(selectedImageUri.getLastPathSegment());
-                                    filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                                            if (progress == 100) {
-                                                //upload();
-                                            }
-                                        }
-                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid()).child(selectedImageUri.getLastPathSegment());
+                                    filepath.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            imageURI = taskSnapshot.getUploadSessionUri();
+                                            imageURI= filepath.getDownloadUrl().toString();
                                             if(imageURI!=null) {
-                                                userProfileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(imageURI).build();
-                                                firebaseUser.updateProfile(userProfileChangeRequest);
+                                                student.setImageURI(imageURI);
+                                                studentViewModel.addStudent(student,firebaseUser.getUid());
+                                                i.putExtra("student", student);
+                                                startActivity(i);
+                                                finish();
                                             }
-
-                                            Intent i = new Intent(StudentSignUp.this, StudentMainActivity.class);
-                                            i.putExtra("student", student);
-                                            verify=false;
-                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            hideLoadingMaterialDialogInstant();
-                                            startActivity(i);
-
                                         }
                                     });
                                 }
-                                else {
-                                    Intent i = new Intent(StudentSignUp.this, StudentMainActivity.class);
+                                else{
                                     i.putExtra("student", student);
-                                    verify = false;
-                                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    hideLoadingMaterialDialogInstant();
+                                    studentViewModel.addStudent(student,firebaseUser.getUid());
                                     startActivity(i);
+                                    finish();
                                 }
                             }
                         }
