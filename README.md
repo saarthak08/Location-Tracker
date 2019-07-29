@@ -1,5 +1,5 @@
-# LocShare
-![HackAMUCover](https://user-images.githubusercontent.com/38679082/56091329-285bfd00-5ecb-11e9-9443-d947606b63ac.png)
+# Location-Tracker
+![maps1](https://user-images.githubusercontent.com/38679082/62065492-b7a7d900-b24c-11e9-8a6c-2be57576282f.jpeg)
 >An android application which I built in a hackathon event *'HackAMU'* in my college annual fest *'ZARF'*.
 
 
