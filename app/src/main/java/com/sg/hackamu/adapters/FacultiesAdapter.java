@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.R;
 
@@ -36,7 +37,9 @@ public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.AllC
     @Override
     public void onBindViewHolder(@NonNull AllConnectionsViewHolder holder, int position) {
         holder.allconnectionsListItemBinding.setFaculty(Faculty.get(position));
-
+        if(Faculty.get(position).getImageURI()!=null) {
+            Glide.with(context).load(Faculty.get(position).getImageURI()).into(holder.allconnectionsListItemBinding.imageView3);
+        }
     }
 
     @Override

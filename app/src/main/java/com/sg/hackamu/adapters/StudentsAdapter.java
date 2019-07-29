@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.StudentsAdapterListItemBinding;
@@ -36,7 +37,9 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllCon
     @Override
     public void onBindViewHolder(@NonNull AllConnectionsViewHolder holder, int position) {
         holder.StudentsAdapterListItemBinding.setStudent(students.get(position));
-
+        if(students.get(position).getImageURI()!=null) {
+            Glide.with(context).load(students.get(position).getImageURI()).into(holder.StudentsAdapterListItemBinding.imageView3);
+        }
     }
 
     @Override
