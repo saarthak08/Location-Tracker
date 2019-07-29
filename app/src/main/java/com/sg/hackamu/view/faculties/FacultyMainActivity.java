@@ -1,6 +1,7 @@
 package com.sg.hackamu.view.faculties;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,10 +31,16 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -50,6 +58,7 @@ import com.sg.hackamu.services.GetLocation;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.view.EditProfileActivity;
 import com.sg.hackamu.view.ToolsActivity;
+import com.sg.hackamu.view.students.StudentMainActivity;
 import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
@@ -77,6 +86,7 @@ public class FacultyMainActivity extends AppCompatActivity
     FacultyViewModel facultyViewModel;
     StudentViewModel studentViewModel;
     NavigationView navigationView;
+    private ProgressBar progressBarNavMenu;
     private  FirebaseAuth.AuthStateListener authStateListener;
     FloatingActionButton floatingActionButton;
     public static int l=0;
@@ -182,6 +192,7 @@ public class FacultyMainActivity extends AppCompatActivity
                         if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
                             faculty = dataSnapshot.getValue(Faculty.class);
                             View headerView = navigationView.getHeaderView(0);
+                            progressBarNavMenu=headerView.findViewById(R.id.progressBarNavMenu);
                             TextView email = (TextView) headerView.findViewById(R.id.emailnav);
                             if (faculty.getEmail()==null) {
                                 email.setText(faculty.getPhoneno());
@@ -190,6 +201,11 @@ public class FacultyMainActivity extends AppCompatActivity
                             }
                             TextView name = headerView.findViewById(R.id.namenav);
                             name.setText(faculty.getName());
+                            ImageView imageView = headerView.findViewById(R.id.imageViewMe);
+                            if (faculty.getImageURI()!=null) {
+                                progressBarNavMenu.setVisibility(View.VISIBLE);
+                                Glide.with(FacultyMainActivity.this).load(faculty.getImageURI()).listener(requestListener()).into(imageView);
+                            }
                         }
                     }
                     catch(Exception e)
@@ -241,6 +257,7 @@ public class FacultyMainActivity extends AppCompatActivity
         for (int i = 0; i < navigationView.getMenu().size(); i++) {
             navigationView.getMenu().getItem(i).setChecked(false);
         }
+        loadNavigationMenu();
         super.onResume();
     }
 
@@ -404,6 +421,22 @@ public class FacultyMainActivity extends AppCompatActivity
         {
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
+    }
+    public RequestListener<Drawable> requestListener(){
+        return new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                progressBarNavMenu.setVisibility(View.GONE);
+                Toast.makeText(FacultyMainActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                progressBarNavMenu.setVisibility(View.GONE);
+                return false;
+            }
+        };
     }
 
 }

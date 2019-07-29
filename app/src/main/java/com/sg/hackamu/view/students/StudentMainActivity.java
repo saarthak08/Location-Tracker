@@ -2,6 +2,7 @@ package com.sg.hackamu.view.students;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -9,6 +10,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +33,7 @@ import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -59,6 +65,7 @@ public class StudentMainActivity extends AppCompatActivity
     ProgressBar progressBar;
     FirebaseUser firebaseUser;
     Student student;
+    private ProgressBar progressBarNavMenu;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     private FacultyViewModel facultyViewModel;
@@ -159,6 +166,7 @@ public class StudentMainActivity extends AppCompatActivity
                         if (dataSnapshot.getKey().equals(firebaseUser.getUid())) {
                             student = dataSnapshot.getValue(Student.class);
                             View headerView = navigationView.getHeaderView(0);
+                            progressBarNavMenu=headerView.findViewById(R.id.progressBarNavMenu);
                             TextView email = (TextView) headerView.findViewById(R.id.emailnav);
                             if (student.getEmail() == null) {
                                 email.setText(student.getPhoneno());
@@ -169,7 +177,8 @@ public class StudentMainActivity extends AppCompatActivity
                             name.setText(student.getName());
                             ImageView imageView = headerView.findViewById(R.id.imageViewMe);
                             if (student.getImageURI()!=null) {
-                                Glide.with(StudentMainActivity.this).load(student.getImageURI()).into(imageView);
+                                progressBarNavMenu.setVisibility(View.VISIBLE);
+                                Glide.with(StudentMainActivity.this).load(student.getImageURI()).listener(requestListener()).into(imageView);
                             }
                         }
                     } catch (Exception e) {
@@ -291,5 +300,21 @@ public class StudentMainActivity extends AppCompatActivity
         }
     }
 
+    public RequestListener<Drawable> requestListener(){
+        return new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                progressBarNavMenu.setVisibility(View.GONE);
+                Toast.makeText(StudentMainActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                progressBarNavMenu.setVisibility(View.GONE);
+                return false;
+            }
+        };
+    }
 
 }

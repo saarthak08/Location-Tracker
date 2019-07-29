@@ -21,6 +21,14 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:srcCompat="@drawable/user" />
 
+    <ProgressBar
+        android:id="@+id/progressBarNavMenu"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="invisible" />
+
     <TextView
         android:id="@+id/namenav"
         android:layout_width="match_parent"
