@@ -90,7 +90,6 @@ public class EditProfileActivity extends AppCompatActivity {
         firebaseUser=firebaseAuth.getCurrentUser();
         databaseReference=firebaseDatabase.getReference();
         mStorage= FirebaseStorage.getInstance().getReference();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getSupportActionBar().setTitle("Edit Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -105,6 +104,7 @@ public class EditProfileActivity extends AppCompatActivity {
         scrollView=findViewById(R.id.scrollViewEP);
         collegeET=findViewById(R.id.collegeET);
         idET=findViewById(R.id.idET);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         nameET.setText(firebaseUser.getDisplayName());
         if (i.hasExtra("student")) {
             student = i.getParcelableExtra("student");

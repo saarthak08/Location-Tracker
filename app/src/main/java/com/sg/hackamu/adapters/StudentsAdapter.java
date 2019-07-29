@@ -11,6 +11,7 @@ import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.databinding.StudentsAdapterListItemBinding;
 import com.sg.hackamu.models.Student;
+import com.sg.hackamu.view.ImagePreviewActivity;
 
 import java.util.ArrayList;
 
@@ -60,6 +61,17 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.AllCon
                     Intent i=new Intent(context, ChatActivity.class);
                     i.putExtra("student", students.get(pos));
                     context.startActivity(i);
+                }
+            });
+            StudentsAdapterListItemBinding.imageView3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String imageURI=students.get(getAdapterPosition()).getImageURI();
+                    if(imageURI!=null){
+                        Intent i=new Intent(context, ImagePreviewActivity.class);
+                        i.putExtra("imageURI",imageURI);
+                        context.startActivity(i);
+                    }
                 }
             });
         }

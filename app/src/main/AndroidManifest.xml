@@ -30,10 +30,12 @@
         android:roundIcon="@android:drawable/ic_dialog_map"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.ToolsActivity"></activity>
+        <activity android:name=".view.ImagePreviewActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".view.ToolsActivity" />
         <activity
             android:name=".view.EditProfileActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".utils.ForgotPassword"
             android:windowSoftInputMode="adjustResize" />

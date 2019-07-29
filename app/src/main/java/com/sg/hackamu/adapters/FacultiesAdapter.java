@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.R;
 
 import com.sg.hackamu.databinding.FacultiesAdapterListItemBinding;
+import com.sg.hackamu.view.ImagePreviewActivity;
 
 import java.util.ArrayList;
 
@@ -60,6 +62,18 @@ public class FacultiesAdapter extends RecyclerView.Adapter<FacultiesAdapter.AllC
                     Intent i=new Intent(context, ChatActivity.class);
                     i.putExtra("faculty",Faculty.get(pos));
                     context.startActivity(i);
+                }
+            });
+            allconnectionsListItemBinding.imageView3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String imageURI=Faculty.get(getAdapterPosition()).getImageURI();
+                    if(imageURI!=null){
+                        Intent i=new Intent(context, ImagePreviewActivity.class);
+                        i.putExtra("imageURI",imageURI);
+                        context.startActivity(i);
+                    }
+
                 }
             });
         }

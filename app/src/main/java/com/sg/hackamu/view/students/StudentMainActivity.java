@@ -29,7 +29,9 @@ import com.sg.hackamu.services.ChatNotification;
 import com.sg.hackamu.services.LocationNotification;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.view.EditProfileActivity;
+import com.sg.hackamu.view.ImagePreviewActivity;
 import com.sg.hackamu.view.ToolsActivity;
+import com.sg.hackamu.view.faculties.FacultyMainActivity;
 import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
@@ -182,6 +184,7 @@ public class StudentMainActivity extends AppCompatActivity
                                 progressBarNavMenu.setVisibility(View.VISIBLE);
                                 Glide.with(StudentMainActivity.this).load(student.getImageURI()).listener(requestListener()).into(imageView);
                             }
+                            profilePictureClickListener(imageView);
                         }
                     } catch (Exception e) {
                         Log.d("NavMenu", e.getMessage());
@@ -300,6 +303,19 @@ public class StudentMainActivity extends AppCompatActivity
                 }
             }, 2000);
         }
+    }
+
+    public void profilePictureClickListener(ImageView imageView){
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(student.getImageURI()!=null){
+                    Intent i=new Intent(StudentMainActivity.this, ImagePreviewActivity.class);
+                    i.putExtra("imageURI",student.getImageURI());
+                    startActivity(i);
+                }
+            }
+        });
     }
 
     public RequestListener<Drawable> requestListener(){
