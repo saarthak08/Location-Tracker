@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            app:srcCompat="@mipmap/icon"
+            app:srcCompat="@drawable/icon"
             tools:ignore="contentDescription" />
 
 
