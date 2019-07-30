@@ -30,10 +30,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,6 +94,7 @@ public class FacultyMainActivity extends AppCompatActivity
     private  FirebaseAuth.AuthStateListener authStateListener;
     FloatingActionButton floatingActionButton;
     public static int l=0;
+    private SearchView searchView;
     private int count=0;
 
     @Override
@@ -272,17 +275,18 @@ public class FacultyMainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.messages) {
-        } else if (id == R.id.requests) {
-
-        } else if (id == R.id.tools) {
+        if (id == R.id.tools) {
             Intent intent=new Intent(FacultyMainActivity.this, ToolsActivity.class);
             intent.putExtra("faculty",faculty);
             startActivity(intent);
 
         } else if (id == R.id.connections) {
 
-        } else if (id == R.id.signout) {
+        }
+         /*   else if (id == R.id.messages) {
+        } else if (id == R.id.requests) {
+        } */
+         else if (id == R.id.signout) {
             Intent o=new Intent(FacultyMainActivity.this, ChatNotification.class);
             getApplicationContext().stopService(o);
             if (GetLocation.runservice == 1) {
@@ -439,6 +443,16 @@ public class FacultyMainActivity extends AppCompatActivity
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
     }
+
+   /* @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_view,menu);
+        MenuItem menuItem = menu.findItem(R.id.app_bar_search);
+        searchView =(SearchView) menuItem.getActionView();
+        search(searchView);
+        return super.onCreateOptionsMenu(menu);
+    }*/
+
     public RequestListener<Drawable> requestListener(){
         return new RequestListener<Drawable>() {
             @Override

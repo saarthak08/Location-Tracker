@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <item
+        android:id="@+id/app_bar_search"
+        android:actionLayout="@color/design_default_color_on_secondary"
+        android:color="@color/design_default_color_background"
+        android:icon="@android:drawable/ic_search_category_default"
+        android:title="@string/app_name"
+        android:visible="true"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always">
+        <requestFocus/>
+    </item>
 </menu>

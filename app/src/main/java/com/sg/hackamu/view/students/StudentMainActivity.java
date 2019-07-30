@@ -248,17 +248,19 @@ public class StudentMainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.messages) {
-        } else if (id == R.id.requests) {
-
-        } else if (id == R.id.tools) {
+       if (id == R.id.tools) {
             Intent intent=new Intent(StudentMainActivity.this, ToolsActivity.class);
             intent.putExtra("student",student);
             startActivity(intent);
 
         } else if (id == R.id.connections) {
 
-        } else if (id == R.id.signout) {
+        }
+        /*if (id == R.id.messages) {
+        } else if (id == R.id.requests) {
+
+        }*/
+       else if (id == R.id.signout) {
             if(authStateListener!=null)
             {
                 firebaseAuth.removeAuthStateListener(authStateListener);

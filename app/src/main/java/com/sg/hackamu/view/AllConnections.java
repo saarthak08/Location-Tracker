@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.sg.hackamu.R;
+
 public class AllConnections extends AppCompatActivity {
 
     @Override

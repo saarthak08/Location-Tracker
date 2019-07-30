@@ -8,14 +8,14 @@
             android:id="@+id/connections"
             android:icon="@drawable/ic_friends_nav"
             android:title="@string/connections" />
-        <item
+      <!--  <item
             android:id="@+id/messages"
             android:icon="@drawable/ic_nav_message"
             android:title="@string/messages" />
         <item
             android:id="@+id/requests"
             android:icon="@drawable/ic_nav_achievements"
-            android:title="@string/requests" />
+            android:title="@string/requests" /> -->
         <item
             android:id="@+id/tools"
             android:icon="@drawable/ic_nav_settings"
