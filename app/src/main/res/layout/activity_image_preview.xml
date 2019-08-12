@@ -4,17 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@android:color/background_dark"
     tools:context=".view.ImagePreviewActivity">
 
-    <ImageView
-        android:id="@+id/imageViewImagePreview"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dimen_8x"
-        android:layout_marginBottom="@dimen/dimen_16x"
-        android:layout_height="wrap_content" />
-
+    <com.jsibbold.zoomage.ZoomageView
+        android:id="@+id/myZoomageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:zoomage_restrictBounds="false"
+        app:zoomage_animateOnReset="true"
+        app:zoomage_autoResetMode="UNDER"
+        app:zoomage_autoCenter="true"
+        android:layout_centerInParent="true"
+        app:zoomage_zoomable="true"
+        app:zoomage_translatable="true"
+        app:zoomage_minScale="0.6"
+        app:zoomage_maxScale="8"
+        />
     <ProgressBar
         android:id="@+id/progressBarImagePreview"
         style="?android:attr/progressBarStyleLarge"

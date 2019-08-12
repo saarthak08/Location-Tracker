@@ -32,8 +32,8 @@ public class ToolsActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase= FirebaseUtils.getDatabase();
     private DatabaseReference databaseReference;
     private boolean isuser;
-    private Student student;
-    private Faculty faculty;
+    public static Student student;
+    public static Faculty faculty;
     private TextView editProfile;
     private StorageReference mStorage;
     private TextView deleteAccount;

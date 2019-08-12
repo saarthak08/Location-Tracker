@@ -152,6 +152,8 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final ProgressDialog progressDialog = new ProgressDialog(EditProfileActivity.this);
                 progressDialog.setTitle("Uploading");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setCancelable(false);
                 if(isuser){
                     student.setCollege(collegeET.getText().toString().trim());
                     student.setName(nameET.getText().toString().trim());
@@ -187,6 +189,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     Uri downloadUri = task.getResult();
                                     imageURI = downloadUri.toString();
                                     student.setImageURI(imageURI);
+                                    progressDialog.dismiss();
                                     databaseReference.child("students").child(firebaseUser.getUid()).setValue(student);
                                     Snackbar.make(findViewById(android.R.id.content),"Saved!",Snackbar.LENGTH_SHORT).show();
                                 }
@@ -197,7 +200,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         databaseReference.child("students").child(firebaseUser.getUid()).setValue(student);
                         Snackbar.make(findViewById(android.R.id.content),"Saved!",Snackbar.LENGTH_SHORT).show();
                     }
-
+                    ToolsActivity.student=student;
                 }
                 else{
                     faculty.setCollege(collegeET.getText().toString().trim());
@@ -234,6 +237,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     Uri downloadUri = task.getResult();
                                     imageURI = downloadUri.toString();
                                     faculty.setImageURI(imageURI);
+                                    progressDialog.dismiss();
                                     databaseReference.child("faculties").child(firebaseUser.getUid()).setValue(faculty);
                                     Snackbar.make(findViewById(android.R.id.content),"Saved!",Snackbar.LENGTH_SHORT).show();
                                 }
@@ -244,6 +248,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         databaseReference.child("faculties").child(firebaseUser.getUid()).setValue(faculty);
                         Snackbar.make(findViewById(android.R.id.content),"Saved!",Snackbar.LENGTH_SHORT).show();
                     }
+                    ToolsActivity.faculty=faculty;
                 }
             }
         });
@@ -301,7 +306,6 @@ public class EditProfileActivity extends AppCompatActivity {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 Intent x = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
-                                finish();
                                 startActivity(x);
                             }
                         })
@@ -322,8 +326,7 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Glide.with(imageView).clear(imageView);
-            EditProfileActivity.this.finish();
+            this.finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -344,4 +347,5 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         };
     }
+
 }

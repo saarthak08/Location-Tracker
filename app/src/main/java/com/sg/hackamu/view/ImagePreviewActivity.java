@@ -16,22 +16,23 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.jsibbold.zoomage.ZoomageView;
 import com.sg.hackamu.R;
 import com.sg.hackamu.view.faculties.FacultyMainActivity;
 
 public class ImagePreviewActivity extends AppCompatActivity {
-    private ImageView imageView;
+    private ZoomageView zoomageView;
     private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
-        imageView=findViewById(R.id.imageViewImagePreview);
+        zoomageView=findViewById(R.id.myZoomageView);
         progressBar=findViewById(R.id.progressBarImagePreview);
         Intent i=getIntent();
         String imageURI=i.getStringExtra("imageURI");
-        Glide.with(ImagePreviewActivity.this).load(imageURI).listener(requestListener()).into(imageView);
+        Glide.with(ImagePreviewActivity.this).load(imageURI).listener(requestListener()).into(zoomageView);
     }
 
     public RequestListener<Drawable> requestListener(){
