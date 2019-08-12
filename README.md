@@ -24,6 +24,7 @@
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture)
 - [Dagger-2](https://github.com/google/dagger)
 - [Room](https://developer.android.com/topic/libraries/architecture/room)
+- [zoomage](https://github.com/jsibbold/zoomage)
 
 
 ## *Note:*
