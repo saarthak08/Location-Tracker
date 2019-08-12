@@ -152,13 +152,13 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final ProgressDialog progressDialog = new ProgressDialog(EditProfileActivity.this);
                 progressDialog.setTitle("Uploading");
-                progressDialog.show();
                 if(isuser){
                     student.setCollege(collegeET.getText().toString().trim());
                     student.setName(nameET.getText().toString().trim());
                     student.setDepartment(departmentET.getText().toString().trim());
                     student.setEnno(idET.getText().toString().trim());
-                    if(selectedImageUri!=null) {
+                    if(selectedImageUri!=null&&(!selectedImageUri.toString().equals(student.getImageURI()))) {
+                        progressDialog.show();
                         final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid());
                         StorageTask<UploadTask.TaskSnapshot> uploadTask=filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -204,7 +204,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     faculty.setName(nameET.getText().toString().trim());
                     faculty.setDepartment(departmentET.getText().toString().trim());
                     faculty.setEmployeeid(idET.getText().toString().trim());
-                    if(selectedImageUri!=null) {
+                    if(selectedImageUri!=null&& (!selectedImageUri.toString().equals(faculty.getImageURI()))) {
+                        progressDialog.show();
                         final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid());
                         StorageTask<UploadTask.TaskSnapshot> uploadTask=filepath.putFile(selectedImageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -321,7 +322,8 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            Glide.with(imageView).clear(imageView);
+            EditProfileActivity.this.finish();
         }
         return super.onOptionsItemSelected(item);
     }

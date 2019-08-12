@@ -19,12 +19,11 @@
 
 ## *Libraries Used:*
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
-- [Room](https://developer.android.com/topic/libraries/architecture/room)
-- [Data Binding (Android Architectural Components)](https://developer.android.com/topic/libraries/data-binding)
 - [Firebase & its Services](https://firebase.google.com/docs/android/setup)
 - [Google Play Services](https://developers.google.com/android/guides/setup)
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture)
 - [Dagger-2](https://github.com/google/dagger)
+- [Room](https://developer.android.com/topic/libraries/architecture/room)
 
 
 ## *Note:*

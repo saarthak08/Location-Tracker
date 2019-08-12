@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sg.hackamu.di.App;
 import com.sg.hackamu.view.ChatActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.view.faculties.FacultyMainActivity;
@@ -57,6 +59,12 @@ public class ChatNotification extends LifecycleService {
     }
 
     @Override
+    public int onStartCommand(Intent intent,int flags, int startId) {
+        super.onStartCommand(intent,flags, startId);
+        return START_STICKY;
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
         firebaseAuth=FirebaseAuth.getInstance();
@@ -69,7 +77,6 @@ public class ChatNotification extends LifecycleService {
 
             }
         };
-
         firebaseAuth.addAuthStateListener(authStateListener);
         firebaseDatabase= FirebaseUtils.getDatabase();
         databaseReference=firebaseDatabase.getReference();
@@ -82,74 +89,73 @@ public class ChatNotification extends LifecycleService {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                             final ChatMessage message=dataSnapshot.getValue(ChatMessage.class);
-                            if(!(dataSnapshot.getValue(ChatMessage.class).isRead())&&!ChatActivity.running)
-                            {
-                                final String uuid=d.getKey();
-                                databaseReference.child("students").addChildEventListener(new ChildEventListener() {
-                                    @Override
-                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                        if (uuid.equals(dataSnapshot.getKey())) {
-                                            student = dataSnapshot.getValue(Student.class);
-                                            isuser = true;
-                                            showNotification(student,faculty,message,isuser);
-                                        }
-                                            }
-
-
-                                    @Override
-                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                                    }
-
-                                    @Override
-                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                                databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
-                                    @Override
-                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                        if (uuid.equals(dataSnapshot.getKey())) {
-                                            if (faculty == null) {
-                                                faculty = dataSnapshot.getValue(Faculty.class);
-                                                isuser = false;
-                                                showNotification(student,faculty,message,isuser);
+                            if(!(dataSnapshot.getValue(ChatMessage.class).isRead())&&!ChatActivity.running) {
+                                final String uuid = d.getKey();
+                                    databaseReference.child("students").addChildEventListener(new ChildEventListener() {
+                                        @Override
+                                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                            if (uuid.equals(dataSnapshot.getKey())) {
+                                                student = dataSnapshot.getValue(Student.class);
+                                                isuser = true;
+                                                showNotification(student, faculty, message, isuser);
                                             }
                                         }
-                                    }
 
 
-                                    @Override
-                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        @Override
+                                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                                        @Override
+                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        @Override
+                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                    }
+                                        }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                    databaseReference.child("faculties").addChildEventListener(new ChildEventListener() {
+                                        @Override
+                                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                            if (uuid.equals(dataSnapshot.getKey())) {
+                                                if (faculty == null) {
+                                                    faculty = dataSnapshot.getValue(Faculty.class);
+                                                    isuser = false;
+                                                    showNotification(student, faculty, message, isuser);
+                                                }
+                                            }
+                                        }
+
+
+                                        @Override
+                                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
                             else {
                                 if (notificationManager != null) {
                                     notificationManager.cancel(notificationId);
