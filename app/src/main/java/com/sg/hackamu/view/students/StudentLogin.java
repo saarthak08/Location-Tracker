@@ -324,39 +324,51 @@ public class StudentLogin extends AppCompatActivity {
         protected void checkInFacultyDatabase(){
             firebaseAuth=FirebaseAuth.getInstance();
             firebaseUser=firebaseAuth.getCurrentUser();
-            facultyViewModel.getAllFaculties().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
-                @Override
-                public void onChanged(List<DataSnapshot> dataSnapshots) {
-                    for(DataSnapshot snapshot:dataSnapshots){
-                        if(snapshot.getKey().equals(firebaseUser.getUid()))
-                        {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(StudentLogin.this,"Error! Invalid Credentials",Toast.LENGTH_SHORT).show();
-                            firebaseAuth.signOut();
+            try {
+                final String uuid = firebaseUser.getUid();
+                facultyViewModel.getAllFaculties().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
+                    @Override
+                    public void onChanged(List<DataSnapshot> dataSnapshots) {
+                        for (DataSnapshot snapshot : dataSnapshots) {
+                            if (uuid != null) {
+                                if (snapshot.getKey().equals(uuid)) {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(StudentLogin.this, "Error! Invalid Credentials", Toast.LENGTH_SHORT).show();
+                                    firebaseAuth.signOut();
+                                }
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+            catch (Exception e){
+            }
         }
 
         @Override
-        protected void checkInUserDatabase(){
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            studentViewModel.getAllStudents().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
-                @Override
-                public void onChanged(List<DataSnapshot> dataSnapshots) {
-                    for(DataSnapshot snapshot:dataSnapshots){
-                        if(snapshot.getKey().equals(firebaseUser.getUid()))
-                        {
-                            progressBar.setVisibility(View.GONE);
-                            Intent i = new Intent(StudentLogin.this, StudentMainActivity.class);
-                            startActivity(i);
-                            StudentLogin.this.finish();
+        protected void checkInUserDatabase() {
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
+            try {
+                final String uuid = firebaseUser.getUid();
+                studentViewModel.getAllStudents().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
+                    @Override
+                    public void onChanged(List<DataSnapshot> dataSnapshots) {
+                        for (DataSnapshot snapshot : dataSnapshots) {
+                            if (uuid != null) {
+                                if (snapshot.getKey().equals(uuid)) {
+                                    progressBar.setVisibility(View.GONE);
+                                    Intent i = new Intent(StudentLogin.this, StudentMainActivity.class);
+                                    startActivity(i);
+                                    StudentLogin.this.finish();
+                                }
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+            catch (Exception e){
+            }
         }
     }
 

@@ -194,27 +194,30 @@ public class StudentSignUp extends AppCompatActivity {
                                     firebaseUser = firebaseAuth.getCurrentUser();
                                     firebaseAuth=FirebaseAuth.getInstance();
                                     firebaseUser=firebaseAuth.getCurrentUser();
-                                    uuid=firebaseUser.getUid();
-                                    studentViewModel.getAllStudents().observe(StudentSignUp.this, new Observer<List<DataSnapshot>>() {
-                                        @Override
-                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                            for(DataSnapshot dataSnapshot:dataSnapshots){
-                                                if (dataSnapshot.getKey().equals(uuid)) {
-                                                    alreadyregister=true;
+                                    try {
+                                        uuid = firebaseUser.getUid();
+                                        studentViewModel.getAllStudents().observe(StudentSignUp.this, new Observer<List<DataSnapshot>>() {
+                                            @Override
+                                            public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                                for (DataSnapshot dataSnapshot : dataSnapshots) {
+                                                    if (dataSnapshot.getKey().equals(uuid)) {
+                                                        alreadyregister = true;
+                                                    }
                                                 }
                                             }
-                                        }
-                                    });
-                                    facultyViewModel.getAllFaculties().observe(StudentSignUp.this, new Observer<List<DataSnapshot>>() {
-                                        @Override
-                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                            for(DataSnapshot dataSnapshot:dataSnapshots){
-                                                if (dataSnapshot.getKey().equals(uuid)) {
-                                                    alreadyregister=true;
+                                        });
+                                        facultyViewModel.getAllFaculties().observe(StudentSignUp.this, new Observer<List<DataSnapshot>>() {
+                                            @Override
+                                            public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                                for (DataSnapshot dataSnapshot : dataSnapshots) {
+                                                    if (dataSnapshot.getKey().equals(uuid)) {
+                                                        alreadyregister = true;
+                                                    }
                                                 }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
+                                    catch (Exception e){}
                                     showLoadingDialogue();
                                     new Handler().postDelayed(new Runnable() {
                                         @Override
@@ -328,66 +331,68 @@ public class StudentSignUp extends AppCompatActivity {
         }
 
         @Override
-        protected void updateImageAndStartActivity(int a){
+        protected void updateImageAndStartActivity(int a) {
             final Intent i;
             final Student student = new Student();
-            userID = firebaseUser.getUid();
-            student.setUuid(userID);
-            student.setDepartment(department.getText().toString().trim());
-            student.setCollege(college.getText().toString().trim());
-            student.setEnno(enNo.getText().toString().trim());
-            student.setName(name.getText().toString().trim());
-            userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
-            firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Log.d("Hello", "Student profile updated.");
-                    }
-                }
-            });
-            if(a==0) {
-                i = new Intent(StudentSignUp.this, VerifyActivity.class);
-                student.setEmail(email.getText().toString().trim());
-            }
-            else{
-                i = new Intent(StudentSignUp.this,StudentMainActivity.class);
-                student.setPhoneno(phonenumber.getText().toString().trim());
-            }
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            if(selectedImageUri!=null) {
-                final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid());
-                StorageTask<UploadTask.TaskSnapshot> uploadTask=filepath.putFile(selectedImageUri);
-                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            try {
+                userID = firebaseUser.getUid();
+                student.setUuid(userID);
+                student.setDepartment(department.getText().toString().trim());
+                student.setCollege(college.getText().toString().trim());
+                student.setEnno(enNo.getText().toString().trim());
+                student.setName(name.getText().toString().trim());
+                userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString().trim()).build();
+                firebaseUser.updateProfile(userProfileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }// Continue with the task to get the download URL
-                        return filepath.getDownloadUrl();
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Uri downloadUri = task.getResult();
-                            imageURI = downloadUri.toString();  student.setImageURI(imageURI);
-                            student.setImageURI(imageURI);
-                            studentViewModel.addStudent(student,firebaseUser.getUid());
-                            i.putExtra("student", student);
-                            startActivity(i);
-                            finish();
+                            Log.d("Hello", "Student profile updated.");
                         }
                     }
                 });
+                if (a == 0) {
+                    i = new Intent(StudentSignUp.this, VerifyActivity.class);
+                    student.setEmail(email.getText().toString().trim());
+                } else {
+                    i = new Intent(StudentSignUp.this, StudentMainActivity.class);
+                    student.setPhoneno(phonenumber.getText().toString().trim());
+                }
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                if (selectedImageUri != null) {
+                    final StorageReference filepath = mStorage.child("user_profile").child(firebaseUser.getUid());
+                    StorageTask<UploadTask.TaskSnapshot> uploadTask = filepath.putFile(selectedImageUri);
+                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }// Continue with the task to get the download URL
+                            return filepath.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri downloadUri = task.getResult();
+                                imageURI = downloadUri.toString();
+                                student.setImageURI(imageURI);
+                                student.setImageURI(imageURI);
+                                studentViewModel.addStudent(student, firebaseUser.getUid());
+                                i.putExtra("student", student);
+                                startActivity(i);
+                                finish();
+                            }
+                        }
+                    });
+                } else {
+                    i.putExtra("student", student);
+                    studentViewModel.addStudent(student, firebaseUser.getUid());
+                    progressBar.setVisibility(View.GONE);
+                    startActivity(i);
+                    finish();
+                }
             }
-            else{
-                i.putExtra("student", student);
-                studentViewModel.addStudent(student,firebaseUser.getUid());
-                progressBar.setVisibility(View.GONE);
-                startActivity(i);
-                finish();
-            }
+            catch (Exception e){}
         }
     }
 

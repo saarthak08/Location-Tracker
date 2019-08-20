@@ -183,30 +183,31 @@ public class FacultyLogin extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 firebaseAuth=FirebaseAuth.getInstance();
                                 firebaseUser=firebaseAuth.getCurrentUser();
-                                uuid=firebaseUser.getUid();
-                                verify=true;
-                                facultyViewModel.getAllFaculties().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
-                                    @Override
-                                    public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                        for(DataSnapshot snapshot:dataSnapshots){
-                                            if(snapshot.getKey().equals(uuid))
-                                            {
-                                                alreadyregister=true;
+                                try {
+                                    uuid = firebaseUser.getUid();
+                                    verify = true;
+                                    facultyViewModel.getAllFaculties().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
+                                        @Override
+                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                            for (DataSnapshot snapshot : dataSnapshots) {
+                                                if (snapshot.getKey().equals(uuid)) {
+                                                    alreadyregister = true;
+                                                }
                                             }
                                         }
-                                    }
-                                });
-                                studentViewModel.getAllStudents().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
-                                    @Override
-                                    public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                        for(DataSnapshot snapshot:dataSnapshots){
-                                            if(snapshot.getKey().equals(uuid))
-                                            {
-                                                isuser=true;
+                                    });
+                                    studentViewModel.getAllStudents().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
+                                        @Override
+                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
+                                            for (DataSnapshot snapshot : dataSnapshots) {
+                                                if (snapshot.getKey().equals(uuid)) {
+                                                    isuser = true;
+                                                }
                                             }
                                         }
-                                    }
-                                });
+                                    });
+                                }
+                                catch (Exception e){}
                                 showLoadingDialogue();
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
@@ -329,40 +330,44 @@ public class FacultyLogin extends AppCompatActivity {
         protected void checkInFacultyDatabase(){
             firebaseAuth=FirebaseAuth.getInstance();
             firebaseUser=firebaseAuth.getCurrentUser();
-            facultyViewModel.getAllFaculties().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
-                @Override
-                public void onChanged(List<DataSnapshot> dataSnapshots) {
-                    for(DataSnapshot snapshot:dataSnapshots){
-                        if(snapshot.getKey().equals(firebaseUser.getUid()))
-                        {
-                            progressBar.setVisibility(View.GONE);
-                            Intent i = new Intent(FacultyLogin.this, FacultyMainActivity.class);
-                            startActivity(i);
-                            FacultyLogin.this.finish();
+            try {
+                facultyViewModel.getAllFaculties().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
+                    @Override
+                    public void onChanged(List<DataSnapshot> dataSnapshots) {
+                        for (DataSnapshot snapshot : dataSnapshots) {
+                            if (snapshot.getKey().equals(firebaseUser.getUid())) {
+                                progressBar.setVisibility(View.GONE);
+                                Intent i = new Intent(FacultyLogin.this, FacultyMainActivity.class);
+                                startActivity(i);
+                                FacultyLogin.this.finish();
 
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+            catch (Exception e){}
         }
 
         @Override
-        protected void checkInUserDatabase(){
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            studentViewModel.getAllStudents().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
-                @Override
-                public void onChanged(List<DataSnapshot> dataSnapshots) {
-                    for(DataSnapshot snapshot:dataSnapshots){
-                        if(snapshot.getKey().equals(firebaseUser.getUid()))
-                        {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(FacultyLogin.this,"Error! Invalid Credentials",Toast.LENGTH_SHORT).show();
-                            firebaseAuth.signOut();
+        protected void checkInUserDatabase() {
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
+            try {
+                studentViewModel.getAllStudents().observe(FacultyLogin.this, new Observer<List<DataSnapshot>>() {
+                    @Override
+                    public void onChanged(List<DataSnapshot> dataSnapshots) {
+                        for (DataSnapshot snapshot : dataSnapshots) {
+                            if (snapshot.getKey().equals(firebaseUser.getUid())) {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(FacultyLogin.this, "Error! Invalid Credentials", Toast.LENGTH_SHORT).show();
+                                firebaseAuth.signOut();
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+            catch (Exception e){}
         }
     }
 
