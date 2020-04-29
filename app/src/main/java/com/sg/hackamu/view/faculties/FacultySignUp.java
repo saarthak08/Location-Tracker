@@ -1,13 +1,5 @@
 package com.sg.hackamu.view.faculties;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +18,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -40,7 +38,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -50,17 +47,19 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.sg.hackamu.R;
-import com.sg.hackamu.utils.authentication.SignupHandler;
 import com.sg.hackamu.databinding.ActivityFacultySignUpBinding;
-//import com.sg.hackamu.model.Faculty;
 import com.sg.hackamu.models.Faculty;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.utils.VerifyActivity;
+import com.sg.hackamu.utils.authentication.SignupHandler;
 import com.sg.hackamu.view.students.StudentSignUp;
 import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
+
+//import com.sg.hackamu.model.Faculty;
 
 public class FacultySignUp extends AppCompatActivity {
 
@@ -75,8 +74,8 @@ public class FacultySignUp extends AppCompatActivity {
     private EditText college;
     private EditText phonenumber;
     private ImageView imageView;
-    final static int PICK_IMAGE=2;
-    final static int MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS=3;
+    final static int PICK_IMAGE = 2;
+    final static int MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS = 3;
     private ActivityFacultySignUpBinding signUpBinding;
     private ProgressBar progressBar;
     private FirebaseAuth firebaseAuth;
@@ -88,18 +87,15 @@ public class FacultySignUp extends AppCompatActivity {
     private String userID;
     private EditText emplyeeid;
     private Uri selectedImageUri;
-    private boolean verification=false;
+    private boolean verification = false;
     private String uuid;
     private ImageView profilePicture;
     public static boolean verify;
-    private boolean alreadyregister=false;
-    private MaterialDialog dialog1;
-    private String verificationCode;
-    private String mVerificationId;
     private ScrollView scrollView;
+    private List<DataSnapshot> allStudentsList = new ArrayList<>();
+    private List<DataSnapshot> allFacultiesList = new ArrayList<>();
     private StudentViewModel studentViewModel;
     private FacultyViewModel facultyViewModel;
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
     private static final String TAG = "FacultySignUp";
 
 
@@ -107,17 +103,17 @@ public class FacultySignUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faculty_sign_up);
-        signUpBinding= DataBindingUtil.setContentView(FacultySignUp.this,R.layout.activity_faculty_sign_up);
-        firebaseAuth= FirebaseAuth.getInstance();
-        firebaseUser=firebaseAuth.getCurrentUser();
-        emplyeeid=findViewById(R.id.employeeid);
-        mStorage= FirebaseStorage.getInstance().getReference();
-        profilePicture=findViewById(R.id.imageViewProfilePictureFaculty);
-        authStateListener=new FirebaseAuth.AuthStateListener() {
+        signUpBinding = DataBindingUtil.setContentView(FacultySignUp.this, R.layout.activity_faculty_sign_up);
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        emplyeeid = findViewById(R.id.employeeid);
+        mStorage = FirebaseStorage.getInstance().getReference();
+        profilePicture = findViewById(R.id.imageViewProfilePictureFaculty);
+        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                firebaseUser=firebaseAuth.getCurrentUser();
-                Log.d("Auth State","Auth State Changed");
+                firebaseUser = firebaseAuth.getCurrentUser();
+                Log.d("Auth State", "Auth State Changed");
 
             }
         };
@@ -125,22 +121,23 @@ public class FacultySignUp extends AppCompatActivity {
         getSupportActionBar().setTitle("Faculty Sign Up");
         mFirebaseDatabase = FirebaseUtils.getDatabase();
         myRef = mFirebaseDatabase.getReference();
-        signUpButton=signUpBinding.signupbuttons;
-        progressBar=signUpBinding.progressBar1;
-        email=signUpBinding.emails;
-        name=signUpBinding.name;
-        scrollView=signUpBinding.scrollView;
-        phonenumber=signUpBinding.phoneNumber;
-        college=signUpBinding.college;
-        department=signUpBinding.department;
-        emplyeeid=signUpBinding.employeeid;
-        password=signUpBinding.passwords;
-        imageView=signUpBinding.imageViewProfilePictureFaculty;
+        signUpButton = signUpBinding.signupbuttons;
+        progressBar = signUpBinding.progressBar1;
+        email = signUpBinding.emails;
+        name = signUpBinding.name;
+        scrollView = signUpBinding.scrollView;
+        phonenumber = signUpBinding.phoneNumber;
+        college = signUpBinding.college;
+        department = signUpBinding.department;
+        emplyeeid = signUpBinding.employeeid;
+        password = signUpBinding.passwords;
+        imageView = signUpBinding.imageViewProfilePictureFaculty;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        facultyViewModel= ViewModelProviders.of(FacultySignUp.this).get(FacultyViewModel.class);
-        studentViewModel=ViewModelProviders.of(FacultySignUp.this).get(StudentViewModel.class);
-        signUpBinding.setClickHandlers(new SignupactivityClickHandlers(name.getText().toString().trim(),email.getText().toString().trim(),password.getText().toString().trim(),emplyeeid.getText().toString().trim(),phonenumber.getText().toString().trim(),FacultySignUp.this));
+        facultyViewModel = ViewModelProviders.of(FacultySignUp.this).get(FacultyViewModel.class);
+        studentViewModel = ViewModelProviders.of(FacultySignUp.this).get(StudentViewModel.class);
+        signUpBinding.setClickHandlers(new SignUpActivityClickHandlers(name.getText().toString().trim(), email.getText().toString().trim(), password.getText().toString().trim(), emplyeeid.getText().toString().trim(), phonenumber.getText().toString().trim(), FacultySignUp.this));
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -150,25 +147,25 @@ public class FacultySignUp extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(authStateListener!=null)
-        {
+        if (authStateListener != null) {
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
     }
 
 
-    public class SignupactivityClickHandlers extends SignupHandler {
+    public class SignUpActivityClickHandlers extends SignupHandler {
         FirebaseAuth firebaseAuth;
         FirebaseUser firebaseUser;
-        public SignupactivityClickHandlers(String name, String email, String password, String emplyeeid, String phonenumber, Context context) {
-            super(name, email, password, emplyeeid,phonenumber, context);
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
+
+        public SignUpActivityClickHandlers(String name, String email, String password, String emplyeeid, String phonenumber, Context context) {
+            super(name, email, password, emplyeeid, phonenumber, context);
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
         }
 
         public void onSignUpButtonClicked(View v) {
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
             setContext(FacultySignUp.this);
             setEmail(email.getText().toString().trim());
             setPassword(password.getText().toString().trim());
@@ -178,81 +175,84 @@ public class FacultySignUp extends AppCompatActivity {
             checkInputs();
         }
 
-        protected void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
+        protected void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+            showLoadingDialogue();
             progressBar.setVisibility(View.VISIBLE);
-            scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+            scrollView.smoothScrollTo(progressBar.getScrollX(), progressBar.getScrollY());
             InputMethodManager inputManager = (InputMethodManager)
                     getSystemService(Context.INPUT_METHOD_SERVICE);
 
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            firebaseAuth.signInWithCredential(credential)
-                    .addOnCompleteListener(FacultySignUp.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                firebaseUser = firebaseAuth.getCurrentUser();
-                                firebaseAuth=FirebaseAuth.getInstance();
-                                firebaseUser=firebaseAuth.getCurrentUser();
-                                try {
-                                    uuid = firebaseUser.getUid();
-                                    studentViewModel.getAllStudents().observe(FacultySignUp.this, new Observer<List<DataSnapshot>>() {
-                                        @Override
-                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                            for (DataSnapshot dataSnapshot : dataSnapshots) {
-                                                if (dataSnapshot.getKey().equals(uuid)) {
-                                                    alreadyregister = true;
-                                                }
-                                            }
-                                        }
-                                    });
-                                    facultyViewModel.getAllFaculties().observe(FacultySignUp.this, new Observer<List<DataSnapshot>>() {
-                                        @Override
-                                        public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                            for (DataSnapshot dataSnapshot : dataSnapshots) {
-                                                if (dataSnapshot.getKey().equals(uuid)) {
-                                                    alreadyregister = true;
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                                catch (Exception e){}
-                               showLoadingDialogue();
-                               new Handler().postDelayed(new Runnable() {
-                                   @Override
-                                   public void run() {
-                                       hideLoadingMaterialDialogInstant();
-                                       createDialog3();
-                                   }
-                               },4000);
-                                //verification successful we will start the profile activity
-                            } else {
-                                //verification unsuccessful.. display an error message
-                                String message = "Error in verification!";
-                                if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                    message = "Invalid code entered...";
-                                }
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
+            studentViewModel.getAllInstantStudentsList().thenAccept((List<DataSnapshot> list) -> {
+                allStudentsList = list;
+                if (allStudentsList.size() != 0) {
+                    for (DataSnapshot d : allStudentsList) {
+                        if (d.getValue().equals(phonenumber.getText().toString())) {
+                            Toast.makeText(FacultySignUp.this, "User already exists", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            hideLoadingMaterialDialogInstant();
+                            return;
+                        }
+                    }
+                } else {
+                    Toast.makeText(FacultySignUp.this, "An error occurred! Please try again.", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    hideLoadingMaterialDialogInstant();
+                    return;
+                }
+                facultyViewModel.getAllInstantFacultiesList().thenAccept((List<DataSnapshot> facList) -> {
+                    allFacultiesList = facList;
+                    if (allFacultiesList.size() != 0) {
+                        for (DataSnapshot d : allFacultiesList) {
+                            if (d.getValue().equals(phonenumber.getText().toString())) {
+                                Toast.makeText(FacultySignUp.this, "User already exists", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                                hideLoadingMaterialDialogInstant();
+                                return;
+
                             }
                         }
-                    });
+                    } else {
+                        Toast.makeText(FacultySignUp.this, "An error occurred! Please try again.", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        hideLoadingMaterialDialogInstant();
+                        return;
+                    }
+                    firebaseAuth.signInWithCredential(credential)
+                            .addOnCompleteListener(FacultySignUp.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        updateImageAndStartActivity(1);
+                                    } else {
+                                        String message = "Error in verification!";
+                                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                            message = "Invalid code entered...";
+                                        }
+                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                        hideLoadingMaterialDialogInstant();
+                                    }
+                                }
+                            });
+                });
+            });
         }
 
-        protected void createUserwithEmail()
-        {
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
+        protected void createUserWithEmail() {
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
             progressBar.setVisibility(View.VISIBLE);
-            scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+            scrollView.smoothScrollTo(progressBar.getScrollX(), progressBar.getScrollY());
             InputMethodManager inputManager = (InputMethodManager)
                     getSystemService(Context.INPUT_METHOD_SERVICE);
 
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-            firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(),password.getText().toString().trim())
+            firebaseAuth.createUserWithEmailAndPassword(email.getText().toString().trim(), password.getText().toString().trim())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -267,71 +267,14 @@ public class FacultySignUp extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(),e.getMessage().trim(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), e.getMessage().trim(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
 
 
-        protected void createDialog3() {
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            materialDialog=new MaterialDialog.Builder(FacultySignUp.this)
-                    .title("Checking Status....")
-                    .positiveText("Proceed")
-                    .negativeText("Cancel")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            verify=false;
-                            if (alreadyregister) {
-
-                                if (!dialog1.isCancelled()) {
-                                    dialog1.dismiss();
-                                    dialog1.cancel();
-                                }
-                                if (!dialog.isCancelled()) {
-                                    dialog.dismiss();
-                                    dialog.cancel();
-                                }
-                                Toast.makeText(getApplicationContext(), "Phone Number already registered.", Toast.LENGTH_SHORT).show();
-                                alreadyregister=false;
-                                firebaseAuth.signOut();
-                            } else {
-                                showLoadingDialogue();
-                                firebaseUser = firebaseAuth.getCurrentUser();
-                                updateImageAndStartActivity(1);
-
-                            }
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            if(firebaseAuth.getCurrentUser()!=null){
-                                firebaseUser.delete();
-                            }
-                            progressBar.setVisibility(View.GONE);
-                            dialog.cancel();
-                        }
-                    })
-                    .cancelable(false)
-                    .canceledOnTouchOutside(false)
-                    .autoDismiss(false)
-                    .show();
-        }
-
-        public void onImageClicked(View v)
-        {
+        public void onImageClicked(View v) {
             requestStoragePermissions();
-            if(ContextCompat.checkSelfPermission(FacultySignUp.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-            {
-                return;
-            }
-            Intent in=new Intent();
-            in.setType("image/*");
-            in.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(in, "Select Picture"), PICK_IMAGE);
         }
 
         @Override
@@ -339,6 +282,7 @@ public class FacultySignUp extends AppCompatActivity {
             final Faculty faculty = new Faculty();
             final Intent i;
             try {
+                firebaseUser=firebaseAuth.getCurrentUser();
                 userID = firebaseUser.getUid();
                 faculty.setUuid(userID);
                 faculty.setDepartment(department.getText().toString().trim());
@@ -357,9 +301,12 @@ public class FacultySignUp extends AppCompatActivity {
                 if (a == 0) {
                     i = new Intent(FacultySignUp.this, VerifyActivity.class);
                     faculty.setEmail(email.getText().toString().trim());
+                    facultyViewModel.addFacultyToFacultiesList(faculty.getEmail(),"id");
+
                 } else {
                     i = new Intent(FacultySignUp.this, FacultyMainActivity.class);
                     faculty.setPhoneno(phonenumber.getText().toString().trim());
+                    facultyViewModel.addFacultyToFacultiesList(faculty.getPhoneno(),"id");
                 }
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 if (selectedImageUri != null) {
@@ -380,7 +327,7 @@ public class FacultySignUp extends AppCompatActivity {
                                 Uri downloadUri = task.getResult();
                                 imageURI = downloadUri.toString();
                                 faculty.setImageURI(imageURI);
-                                faculty.setImageURI(imageURI);
+                                hideLoadingMaterialDialogInstant();
                                 facultyViewModel.addFaculty(faculty, firebaseUser.getUid());
                                 progressBar.setVisibility(View.GONE);
                                 i.putExtra("faculty", faculty);
@@ -392,12 +339,17 @@ public class FacultySignUp extends AppCompatActivity {
                 } else {
                     facultyViewModel.addFaculty(faculty, firebaseUser.getUid());
                     i.putExtra("faculty", faculty);
+                    hideLoadingMaterialDialogInstant();
                     progressBar.setVisibility(View.GONE);
                     startActivity(i);
                     finish();
                 }
-            }catch (Exception e){}
+            } catch (Exception e) {
+                Toast.makeText(FacultySignUp.this,"An error occurred. Please try again!",Toast.LENGTH_SHORT).show();
+                hideLoadingMaterialDialogInstant();
+                progressBar.setVisibility(View.GONE);
             }
+        }
 
     }
 
@@ -406,9 +358,13 @@ public class FacultySignUp extends AppCompatActivity {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                    Intent in = new Intent();
+                    in.setType("image/*");
+                    in.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(in, "Select Picture"), PICK_IMAGE);
                 } else {
-                    Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Permission Denied");
                 }
 
@@ -416,11 +372,11 @@ public class FacultySignUp extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode,int resultCode,Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
             selectedImageUri = data.getData();
-            imageView.setPadding(4,4,4,4);
+            imageView.setPadding(4, 4, 4, 4);
             Glide.with(FacultySignUp.this).load(selectedImageUri).into(imageView);
 
         }
@@ -453,23 +409,13 @@ public class FacultySignUp extends AppCompatActivity {
             } else {
                 ActivityCompat.requestPermissions(FacultySignUp.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
             }
-            return;
+        }
+        else {
+            Intent in = new Intent();
+            in.setType("image/*");
+            in.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(in, "Select Picture"), PICK_IMAGE);
         }
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        if(materialDialog!=null&&!materialDialog.isCancelled()){
-            materialDialog.dismiss();
-            materialDialog.cancel();
-        }
-
-        if(verify&&firebaseAuth.getCurrentUser()!=null)
-        {
-            firebaseAuth.getCurrentUser().delete();
-            firebaseAuth.signOut();
-        }
-        super.onDestroy();
     }
 }

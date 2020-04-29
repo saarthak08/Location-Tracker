@@ -11,6 +11,9 @@ import com.sg.hackamu.models.Student;
 import com.sg.hackamu.viewmodel.repository.StudentRepository;
 
 import java.util.List;
+import java.util.concurrent.Future;
+
+import java9.util.concurrent.CompletableFuture;
 
 public class StudentViewModel extends AndroidViewModel {
 
@@ -32,4 +35,16 @@ public class StudentViewModel extends AndroidViewModel {
         studentRepository.addStudent(student,key);
     }
 
+    public CompletableFuture<List<DataSnapshot>> getAllInstantStudentsList() {
+        return studentRepository.getAllStudentsListInstant();
+    }
+
+
+    public void addStudentToFacultiesList(String id,String node) {
+        studentRepository.addStudentInfoToFacultiesList(id,node);
+    }
+
+    public void deleteStudentFromFacultiesList(String key) {
+        studentRepository.deleteStudentInfoFromFacultiesList(key);
+    }
 }

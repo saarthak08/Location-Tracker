@@ -25,6 +25,7 @@ import com.sg.hackamu.models.Student;
 import com.sg.hackamu.utils.FirebaseUtils;
 import com.sg.hackamu.view.faculties.FacultyLogin;
 import com.sg.hackamu.view.students.StudentLogin;
+import com.sg.hackamu.viewmodel.StudentViewModel;
 
 public class ToolsActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
@@ -96,6 +97,7 @@ public class ToolsActivity extends AppCompatActivity {
                                     Intent i=new Intent(ToolsActivity.this, StudentLogin.class);
                                     databaseReference.child("students").child(firebaseUser.getUid()).removeValue();
                                     mStorage.child("user_profile").child(firebaseUser.getUid()).delete();
+                                    databaseReference.child("students_list").child(student.getName()).removeValue();
                                     firebaseAuth=FirebaseAuth.getInstance();
                                     firebaseUser=firebaseAuth.getCurrentUser();
                                     firebaseUser.delete();
@@ -107,6 +109,7 @@ public class ToolsActivity extends AppCompatActivity {
                                     Intent i=new Intent(ToolsActivity.this, FacultyLogin.class);
                                     databaseReference.child("faculties").child(firebaseUser.getUid()).removeValue();
                                     mStorage.child("user_profile").child(firebaseUser.getUid()).delete();
+                                    databaseReference.child("faculties_list").child(faculty.getName()).removeValue();
                                     firebaseAuth=FirebaseAuth.getInstance();
                                     firebaseUser=firebaseAuth.getCurrentUser();
                                     firebaseUser.delete();

@@ -136,13 +136,13 @@ public abstract class LoginHandler {
                                 dialog2.getBuilder().onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        verifyVerificationCode(code);
+                                        verifyVerificationCode(code,phoneno);
                                     }
                                 });
                                 dialog2.getBuilder().positiveFocus(true);
                             }
                         }
-                        signInWithPhoneAuthCredential(credential);
+                        signInWithPhoneAuthCredential(credential,phoneno);
                         Log.d("PhoneVerify", "onVerificationCompleted:" + credential);
 
                     }
@@ -179,7 +179,7 @@ public abstract class LoginHandler {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         try {
                             verificationCode=dialog2.getInputEditText().getText().toString().trim();
-                            verifyVerificationCode(verificationCode);
+                            verifyVerificationCode(verificationCode,phoneno);
                         }
                         catch (Exception e)
                         {
@@ -199,13 +199,14 @@ public abstract class LoginHandler {
 
 
 
-    private void verifyVerificationCode(String otp){
+    private void verifyVerificationCode(String otp,String phoneNo){
         //creating the credential
         try {
             PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
-            signInWithPhoneAuthCredential(credential);
+            signInWithPhoneAuthCredential(credential,phoneNo);
         } catch (Exception e) {
             Toast toast = Toast.makeText(context, "Verification Code is wrong.", Toast.LENGTH_SHORT);
+            hideLoadingMaterialDialogInstant();
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
@@ -216,7 +217,7 @@ public abstract class LoginHandler {
         final View promptsView = li.inflate(R.layout.loading_dialogue, null);
         loadingMaterialDialog=new MaterialDialog.Builder(context).customView(promptsView,true)
                 .autoDismiss(false)
-                .cancelable(false)
+                .cancelable(true)
                 .canceledOnTouchOutside(false)
                 .show();
     }
@@ -228,13 +229,8 @@ public abstract class LoginHandler {
             loadingMaterialDialog.cancel();
         }
     }
-    protected abstract void createDialogThirdForPhone();
 
-    protected abstract void signInWithPhoneAuthCredential(PhoneAuthCredential credential);
+    protected abstract void signInWithPhoneAuthCredential(PhoneAuthCredential credential,String phoneNo);
 
     protected abstract void checkInDatabaseAndLogin();
-
-    protected abstract void checkInFacultyDatabase();
-
-    protected abstract void checkInUserDatabase();
 }

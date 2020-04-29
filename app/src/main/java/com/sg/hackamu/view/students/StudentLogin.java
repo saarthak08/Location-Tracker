@@ -2,6 +2,7 @@ package com.sg.hackamu.view.students;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -29,11 +30,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sg.hackamu.models.Student;
+import com.sg.hackamu.utils.VerifyActivity;
 import com.sg.hackamu.view.LauncherActivity;
 import com.sg.hackamu.R;
 import com.sg.hackamu.utils.authentication.LoginHandler;
@@ -43,7 +47,13 @@ import com.sg.hackamu.utils.ForgotPassword;
 import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import java9.util.function.Consumer;
 
 public class StudentLogin extends AppCompatActivity {
     private Button signupButton;
@@ -58,16 +68,15 @@ public class StudentLogin extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private FirebaseDatabase firebaseDatabase=FirebaseUtils.getDatabase();
     private DatabaseReference databaseReference;
-    private boolean alreadyregister=false;
-    private String uuid;
-    private boolean verify;
+    private boolean alreadyRegister=false;
     private MaterialDialog materialDialog;
-    private ScrollView scrollView;
-    private boolean login;
+    private boolean isVerified=false;
+    private List<DataSnapshot> allStudentsList = new ArrayList<>();
+    private List<DataSnapshot> allFacultiesList = new ArrayList<>();
+    private NestedScrollView scrollView;
     private StudentViewModel studentViewModel;
     private FacultyViewModel facultyViewModel;
     private  FirebaseAuth.AuthStateListener authStateListener;
-    private boolean isfaculty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,18 +128,19 @@ public class StudentLogin extends AppCompatActivity {
     public class LoginActivityClickHandlers extends LoginHandler {
         FirebaseAuth firebaseAuth;
         FirebaseUser firebaseUser;
+
         public LoginActivityClickHandlers(String email, String password, Context context) {
             super(email, password, context);
         }
 
         public void onLoginButtonClicked(View view) {
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
             setEmail(email.getText().toString().trim());
             setPassword(password.getText().toString().trim());
-            if(confirmEmailPasswordInput()){
+            if (confirmEmailPasswordInput()) {
                 progressBar.setVisibility(View.VISIBLE);
-                scrollView.smoothScrollTo(progressBar.getScrollX(),progressBar.getScrollY());
+                scrollView.smoothScrollTo(progressBar.getScrollX(), progressBar.getScrollY());
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -140,264 +150,132 @@ public class StudentLogin extends AppCompatActivity {
             }
         }
 
-            public void onSignUpButtonClicked (View view){
-                startActivity(new Intent(StudentLogin.this, StudentSignUp.class));
+        public void onSignUpButtonClicked(View view) {
+            startActivity(new Intent(StudentLogin.this, StudentSignUp.class));
 
-            }
+        }
 
-            public void onForgotPasswordClicked (View view)
-            {
-                Intent t=new Intent(StudentLogin.this, ForgotPassword.class);
-                t.putExtra("isuser",true);
-                startActivity(t);
-            }
-            public void onLoginAsFacultyClicked (View view)
-            {
-                startActivity(new Intent(StudentLogin.this, LauncherActivity.class));
-                StudentLogin.this.finish();
-            }
+        public void onForgotPasswordClicked(View view) {
+            Intent t = new Intent(StudentLogin.this, ForgotPassword.class);
+            t.putExtra("isuser", true);
+            startActivity(t);
+        }
+
+        public void onLoginAsFacultyClicked(View view) {
+            startActivity(new Intent(StudentLogin.this, LauncherActivity.class));
+            StudentLogin.this.finish();
+        }
 
 
-        public void onLoginViaPhone(View view)
-        {
+        public void onLoginViaPhone(View view) {
             progressBar.setVisibility(View.VISIBLE);
             createDialogFirstForPhone();
             progressBar.setVisibility(View.GONE);
         }
 
-        protected void signInWithPhoneAuthCredential (PhoneAuthCredential credential){
-            alreadyregister=false;
-            isfaculty=false;
-            verify=false;
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            firebaseAuth.signInWithCredential(credential)
-                    .addOnCompleteListener(StudentLogin.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                firebaseAuth=FirebaseAuth.getInstance();
-                                firebaseUser=firebaseAuth.getCurrentUser();
-                                uuid=firebaseUser.getUid();
-                                verify=true;
-                                studentViewModel.getAllStudents().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
-                                    @Override
-                                    public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                        for(DataSnapshot snapshot:dataSnapshots){
-                                            if(snapshot.getKey().equals(uuid))
-                                            {
-                                                alreadyregister=true;
-                                            }
-                                        }
-                                    }
-                                });
-                                facultyViewModel.getAllFaculties().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
-                                    @Override
-                                    public void onChanged(List<DataSnapshot> dataSnapshots) {
-                                        for(DataSnapshot snapshot:dataSnapshots){
-                                            if(snapshot.getKey().equals(uuid))
-                                            {
-                                                isfaculty = true;
-                                            }
-                                        }
-                                    }
-                                });
-                                showLoadingDialogue();
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        hideLoadingMaterialDialogInstant();
-                                        createDialogThirdForPhone();
-                                    }
-                                },4000);
-                            } else {
-                                //verification unsuccessful.. display an error message
-                            }
+        protected void signInWithPhoneAuthCredential(PhoneAuthCredential credential,String phoneNo) {
+            showLoadingDialogue();
+            alreadyRegister = false;
+            firebaseAuth = FirebaseAuth.getInstance();
+            firebaseUser = firebaseAuth.getCurrentUser();
+            studentViewModel.getAllInstantStudentsList().thenAccept((List<DataSnapshot> list) -> {
+                allStudentsList = list;
+                if (allStudentsList.size() != 0) {
+                    for (DataSnapshot d : allStudentsList) {
+                        if (d.getValue().equals(phoneNo)) {
+                            alreadyRegister=true;
                         }
-                    });
-        }
-
-
-        @Override
-        protected void createDialogThirdForPhone()
-        {
-            login=true;
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            materialDialog= new MaterialDialog.Builder(StudentLogin.this)
-                    .title("Checking Status....")
-                    .positiveText("Proceed")
-                    .negativeText("Cancel")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            if(alreadyregister)
-                            {
-                                if (!dialog1.isCancelled()) {
-                                    dialog1.dismiss();
-                                    dialog1.cancel();
-                                }
-                                if(!dialog2.isCancelled()){
-                                    dialog2.cancel();
-                                }
-                                if(!dialog.isCancelled())
-                                {
-                                    dialog.dismiss();
-                                    dialog.cancel();
-                                }
-                                progressBar.setVisibility(View.GONE);
-                                verify=false;
-                                login=false;
-                                startActivity(new Intent(StudentLogin.this, StudentMainActivity.class));
-                                StudentLogin.this.finish();
-                            }
-                            else
-                            {
-                                login=false;
-                                Toast.makeText(getApplicationContext(),"Phone Number not registered or wrong type of login.",Toast.LENGTH_SHORT).show();
-                                checkFirebaseAuthenticationForLoginViaPhone();
-                            }
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            login=false;
-                            checkFirebaseAuthenticationForLoginViaPhone();
-                            dialog.cancel();
-                        }
-                    })
-                    .cancelable(false)
-                    .canceledOnTouchOutside(false)
-                    .autoDismiss(false)
-                    .show();
-        }
-
-
-        private void checkFirebaseAuthenticationForLoginViaPhone(){
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(firebaseAuth.getCurrentUser()!=null) {
-                        if(!isfaculty){
-                            firebaseUser=firebaseAuth.getCurrentUser();
-                            try {
-                                firebaseUser.delete();
-                            }
-                            catch (Exception e){
-                                Log.d("LoginViaPhone",e.getMessage());
-                            }
-                        }
-                        else {
-                            firebaseAuth.signOut();
-                        }
-                        verify=false;
                     }
-                }
-            },5000);
-
-        }
-
-        @Override
-        protected void checkInDatabaseAndLogin() {
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            firebaseAuth.signInWithEmailAndPassword(getEmail(),getPassword()).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+                } else {
+                    Toast.makeText(StudentLogin.this, "An error occurred! Please try again.", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(StudentLogin.this, e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                    hideLoadingMaterialDialogInstant();
+                    return;
                 }
-            }).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        checkInFacultyDatabase();
-                        checkInUserDatabase();
-
-                    }
+                if(!alreadyRegister) {
+                    Toast.makeText(StudentLogin.this, "Error! User not registered.", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    hideLoadingMaterialDialogInstant();
+                    return;
                 }
+                firebaseAuth.signInWithCredential(credential)
+                        .addOnCompleteListener(StudentLogin.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    progressBar.setVisibility(View.GONE);
+                                    hideLoadingMaterialDialogInstant();
+                                    startActivity(new Intent(StudentLogin.this, StudentMainActivity.class));
+                                    StudentLogin.this.finish();
+                                } else {
+                                    String message = "Error in verification!";
+                                    if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                        message = "Invalid code entered...";
+                                    }
+                                    Toast.makeText(StudentLogin.this, message, Toast.LENGTH_SHORT).show();
+                                    progressBar.setVisibility(View.GONE);
+                                    hideLoadingMaterialDialogInstant();
+                                }
+                            }
+                        });
             });
         }
 
         @Override
-        protected void checkInFacultyDatabase(){
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseUser=firebaseAuth.getCurrentUser();
-            try {
-                final String uuid = firebaseUser.getUid();
-                facultyViewModel.getAllFaculties().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
-                    @Override
-                    public void onChanged(List<DataSnapshot> dataSnapshots) {
-                        for (DataSnapshot snapshot : dataSnapshots) {
-                            if (uuid != null) {
-                                if (snapshot.getKey().equals(uuid)) {
-                                    progressBar.setVisibility(View.GONE);
-                                    Toast.makeText(StudentLogin.this, "Error! Invalid Credentials", Toast.LENGTH_SHORT).show();
-                                    firebaseAuth.signOut();
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            catch (Exception e){
-            }
-        }
-
-        @Override
-        protected void checkInUserDatabase() {
+        protected void checkInDatabaseAndLogin() {
+            isVerified=false;
+            alreadyRegister=false;
             firebaseAuth = FirebaseAuth.getInstance();
             firebaseUser = firebaseAuth.getCurrentUser();
-            try {
-                final String uuid = firebaseUser.getUid();
-                studentViewModel.getAllStudents().observe(StudentLogin.this, new Observer<List<DataSnapshot>>() {
+            facultyViewModel.getAllInstantFacultiesList().thenAccept((List<DataSnapshot> list) -> {
+                allFacultiesList = list;
+                if (allFacultiesList.size() != 0) {
+                    for (DataSnapshot d : allFacultiesList) {
+                        if (d.getValue().equals(email.getText().toString())) {
+                            Toast.makeText(StudentLogin.this, "Error! Invalid Credentials.", Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            hideLoadingMaterialDialogInstant();
+                            return;
+                        }
+                    }
+                } else {
+                    Toast.makeText(StudentLogin.this, "An error occurred! Please try again.", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    hideLoadingMaterialDialogInstant();
+                    return;
+                }
+                firebaseAuth.signInWithEmailAndPassword(getEmail(), getPassword()).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onChanged(List<DataSnapshot> dataSnapshots) {
-                        for (DataSnapshot snapshot : dataSnapshots) {
-                            if (uuid != null) {
-                                if (snapshot.getKey().equals(uuid)) {
-                                    progressBar.setVisibility(View.GONE);
-                                    Intent i = new Intent(StudentLogin.this, StudentMainActivity.class);
-                                    startActivity(i);
-                                    StudentLogin.this.finish();
-                                }
+                    public void onFailure(@NonNull Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                        hideLoadingMaterialDialogInstant();
+                        Toast.makeText(StudentLogin.this, e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            firebaseUser=firebaseAuth.getCurrentUser();
+                            if(firebaseUser.isEmailVerified()) {
+                                progressBar.setVisibility(View.GONE);
+                                Intent i = new Intent(StudentLogin.this, StudentMainActivity.class);
+                                startActivity(i);
+                                StudentLogin.this.finish();
+                            }
+                            else {
+                                progressBar.setVisibility(View.GONE);
+                                Intent i = new Intent(StudentLogin.this, VerifyActivity.class);
+                                Student student=new Student();
+                                student.setEmail(email.getText().toString());
+                                i.putExtra("faculty", student);
+                                startActivity(i);
+                                StudentLogin.this.finish();
                             }
                         }
                     }
                 });
-            }
-            catch (Exception e){
-            }
+            });
         }
-    }
 
-    @Override
-    protected void onDestroy() {
-        if(materialDialog!=null&&!materialDialog.isCancelled()){
-            materialDialog.dismiss();
-            materialDialog.cancel();
-        }
-        if(verify&&firebaseAuth.getCurrentUser()!=null)
-        {
-            firebaseAuth.signOut();
-        }
-        if(firebaseAuth.getCurrentUser()!=null&&login) {
-            if(!isfaculty){
-                firebaseUser=firebaseAuth.getCurrentUser();
-                try {
-                    firebaseUser.delete();
-                }
-                catch (Exception e){
-                    Log.d("LoginViaPhone",e.getMessage());
-                }
-            }
-            else {
-                firebaseAuth.signOut();
-            }
-            verify=false;
-        }
-        super.onDestroy();
     }
-
 }

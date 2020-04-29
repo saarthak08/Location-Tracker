@@ -34,7 +34,7 @@ public abstract class SignupHandler {
     private String password;
     private String no;
     private String name;
-    protected MaterialDialog dialog1;
+    private MaterialDialog dialog1;
     protected MaterialDialog dialog2;
     private String verificationCode;
     private String mVerificationId;
@@ -66,10 +66,10 @@ public abstract class SignupHandler {
                 Toast.makeText(context,"Enter either Email or Phone Number.",Toast.LENGTH_SHORT).show();
             } else if (email.length() == 0 && phonenumber.length() != 0) {
                 FacultySignUp.verify=true;
-                verifyphone();
+                verifyPhone();
 
             } else if (email.length() != 0 && phonenumber.length() == 0) {
-                createUserwithEmail();
+                createUserWithEmail();
             }
         }
         else {
@@ -98,7 +98,7 @@ public abstract class SignupHandler {
         return no;
     }
 
-    public void setNo(String no) {
+    protected void setNo(String no) {
         this.no = no;
     }
 
@@ -122,11 +122,11 @@ public abstract class SignupHandler {
         return phonenumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
+    protected void setPhonenumber(String phonenumber) {
         this.phonenumber = phonenumber;
     }
 
-    protected void verifyphone () {
+    private void verifyPhone() {
         PhoneAuthProvider.getInstance(firebaseAuth).verifyPhoneNumber(
                 phonenumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -211,12 +211,12 @@ public abstract class SignupHandler {
         final View promptsView = li.inflate(R.layout.loading_dialogue, null);
         loadingMaterialDialog=new MaterialDialog.Builder(context).customView(promptsView,true)
                 .autoDismiss(false)
-                .cancelable(false)
+                .cancelable(true)
                 .canceledOnTouchOutside(false)
                 .show();
     }
 
-    protected void verifyVerificationCode(String otp){
+    private void verifyVerificationCode(String otp){
         //creating the credential
         try {
             PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
@@ -240,7 +240,5 @@ public abstract class SignupHandler {
 
     protected abstract void signInWithPhoneAuthCredential(PhoneAuthCredential credential);
 
-    protected abstract void createDialog3();
-
-    protected abstract void createUserwithEmail();
+    protected abstract void createUserWithEmail();
 }

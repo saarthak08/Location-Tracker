@@ -138,23 +138,23 @@
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_4x"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:fontFamily="@font/amita"
+            android:fontFamily="sans-serif"
             android:text="Cancel"
-            android:layout_margin="@dimen/dimen_4x"
             android:textColor="@color/design_default_color_background" />
 
         <Button
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:fontFamily="@font/amita"
-            android:textColor="@color/design_default_color_background"
-            android:layout_weight="1"
             android:layout_margin="@dimen/dimen_4x"
-            android:text="Save" />
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:fontFamily="sans-serif"
+            android:text="Save"
+            android:textColor="@color/design_default_color_background" />
     </LinearLayout>
 
 

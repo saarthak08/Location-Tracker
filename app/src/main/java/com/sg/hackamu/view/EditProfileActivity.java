@@ -44,6 +44,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -154,6 +155,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 progressDialog.setTitle("Uploading");
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.setCancelable(false);
+                UserProfileChangeRequest userProfileChangeRequest= new UserProfileChangeRequest.Builder()
+                        .setDisplayName(nameET.getText().toString()).build();
+                firebaseUser.updateProfile(userProfileChangeRequest);
                 if(isuser){
                     student.setCollege(collegeET.getText().toString().trim());
                     student.setName(nameET.getText().toString().trim());
@@ -257,14 +261,6 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestStoragePermissions();
-                if(ContextCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED)
-                {
-                    return;
-                }
-                Intent in=new Intent();
-                in.setType("image/*");
-                in.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(in, "Select Picture"), PICK_IMAGE);
             }
         });
     }
@@ -274,6 +270,10 @@ public class EditProfileActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
+                    Intent in=new Intent();
+                    in.setType("image/*");
+                    in.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(in, "Select Picture"), PICK_IMAGE);
                 } else {
                     Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Permission Denied");
@@ -319,7 +319,12 @@ public class EditProfileActivity extends AppCompatActivity {
             } else {
                 ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUESTS_STORAGE_PERMISSIONS);
             }
-            return;
+        }
+        else {
+            Intent in=new Intent();
+            in.setType("image/*");
+            in.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(in, "Select Picture"), PICK_IMAGE);
         }
     }
 

@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sg.hackamu.R;
+import com.sg.hackamu.view.LauncherActivity;
 import com.sg.hackamu.view.faculties.FacultyLogin;
 import com.sg.hackamu.view.faculties.FacultyMainActivity;
 import com.sg.hackamu.models.Faculty;
@@ -37,7 +38,6 @@ public class VerifyActivity extends AppCompatActivity {
     boolean isuser;
     Faculty faculty;
     String email;
-    private ImageView imageView;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     FirebaseDatabase firebaseDatabase=FirebaseUtils.getDatabase();
@@ -58,8 +58,6 @@ public class VerifyActivity extends AppCompatActivity {
 
             }
         };
-        imageView=findViewById(R.id.imageViewImageVerify);
-        Glide.with(VerifyActivity.this).load(R.drawable.location).into(imageView);
         ok=findViewById(R.id.ok);
         databaseReference=firebaseDatabase.getReference();
         final Intent i=getIntent();
@@ -130,20 +128,11 @@ public class VerifyActivity extends AppCompatActivity {
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
-                if(isuser)
-                {
-                    databaseReference.child("students").child(firebaseUser.getUid()).removeValue();
-                    firebaseUser.delete();
-                    startActivity(new Intent(VerifyActivity.this, StudentLogin.class));
+                try {
+                    firebaseAuth.signOut();
+                    startActivity(new Intent(VerifyActivity.this, LauncherActivity.class));
                     VerifyActivity.this.finish();
-                }
-                else {
-                    databaseReference.child("faculties").child(firebaseUser.getUid()).removeValue();
-                    firebaseUser.delete();
-                    startActivity(new Intent(VerifyActivity.this, FacultyLogin.class));
-                    VerifyActivity.this.finish();
-                }
+
             }catch (Exception e){
                     Log.d("Verify",e.getMessage());
                 }

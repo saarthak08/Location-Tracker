@@ -3,30 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gradient_2_start"
-    android:orientation="vertical"
-    tools:context=".utils.VerifyActivity">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/imageViewImageVerify"
         android:layout_width="match_parent"
-        android:layout_height="312dp"
+        android:layout_height="380dp"
+        android:layout_weight="1"
         android:layout_gravity="center"
-        android:padding="@dimen/dimen_8x"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/location" />
+        android:paddingVertical="64dp"
+        app:srcCompat="@drawable/location"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/new_rocker"
+        android:layout_marginVertical="8dp"
         android:padding="@dimen/dimen_8x"
         android:text="@string/verify_your_email"
         android:textSize="32sp"
@@ -37,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/trade_winds"
+        android:layout_marginVertical="8dp"
         android:padding="@dimen/dimen_16x"
         android:text="A verification link is sent to "
         android:textSize="24sp" />
@@ -47,6 +50,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:textColor="@color/white"
+        android:layout_marginVertical="8dp"
         android:layout_marginLeft="@dimen/dimen_16x"
         android:layout_marginStart="@dimen/dimen_16x"
         android:layout_marginRight="@dimen/dimen_16x"
@@ -59,6 +63,7 @@
         android:id="@+id/buttonresendverify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
         android:layout_margin="@dimen/dimen_4x"
         android:text="Resend Verification Link" />
 
@@ -66,6 +71,7 @@
         android:id="@+id/buttoncancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
         android:layout_margin="@dimen/dimen_4x"
         android:text="Cancel" />
 

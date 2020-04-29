@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#B1B1B1"
     android:orientation="vertical">
 
     <ProgressBar
@@ -15,7 +14,6 @@
         android:foregroundGravity="center"
         android:indeterminate="true"
         android:padding="@dimen/dimen_8x"
-        android:background="#B1B1B1"
         android:visibility="visible" />
 
     <TextView
@@ -24,7 +22,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/new_rocker"
         android:gravity="center"
-        android:background="#B1B1B1"
         android:padding="@dimen/dimen_8x"
         android:text="@string/loading_please_wait"
         android:textColor="@color/design_default_color_primary_variant"

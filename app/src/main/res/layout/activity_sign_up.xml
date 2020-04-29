@@ -6,7 +6,7 @@
     <data>
         <variable
             name="ClickHandlers"
-            type="com.sg.hackamu.view.students.StudentSignUp.SignupactivityClickHandlers"/>
+            type="com.sg.hackamu.view.students.StudentSignUp.SignUpActivityClickHandlers"/>
     </data>
     <ScrollView
         android:id="@+id/scrollView"

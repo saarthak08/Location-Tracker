@@ -3,6 +3,9 @@ package com.sg.hackamu.view;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -31,6 +34,7 @@ import com.sg.hackamu.viewmodel.FacultyViewModel;
 import com.sg.hackamu.viewmodel.StudentViewModel;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 
 public class LauncherActivity extends AppCompatActivity {
@@ -44,6 +48,7 @@ public class LauncherActivity extends AppCompatActivity {
     Student student;
     FacultyViewModel facultyViewModel;
     FirebaseAuth firebaseAuth;
+    boolean signin=false;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     FirebaseAuth.AuthStateListener authStateListener;
@@ -72,6 +77,7 @@ public class LauncherActivity extends AppCompatActivity {
                         for (DataSnapshot dataSnapshot : dataSnapshots) {
                             if (firebaseUser.getUid().equals(dataSnapshot.getKey())) {
                                 student = dataSnapshot.getValue(Student.class);
+                                signin=true;
                                 if (!firebaseUser.isEmailVerified() && student.getEmail()!=null) {
                                     Intent intent = new Intent(LauncherActivity.this, VerifyActivity.class);
                                     intent.putExtra("student", student);
@@ -90,6 +96,7 @@ public class LauncherActivity extends AppCompatActivity {
                    public void onChanged(List<DataSnapshot> dataSnapshots) {
                        for (DataSnapshot dataSnapshot : dataSnapshots) {
                            if (firebaseUser.getUid().equals(dataSnapshot.getKey())) {
+                               signin=true;
                                faculty = dataSnapshot.getValue(Faculty.class);
                                if (!firebaseUser.isEmailVerified() && faculty.getEmail()!=null) {
                                    Intent intent = new Intent(LauncherActivity.this, VerifyActivity.class);
