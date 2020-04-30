@@ -189,7 +189,7 @@ public class FacultyLogin extends AppCompatActivity {
                     return;
                 }
                 if(!alreadyRegister) {
-                    Toast.makeText(FacultyLogin.this, "Error! User not registered.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FacultyLogin.this, "Error! Invalid Credentials.", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     hideLoadingMaterialDialogInstant();
                     return;

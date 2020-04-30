@@ -193,7 +193,7 @@ public class StudentLogin extends AppCompatActivity {
                     return;
                 }
                 if(!alreadyRegister) {
-                    Toast.makeText(StudentLogin.this, "Error! User not registered.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StudentLogin.this, "Error! Invalid Credentials.", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     hideLoadingMaterialDialogInstant();
                     return;
@@ -267,7 +267,7 @@ public class StudentLogin extends AppCompatActivity {
                                 Intent i = new Intent(StudentLogin.this, VerifyActivity.class);
                                 Student student=new Student();
                                 student.setEmail(email.getText().toString());
-                                i.putExtra("faculty", student);
+                                i.putExtra("student", student);
                                 startActivity(i);
                                 StudentLogin.this.finish();
                             }

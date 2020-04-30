@@ -268,6 +268,8 @@ public class FacultySignUp extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(getApplicationContext(), e.getMessage().trim(), Toast.LENGTH_SHORT).show();
+                            hideLoadingMaterialDialogInstant();
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
         }
@@ -301,12 +303,12 @@ public class FacultySignUp extends AppCompatActivity {
                 if (a == 0) {
                     i = new Intent(FacultySignUp.this, VerifyActivity.class);
                     faculty.setEmail(email.getText().toString().trim());
-                    facultyViewModel.addFacultyToFacultiesList(faculty.getEmail(),"id");
+                    facultyViewModel.addFacultyToFacultiesList(faculty.getEmail(),firebaseUser.getUid());
 
                 } else {
                     i = new Intent(FacultySignUp.this, FacultyMainActivity.class);
                     faculty.setPhoneno(phonenumber.getText().toString().trim());
-                    facultyViewModel.addFacultyToFacultiesList(faculty.getPhoneno(),"id");
+                    facultyViewModel.addFacultyToFacultiesList(faculty.getPhoneno(),firebaseUser.getUid());
                 }
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 if (selectedImageUri != null) {

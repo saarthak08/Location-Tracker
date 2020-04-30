@@ -252,10 +252,6 @@ public class StudentSignUp extends AppCompatActivity {
                                 showLoadingDialogue();
                                 updateImageAndStartActivity(0);
                                 //verification successful we will start the profile activity
-                            } else {
-                                Toast.makeText(StudentSignUp.this,"An error occured. Please try again!",Toast.LENGTH_SHORT).show();
-                                hideLoadingMaterialDialogInstant();
-                                progressBar.setVisibility(View.GONE);
                             }
                         }
                     })
@@ -298,11 +294,11 @@ public class StudentSignUp extends AppCompatActivity {
                 if (a == 0) {
                     i = new Intent(StudentSignUp.this, VerifyActivity.class);
                     student.setEmail(email.getText().toString().trim());
-                    studentViewModel.addStudentToFacultiesList(student.getEmail(),"id");
+                    studentViewModel.addStudentToFacultiesList(student.getEmail(),firebaseUser.getUid());
                 } else {
                     i = new Intent(StudentSignUp.this, StudentMainActivity.class);
                     student.setPhoneno(phonenumber.getText().toString().trim());
-                    studentViewModel.addStudentToFacultiesList(student.getPhoneno(),"id");
+                    studentViewModel.addStudentToFacultiesList(student.getPhoneno(),firebaseUser.getUid());
                 }
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 if (selectedImageUri != null) {
